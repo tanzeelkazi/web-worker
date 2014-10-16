@@ -1,12 +1,12 @@
 ﻿{
 	"name": "tk-worker",
 	"version": "0.0.1",
-	"description": "A wrapper for web workers.",
+	"description": "A wrapper for HTML5 web workers.",
 	"author": "Tanzeel Kazi <me@tanzeelkazi.com>",
 	"contributors": [],
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/tanzeelkazi/tkworker.git"
+		"url": "https://github.com/tanzeelkazi/tkworker"
 	},
 	"bugs": {
 		"url": "http://tanzeelkazi.com/bugtracker/thebuggenie/tkworker/issues/open"

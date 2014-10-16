@@ -1,4 +1,7 @@
 
+# Ignore node_modules folde
+node_modules/
+
 #ignore thumbnails created by windows
 Thumbs.db
 #Ignore files build by Visual Studio

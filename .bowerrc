@@ -1,0 +1,9 @@
+{
+	"analytics": false,
+	"cwd": "./",
+	"directory": "libs",
+
+	"proxy": null,
+	"https-proxy": null,
+	"user-agent": null
+}

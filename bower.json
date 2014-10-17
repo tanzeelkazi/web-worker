@@ -1,0 +1,26 @@
+{
+  "name": "tk-worker",
+  "version": "0.0.1",
+  "description": "A wrapper for HTML5 web workers",
+  "keywords": [
+    "tk-worker"
+  ],
+  "authors": [
+    "Tanzeel Kazi <me@tanzeelkazi.com>"
+  ],
+  "license": "MIT",
+  "homepage": "http://tanzeelkazi.com",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~1.11.x"
+  },
+  "devDependencies": {
+  }
+}

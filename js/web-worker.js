@@ -26,15 +26,17 @@
     BrowserWorker = window.Worker;
 
     WebWorker = function () {
-        this._constructor(arguments);
+        this._constructor.apply(this, arguments);
         return;
     };
 
     WebWorker.prototype._workerUrl = null;
     WebWorker.prototype._worker = null;
+    WebWorker.prototype._lastError = null;
 
     WebWorker.prototype._constructor = function (opts) {
         var $scriptElement = null,
+            scriptContents = null,
             blob = null,
             workerUrl = null;
 
@@ -46,16 +48,19 @@
         }
 
         if (typeof opts === 'string') {
+            opts = $.trim(opts);
             $scriptElement = $(opts);
 
             if ($scriptElement.length > 0) {
                 // Matching script element found
                 // Create a blob URL with its contents
-                blob = new Blob([$scriptElement.text()], { type: "text/javascript" });
+                scriptContents = $scriptElement.text();
+                blob = new Blob([scriptContents], { type: "text/javascript" });
                 workerUrl = window.URL.createObjectURL(blob);
             }
             else {
-                this.throwError(Error.UNKNOWN);
+                //this.throwError(Error.UNKNOWN);
+                workerUrl = opts;
             }
         }
 
@@ -75,19 +80,28 @@
     };
 
     WebWorker.prototype.throwError = function (error) {
+        this._lastError = error;
+        WebWorker._lastError = error;
         throw new Error(error);
         return;
     };
 
+    WebWorker.prototype.getLastError = function () {
+        return this._lastError;
+    };
 
 
-    WebWorker.throwError = WebWorker.prototype.throwError;
+    // Static
+
+    WebWorker._lastError = null;
 
     Error = {
         UNKNOWN: "An unknown error occured.",
         INVALID_ARGUMENTS: "Invalid arguments were supplied to this method. Please check the documentation on the supported arguments for this method."
     };
     WebWorker.Error = Error;
+
+    WebWorker.throwError = WebWorker.prototype.throwError;
 
     WebWorker.noConflict = function (context, className) {
         context = context || defaultContext;

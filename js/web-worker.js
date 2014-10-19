@@ -11,6 +11,8 @@
         defaultClassName = 'WebWorker',
 
         Event = null,
+        eventPrefix = 'webworker:',
+
         Error = null;
 
     
@@ -30,6 +32,8 @@
         return;
     };
 
+    WebWorker.prototype.$ = null;
+
     WebWorker.prototype._workerUrl = null;
     WebWorker.prototype._worker = null;
     WebWorker.prototype._lastError = null;
@@ -40,6 +44,8 @@
             blob = null,
             workerUrl = null;
 
+        this.$ = $(this);
+
         opts = opts || null;
 
         if (opts === null) {
@@ -49,9 +55,15 @@
 
         if (typeof opts === 'string') {
             opts = $.trim(opts);
-            $scriptElement = $(opts);
 
-            if ($scriptElement.length > 0) {
+            try {
+                $scriptElement = $(opts);
+            }
+            catch (err) {
+                // Cannot be resolved as a selector
+            }
+
+            if ($scriptElement !== null && $scriptElement.length > 0) {
                 // Matching script element found
                 // Create a blob URL with its contents
                 scriptContents = $scriptElement.text();
@@ -64,8 +76,12 @@
             }
         }
 
+        
         this._workerUrl = workerUrl;
         this._createWorker();
+        
+        console.log((new Date()).toString());
+        this._triggerEvent(Event.INITIALIZED);
 
         return;
     };
@@ -75,9 +91,50 @@
     };
 
     WebWorker.prototype._createWorker = function () {
-        this._worker = new BrowserWorker(this._workerUrl);
+        var worker = this;
+
+        worker._worker = new BrowserWorker(worker._workerUrl);
+
+        worker.$.on(Event.WORKER_LOADED, function () {
+            console.log('worker has loaded');
+            return;
+        });
+
+        $(worker._worker).on('message', function (event) {
+            var actionMessage = event.originalEvent.data;
+            worker._triggerEvent.apply(worker, actionMessage.data.args);
+            return;
+        });
         return;
     };
+
+    WebWorker.prototype._triggerEvent = function (eventType, data, extendedProps) {
+        var argsLength = arguments.length,
+            event = null;
+
+        eventType = eventType || null;
+        data = data || null;
+        extendedProps = extendedProps || null;
+
+        if (argsLength === 1 && (typeof eventType === 'object')) {
+            event = eventType;
+            eventType = event.type;
+        }
+
+        if (eventType === null) {
+            return;
+        }
+        
+        if (event === null) {
+            event = $.Event(eventType, extendedProps);
+        }
+
+        event.data = data;
+
+        this.$.trigger(event);
+        return;
+    };
+
 
     WebWorker.prototype.throwError = function (error) {
         this._lastError = error;
@@ -94,6 +151,18 @@
     // Static
 
     WebWorker._lastError = null;
+
+    Event = {
+        INITIALIZED: 'init',
+
+        WORKER_LOADED: 'worker-loaded'
+    };
+    WebWorker.Event = Event;
+
+    // Add eventPrefix to all event types
+    for (var key in Event) {
+        Event[key] = eventPrefix + Event[key];
+    }
 
     Error = {
         UNKNOWN: "An unknown error occured.",

@@ -68,7 +68,7 @@
 
 
     console.log('Running `bower install`...');
-    exec('call node node_modules/bower/bin/bower install -s', function () {
+    exec('node ./node_modules/bower/bin/bower install -s', function () {
         console.log(ok('Done' + EOL));
 
         console.log('Start copying resources to `' + libsDir + '/`' + EOL);

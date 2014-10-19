@@ -8,7 +8,7 @@ echo ==========================
 
 echo
 echo Deleting 'node_modules' directory...
-rm -rf ./node_modules
+sudo rm -rf ./node_modules
 echo Done
 echo
 
@@ -17,7 +17,13 @@ echo
 echo Initiating setup with 'npm install'...
 echo
 
-npm install --silent
+sudo npm install --silent  --ignore-scripts
+
+echo
+echo Running post-install script...
+echo
+
+node config/install/post-install.js
 
 echo
 echo TKWorker setup complete

@@ -1,35 +1,39 @@
 ﻿(function () {
     'use strict';
 
-    var TKWorker = null,
-        WebWorker = null,
+    var WebWorker = null,
+        BrowserWorker = null,
 
         context = null,
         className = null,
 
         defaultContext = window,
-        defaultClassName = 'TKWorker',
+        defaultClassName = 'WebWorker',
 
-        Event = null;
+        Event = null,
         Error = null;
 
+    
     context = context || defaultContext;
     className = className || defaultClassName;
 
-    TKWorker = context[className] || null;
+    WebWorker = context[className] || null;
 
-    if (TKWorker !== null) {
+    if (WebWorker !== null) {
         return;
     }
 
-    TKWorker = function () {
+    BrowserWorker = window.Worker;
+
+    WebWorker = function () {
         this._constructor(arguments);
         return;
     };
 
-    TKWorker.prototype._worker = null;
+    WebWorker.prototype._workerUrl = null;
+    WebWorker.prototype._worker = null;
 
-    TKWorker.prototype._constructor = function (opts) {
+    WebWorker.prototype._constructor = function (opts) {
         var $scriptElement = null,
             blob = null,
             workerUrl = null;
@@ -55,39 +59,46 @@
             }
         }
 
+        this._workerUrl = workerUrl;
+        this._createWorker();
+
         return;
     };
 
-    TKWorker.prototype._createWorker = function () {
-        this._worker = new Work
+    WebWorker.prototype.getUrl = function () {
+        return this._workerUrl;
+    };
+
+    WebWorker.prototype._createWorker = function () {
+        this._worker = new BrowserWorker(this._workerUrl);
         return;
     };
 
-    TKWorker.prototype.throwError = function (error) {
+    WebWorker.prototype.throwError = function (error) {
         throw new Error(error);
         return;
     };
 
 
 
-    TKWorker.throwError = TKWorker.prototype.throwError;
+    WebWorker.throwError = WebWorker.prototype.throwError;
 
     Error = {
         UNKNOWN: "An unknown error occured.",
         INVALID_ARGUMENTS: "Invalid arguments were supplied to this method. Please check the documentation on the supported arguments for this method."
     };
-    TKWorker.Error = Error;
+    WebWorker.Error = Error;
 
-    TKWorker.noConflict = function (context, className) {
+    WebWorker.noConflict = function (context, className) {
         context = context || defaultContext;
         className = className || defaultClassName;
 
-        context[className] = TKWorker;
+        context[className] = WebWorker;
 
-        return TKWorker;
+        return WebWorker;
     };
 
-    TKWorker.noConflict(context, className);
+    WebWorker.noConflict(context, className);
 
     return;
 })();

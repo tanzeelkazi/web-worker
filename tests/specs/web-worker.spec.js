@@ -3,10 +3,10 @@
 
     var worker = null;
 
-    describe("TKWorker", function () {
+    describe("WebWorker", function () {
 
         it("should be defined", function () {
-            expect(TKWorker).toBeDefined();
+            expect(WebWorker).toBeDefined();
             return;
         });
 
@@ -19,7 +19,7 @@
 
             it("should accept string selector as first argument if the element exists", function () {
                 try {
-                    worker = new TKWorker("#test-worker-script-elem");
+                    worker = new WebWorker("#test-worker-script-elem");
                 }
                 catch (err) {
                 }
@@ -32,7 +32,7 @@
             return;
         });
 
-        describe("TKWorker static", function () {
+        describe("static", function () {
         });
 
         return;

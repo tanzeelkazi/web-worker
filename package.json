@@ -15,7 +15,13 @@
 		"tkworker"
 	],
 	"devDependencies": {
-		"bower": "*"
+		"cli-color": "*",
+		"fs-extra": "*",
+		"bower": "*",
+		"adm-zip": "*"
+	},
+	"scripts": {
+		"postinstall": "node config/install/post-install.js"
 	},
 	"preferGlobal": true,
 	"private": true,

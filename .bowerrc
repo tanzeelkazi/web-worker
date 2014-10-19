@@ -1,7 +1,7 @@
 {
 	"analytics": false,
 	"cwd": "./",
-	"directory": "libs",
+	"directory": "bower_components",
 
 	"proxy": null,
 	"https-proxy": null,

@@ -51,7 +51,7 @@
     jasmineDestDir = libsDir + '/jasmine';
 
     console.log('==================================' + EOL +
-                '= TKWorker npm post-install script =' + EOL +
+                '= WebWorker npm post-install script =' + EOL +
                 '==================================' + EOL);
 
     console.log('Start cleaning directories for install' + EOL);

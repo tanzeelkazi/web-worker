@@ -3,7 +3,7 @@
 clear
 
 echo ==========================
-echo = TKWorker project setup =
+echo = WebWorker project setup =
 echo ==========================
 
 echo
@@ -26,5 +26,5 @@ echo
 node config/install/post-install.js
 
 echo
-echo TKWorker setup complete
+echo WebWorker setup complete
 echo

@@ -3,7 +3,7 @@
 @cls
 
 @echo ==========================
-@echo = TKWorker project setup =
+@echo = WebWorker project setup =
 @echo ==========================
 
 @echo.
@@ -20,7 +20,7 @@
 @call npm install --silent
 
 @echo.
-@echo TKWorker setup complete
+@echo WebWorker setup complete
 @echo.
 
 @echo on

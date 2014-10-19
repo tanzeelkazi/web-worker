@@ -1,5 +1,5 @@
 ﻿{
-	"name": "tk-worker",
+	"name": "web-worker",
 	"version": "0.0.1",
 	"description": "A wrapper for HTML5 web workers.",
 	"author": "Tanzeel Kazi <me@tanzeelkazi.com>",

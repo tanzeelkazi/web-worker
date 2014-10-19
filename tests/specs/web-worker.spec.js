@@ -20,24 +20,18 @@
             describe("constructor", function () {
 
                 it("should accept string selector if first argument is string and if the element exists", function () {
-                    try {
-                        worker = new WebWorker("#test-worker-script-elem");
-                    }
-                    catch (err) {
-                    }
-
+                    
+                    worker = new WebWorker("#test-worker-script-elem");
+                    
                     expect(worker).not.toBe(null);
 
                     return;
                 });
 
                 it("should accept string URL if first argument is string and an element of same selector does not exist", function () {
-                    try {
-                        worker = new WebWorker("/js/example-worker");
-                    }
-                    catch (err) {
-                    }
-
+                    
+                    worker = new WebWorker("/js/example-worker.js");
+                    
                     expect(worker).not.toBe(null);
 
                     return;

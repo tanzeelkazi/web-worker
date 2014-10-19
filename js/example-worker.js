@@ -1,13 +1,20 @@
 ﻿(function () {
     'use strict';
 
-    var counter = 0;
+    var counter = 0,
+        timer = null;
 
-    return;
     
-    setInterval(function () {
-        self.postMessage(counter);
+    timer = setInterval(function () {
         counter++;
+        self.postMessage(counter);
+
+        if (counter === 10000) {
+            clearInterval(timer);
+            self.close();
+        }
+
+        return;
     }, 10);
 
     return;

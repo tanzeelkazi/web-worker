@@ -1,4 +1,4 @@
-﻿(function () {
+﻿(function ($) {
     'use strict';
 
     var WebWorker = null,
@@ -125,18 +125,50 @@
             return;
         });
 
+        worker.on('message', function () {
+            var args = arguments;
+            console.log(args);
+            if (typeof args[0] === 'object') {
+                console.log(args[0].thobda, true);
+                console.log(args[0].thobda.method, true);
+            }
+            return;
+        });
+
         $(worker._worker).on('message', function (event) {
+            console.log(event, true);
             var actionMessage = event.originalEvent.data;
-            worker._triggerEvent.apply(worker, actionMessage.data.args);
+            
+            console.log(actionMessage, true);
+            if ((typeof actionMessage === 'object') && ('action' in actionMessage) && actionMessage.action === 'trigger') {
+                worker._triggerEvent.apply(worker, actionMessage.data.args);
+                return;
+            }
+            
+            worker.trigger.apply(worker, [event]);
             return;
         });
 
         worker._assignEventHandlers();
+        worker._initializeWorker();
         return;
     };
 
     WebWorker.prototype._assignEventHandlers = function () {
         //console.log('pending');
+        return;
+    };
+
+    WebWorker.prototype._initializeWorker = function () {
+        this._worker.postMessage({
+            action: 'init',
+            data: {
+                args: [
+                    
+                ]
+            }
+        });
+
         return;
     };
 
@@ -245,4 +277,4 @@
     WebWorker.noConflict(context, className);
 
     return;
-})();
+})(jQuery);

@@ -16,15 +16,21 @@
         Error = null;
 
     var console = {
-        lastMsg: null,
         log: function (data, suppressNoise) {
             var console = window.console;
 
             suppressNoise = suppressNoise || false;
 
-            (suppressNoise) ? null : console.log('<<<<<<<< internal');
-            console.log(data);
-            (suppressNoise) ? null : console.log('>>>>>>>> internal');
+            if (suppressNoise) {
+                console.log(data);
+            }
+            else {
+                console.log({
+                    '>>>>>>>> internal': true,
+                    'log': data
+                });
+            }
+            
             return;
         },
         warn: window.console.warn,

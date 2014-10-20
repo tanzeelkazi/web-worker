@@ -15,6 +15,21 @@
 
         Error = null;
 
+    var console = {
+        lastMsg: null,
+        log: function (data, suppressNoise) {
+            var console = window.console;
+
+            suppressNoise = suppressNoise || false;
+
+            (suppressNoise) ? null : console.log('<<<<<<<< internal');
+            console.log(data);
+            (suppressNoise) ? null : console.log('>>>>>>>> internal');
+            return;
+        },
+        warn: window.console.warn,
+        error: window.console.error
+    };
     
     context = context || defaultContext;
     className = className || defaultClassName;
@@ -80,7 +95,11 @@
         this._workerUrl = workerUrl;
         this._createWorker();
         
-        console.log((new Date()).toString());
+        this.on(Event.INITIALIZED, function () {
+            console.log('Initialize event triggered', true);
+            return;
+        });
+
         this._triggerEvent(Event.INITIALIZED);
 
         return;
@@ -95,7 +114,7 @@
 
         worker._worker = new BrowserWorker(worker._workerUrl);
 
-        worker.$.on(Event.WORKER_LOADED, function () {
+        worker.on(Event.WORKER_LOADED, function () {
             console.log('worker has loaded');
             return;
         });
@@ -105,6 +124,18 @@
             worker._triggerEvent.apply(worker, actionMessage.data.args);
             return;
         });
+
+        worker._assignEventHandlers();
+        return;
+    };
+
+    WebWorker.prototype._assignEventHandlers = function () {
+        //console.log('pending');
+        return;
+    };
+
+    WebWorker.prototype.terminate = function () {
+        this._worker.terminate();
         return;
     };
 
@@ -131,8 +162,32 @@
 
         event.data = data;
 
-        this.$.trigger(event);
+        this.trigger(event);
         return;
+    };
+
+    WebWorker.prototype.on = function () {
+        var $worker = this.$;
+        $worker.on.apply($worker, arguments);
+        return this;
+    };
+
+    WebWorker.prototype.once = function () {
+        var $worker = this.$;
+        $worker.once.apply($worker, arguments);
+        return this;
+    };
+
+    WebWorker.prototype.off = function () {
+        var $worker = this.$;
+        $worker.off.apply($worker, arguments);
+        return this;
+    };
+
+    WebWorker.prototype.trigger = function () {
+        var $worker = this.$;
+        $worker.trigger.apply($worker, arguments);
+        return this;
     };
 
 

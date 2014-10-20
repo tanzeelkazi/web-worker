@@ -36,7 +36,7 @@
 
                 it("should support terminating the worker", function () {
                     worker = new WebWorker("/js/example-worker.js");
-                    spyOn(worker, 'terminate');
+                    spyOn(worker, 'terminate').and.callThrough();
                     worker.terminate();
                     expect(worker.terminate).toHaveBeenCalled();
                     return;

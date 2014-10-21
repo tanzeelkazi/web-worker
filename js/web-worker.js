@@ -15,17 +15,18 @@
 
         Error = null;
 
-    var console = {
-        log: function (data, suppressNoise) {
-            var console = window.console;
+    var windowConsole = window.console,
+        console = null;
 
+    console = {
+        log: function (data, suppressNoise) {
             suppressNoise = suppressNoise || false;
 
             if (suppressNoise) {
-                console.log(data);
+                windowConsole.log(data);
             }
             else {
-                console.log({
+                windowConsole.log({
                     '>>>>>>>> internal': true,
                     'log': data
                 });
@@ -33,8 +34,8 @@
             
             return;
         },
-        warn: window.console.warn,
-        error: window.console.error
+        warn: windowConsole.warn,
+        error: windowConsole.error
     };
     
     context = context || defaultContext;

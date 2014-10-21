@@ -1,4 +1,5 @@
-﻿(function ($) {
+﻿/*eslint no-native-reassign:0 */
+(function ($) {
     'use strict';
 
     var WebWorker = null,
@@ -31,13 +32,13 @@
                     'log': data
                 });
             }
-            
+
             return;
         },
         warn: windowConsole.warn,
         error: windowConsole.error
     };
-    
+
     context = context || defaultContext;
     className = className || defaultClassName;
 
@@ -70,7 +71,6 @@
     WebWorker.prototype._constructor = function (opts) {
         var $scriptElement = null,
             scriptContents = null,
-            blob = null,
             workerUrl = null;
 
         this.$ = $(this);
@@ -105,7 +105,7 @@
         }
 
         this._workerUrl = workerUrl;
-        
+
         this._triggerEvent(Event.INITIALIZED);
 
         return;
@@ -120,8 +120,6 @@
     };
 
     WebWorker.prototype.load = function () {
-        console.log('load the worker');
-
         var worker = this,
             workerUrl = null,
             onScriptLoaded = null;
@@ -132,7 +130,9 @@
                 scriptContents = null;
 
             scriptContents = worker._workerScript;
-            blob = new window.Blob([scriptContents], { type: "text/javascript" });
+            blob = new window.Blob([scriptContents], {
+                type: "text/javascript"
+            });
             worker._workerBlobUrl = window.URL.createObjectURL(blob);
 
             worker._createWorker();
@@ -171,31 +171,23 @@
 
         worker._worker = new BrowserWorker(worker._workerUrl);
 
+        // TODO: remove after work is done
         worker.on(Event.WORKER_LOADED, function () {
             console.log('worker has loaded');
-            return;
-        });
-
-        worker.on('message', function () {
-            var args = arguments;
-            console.log(args);
-            if (typeof args[0] === 'object') {
-                console.log(args[0].thobda, true);
-                console.log(args[0].thobda.method, true);
-            }
             return;
         });
 
         $(worker._worker).on('message', function (event) {
             console.log(event, true);
             var actionMessage = event.originalEvent.data;
-            
-            console.log(actionMessage, true);
-            if ((typeof actionMessage === 'object') && ('action' in actionMessage) && actionMessage.action === 'trigger') {
+
+            if ((typeof actionMessage === 'object')
+                && ('action' in actionMessage)
+                && actionMessage.action === 'trigger') {
                 worker._triggerEvent.apply(worker, actionMessage.data.args);
                 return;
             }
-            
+
             worker.trigger.apply(worker, [event]);
             return;
         });
@@ -211,7 +203,7 @@
     };
 
     WebWorker.prototype.start = function () {
-        console.log('start the worker');
+        console.log('pending >> start the worker');
         var worker = this;
         return worker;
     };
@@ -220,9 +212,7 @@
         this._worker.postMessage({
             action: 'init',
             data: {
-                args: [
-                    
-                ]
+                args: []
             }
         });
 
@@ -256,9 +246,9 @@
         if (eventType === null) {
             return;
         }
-        
+
         if (event === null) {
-            event = $.Event(eventType, extendedProps);
+            event = new $.Event(eventType, extendedProps);
         }
 
         event.data = data;
@@ -322,7 +312,7 @@
 
     Error = {
         UNKNOWN: "An unknown error occured.",
-        INVALID_ARGUMENTS: "Invalid arguments were supplied to this method. Please check the documentation on the supported arguments for this method."
+        INVALID_ARGUMENTS: "Invalid arguments were supplied to this method."
     };
     WebWorker.Error = Error;
 

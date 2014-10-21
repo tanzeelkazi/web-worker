@@ -57,8 +57,15 @@
     WebWorker.prototype.$ = null;
 
     WebWorker.prototype._workerUrl = null;
+    WebWorker.prototype._workerBlobUrl = null;
+
+    WebWorker.prototype._workerScript = null;
+
     WebWorker.prototype._worker = null;
     WebWorker.prototype._lastError = null;
+
+    WebWorker.prototype._hasLoaded = false;
+
 
     WebWorker.prototype._constructor = function (opts) {
         var $scriptElement = null,
@@ -87,10 +94,9 @@
 
             if ($scriptElement !== null && $scriptElement.length > 0) {
                 // Matching script element found
-                // Create a blob URL with its contents
+                // Cache its contents
                 scriptContents = $scriptElement.text();
-                blob = new Blob([scriptContents], { type: "text/javascript" });
-                workerUrl = window.URL.createObjectURL(blob);
+                this._workerScript = scriptContents;
             }
             else {
                 //this.throwError(Error.UNKNOWN);
@@ -98,15 +104,8 @@
             }
         }
 
-        
         this._workerUrl = workerUrl;
-        this._createWorker();
         
-        this.on(Event.INITIALIZED, function () {
-            console.log('Initialize event triggered', true);
-            return;
-        });
-
         this._triggerEvent(Event.INITIALIZED);
 
         return;
@@ -114,6 +113,57 @@
 
     WebWorker.prototype.getUrl = function () {
         return this._workerUrl;
+    };
+
+    WebWorker.prototype.getBlobUrl = function () {
+        return this._workerBlobUrl;
+    };
+
+    WebWorker.prototype.load = function () {
+        console.log('load the worker');
+
+        var worker = this,
+            workerUrl = null,
+            onScriptLoaded = null;
+
+        workerUrl = worker.getUrl() || null;
+        onScriptLoaded = function () {
+            var blob = null,
+                scriptContents = null;
+
+            scriptContents = worker._workerScript;
+            blob = new window.Blob([scriptContents], { type: "text/javascript" });
+            worker._workerBlobUrl = window.URL.createObjectURL(blob);
+
+            worker._createWorker();
+
+            return;
+        };
+
+        if (workerUrl === null) {
+            // Script already available
+            onScriptLoaded();
+        }
+        else {
+            // Ajax request
+            $.ajax({
+                async: true,
+                url: workerUrl,
+                dataType: 'text',
+                crossDomain: true,
+                success: function (responseText) {
+                    worker._workerScript = responseText;
+                    onScriptLoaded();
+                    return;
+                },
+                error: function (event) {
+                    // TODO: trigger error event
+                    return;
+                }
+            });
+        }
+
+        return worker;
     };
 
     WebWorker.prototype._createWorker = function () {
@@ -156,8 +206,14 @@
     };
 
     WebWorker.prototype._assignEventHandlers = function () {
-        //console.log('pending');
+        console.log('pending >> assign event handlers');
         return;
+    };
+
+    WebWorker.prototype.start = function () {
+        console.log('start the worker');
+        var worker = this;
+        return worker;
     };
 
     WebWorker.prototype._initializeWorker = function () {

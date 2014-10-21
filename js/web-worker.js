@@ -230,7 +230,13 @@
     };
 
     WebWorker.prototype.terminate = function () {
-        this._worker.terminate();
+        var worker = this,
+            nativeWorker = worker._worker || null;
+
+        if (nativeWorker !== null) {
+            nativeWorker.terminate();
+        }
+
         return;
     };
 

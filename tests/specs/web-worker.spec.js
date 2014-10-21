@@ -55,8 +55,11 @@
                     spyOn(Listeners, 'WORKER_LOADED').and.callThrough();
 
                     worker = new WebWorker("/js/example-worker.js");
-                    worker.on(WebWorker.Event.WORKER_LOADED, Listeners.WORKER_LOADED);
 
+
+                    worker.load()
+                          .on(WebWorker.Event.WORKER_LOADED, Listeners.WORKER_LOADED);
+                    
                     return;
                 });
 

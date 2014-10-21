@@ -6,6 +6,7 @@
 
     $output = $('#worker-output');
 
+    /**
     worker = new Worker('/js/example-worker.js');
 
     worker.addEventListener('message', function (event) {
@@ -14,6 +15,19 @@
     })
 
     //worker.postMessage();
+    /**/
+
+    worker = new WebWorker('/js/example-worker.js');
+
+    worker.on('message', function (event) {
+        $output.text(event.data);
+        return;
+    });
+
+    worker.load().on(WebWorker.Event.WORKER_LOADED, function () {
+        worker.start();
+        return;
+    });
 
     return;
 })();

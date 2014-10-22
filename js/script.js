@@ -1,4 +1,5 @@
-﻿(function () {
+﻿/*global WebWorker:false */
+(function () {
     'use strict';
 
     var worker = null,

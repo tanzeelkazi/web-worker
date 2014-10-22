@@ -1,4 +1,5 @@
-﻿(function () {
+﻿/*global WebWorker:false */
+(function () {
     'use strict';
 
     var worker = null;
@@ -11,7 +12,7 @@
         });
 
         describe("instance", function () {
-            
+
             afterEach(function () {
                 if (worker) {
                     worker.terminate();
@@ -42,6 +43,11 @@
                     return;
                 });
 
+                return;
+            });
+
+            describe("load", function () {
+
                 it("should trigger the WORKER_LOADED event once the worker has loaded", function (done) {
 
                     var Listeners = {
@@ -56,10 +62,9 @@
 
                     worker = new WebWorker("/js/example-worker.js");
 
-
                     worker.load()
                           .on(WebWorker.Event.WORKER_LOADED, Listeners.WORKER_LOADED);
-                    
+
                     return;
                 });
 

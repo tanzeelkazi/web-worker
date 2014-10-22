@@ -105,6 +105,8 @@
 
         this._workerUrl = workerUrl;
 
+        this._assignEventHandlers();
+
         this.trigger(Event.INITIALIZED);
 
         return;
@@ -174,12 +176,7 @@
 
         worker._worker = new BrowserWorker(worker._workerUrl);
 
-        // TODO: remove after work is done
-        worker.on(Event.WORKER_LOADED, function () {
-            console.log('worker has loaded');
-            return;
-        });
-
+        // TODO: Cleanup
         $(worker._worker).on('message', function (event) {
             console.log(event, true);
             var actionMessage = event.originalEvent.data;
@@ -195,14 +192,19 @@
             return;
         });
 
-        worker._assignEventHandlers();
         worker._initializeWorker();
         return;
     };
 
     WebWorker.prototype._assignEventHandlers = function () {
-        console.log('pending >> assign event handlers');
-        return;
+        var worker = this;
+
+        worker.on(Event.WORKER_LOADED, function () {
+            worker._hasLoaded = true;
+            return;
+        });
+
+        return worker;
     };
 
     WebWorker.prototype.start = function () {

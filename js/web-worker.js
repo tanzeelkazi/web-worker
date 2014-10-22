@@ -272,21 +272,38 @@
 
 
     WebWorker.prototype.throwError = function (error, throwException) {
+        var worker = this;
+
         error = error || Error.UNKNOWN;
         throwException = throwException || false;
 
-        this._lastError = error;
+        worker._lastError = error;
         WebWorker._lastError = error;
 
-        console.log('error');
-        console.log(error);
+        worker.off(Event.ERROR).on(Event.ERROR, function () {
+            console.log('error');
+            console.log(arguments);
+            return;
+        });
 
-        console.log('pending >>> trigger error event');
+        worker._triggerError(error, throwException);
 
         if (throwException) {
             throw new window.Error(error);
         }
 
+        return;
+    };
+
+    WebWorker.prototype._triggerError = function (error, throwException) {
+        var worker = this,
+            errorEvent = null;
+
+        errorEvent = new $.Event(Event.ERROR);
+        errorEvent.message = worker.getLastError();
+        errorEvent.throwsException = (!!throwException);
+
+        worker.trigger(errorEvent);
         return;
     };
 
@@ -301,6 +318,7 @@
 
     Event = {
         INITIALIZED: 'initialized',
+        ERROR: 'error',
 
         WORKER_LOADING: 'worker-loading',
         WORKER_LOADED: 'worker-loaded',

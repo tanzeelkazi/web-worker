@@ -118,6 +118,10 @@
         return this._workerBlobUrl;
     };
 
+    WebWorker.prototype.hasLoaded = function () {
+        return this._hasLoaded;
+    };
+
     WebWorker.prototype.load = function () {
         var worker = this,
             workerUrl = null,

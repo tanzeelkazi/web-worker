@@ -271,10 +271,22 @@
     };
 
 
-    WebWorker.prototype.throwError = function (error) {
+    WebWorker.prototype.throwError = function (error, throwException) {
+        error = error || Error.UNKNOWN;
+        throwException = throwException || false;
+
         this._lastError = error;
         WebWorker._lastError = error;
-        throw new Error(error);
+
+        console.log('error');
+        console.log(error);
+
+        console.log('pending >>> trigger error event');
+
+        if (throwException) {
+            throw new window.Error(error);
+        }
+
         return;
     };
 
@@ -288,9 +300,15 @@
     WebWorker._lastError = null;
 
     Event = {
-        INITIALIZED: 'init',
+        INITIALIZED: 'initialized',
 
-        WORKER_LOADED: 'worker-loaded'
+        WORKER_LOADING: 'worker-loading',
+        WORKER_LOADED: 'worker-loaded',
+
+        WORKER_STARTING: 'worker-starting',
+        WORKER_STARTED: 'worker-started',
+
+        WORKER_TERMINATED: 'worker-terminated'
     };
     WebWorker.Event = Event;
 
@@ -301,12 +319,14 @@
 
     Error = {
         UNKNOWN: "An unknown error occured.",
-        INVALID_ARGUMENTS: "Invalid arguments were supplied to this method."
+        INVALID_ARGUMENTS: "Invalid arguments were supplied to this method.",
+        WORKER_NOT_LOADED: "Unable to load worker."
     };
     WebWorker.Error = Error;
 
     WebWorker.throwError = WebWorker.prototype.throwError;
 
+    // TODO: Make this method more manageable and consistent with the way jQuery handles things.
     WebWorker.noConflict = function (context, className) {
         context = context || defaultContext;
         className = className || defaultClassName;

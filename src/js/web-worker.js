@@ -262,8 +262,12 @@
     };
 
     WebWorker.prototype.off = function () {
-        var $worker = this.$;
+        var worker = this,
+            $worker = worker.$;
+
         $worker.off.apply($worker, arguments);
+        worker._assignEventHandlers();
+
         return this;
     };
 
@@ -301,7 +305,9 @@
         worker._lastError = error;
         WebWorker._lastError = error;
 
-        worker._triggerError(error, data, throwException);
+        if ('_triggerError' in worker) {
+            worker._triggerError(error, data, throwException);
+        }
 
         if (throwException) {
             throw new window.Error(error);

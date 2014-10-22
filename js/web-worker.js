@@ -235,9 +235,9 @@
         return this;
     };
 
-    WebWorker.prototype.once = function () {
+    WebWorker.prototype.one = function () {
         var $worker = this.$;
-        $worker.once.apply($worker, arguments);
+        $worker.one.apply($worker, arguments);
         return this;
     };
 

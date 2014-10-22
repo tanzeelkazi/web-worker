@@ -78,7 +78,7 @@
         opts = opts || null;
 
         if (opts === null) {
-            this.throwError(Error.INVALID_ARGUMENTS);
+            this.throwError(Error.INVALID_ARGUMENTS, null, true);
             return;
         }
 
@@ -129,6 +129,9 @@
             workerUrl = null,
             onScriptLoaded = null;
 
+        // Trigger event
+        worker.trigger(Event.WORKER_LOADING);
+
         workerUrl = worker.getUrl() || null;
         onScriptLoaded = function () {
             var blob = null,
@@ -161,8 +164,8 @@
                     onScriptLoaded();
                     return;
                 },
-                error: function (event) {
-                    // TODO: trigger error event
+                error: function () {
+                    worker.throwError(Error.WORKER_DID_NOT_LOAD, arguments);
                     return;
                 }
             });
@@ -199,6 +202,12 @@
     WebWorker.prototype._assignEventHandlers = function () {
         var worker = this;
 
+        worker.on(Event.ERROR, function () {
+            console.log('error');
+            console.log(arguments);
+            return;
+        });
+
         worker.on(Event.WORKER_LOADED, function () {
             worker._hasLoaded = true;
             return;
@@ -210,6 +219,9 @@
     WebWorker.prototype.start = function () {
         console.log('pending >> start the worker');
         var worker = this;
+
+        worker.trigger(Event.WORKER_STARTING);
+
         return worker;
     };
 
@@ -230,6 +242,8 @@
 
         if (nativeWorker !== null) {
             nativeWorker.terminate();
+            worker._hasLoaded = false;
+            worker.trigger(Event.WORKER_TERMINATED);
         }
 
         return;
@@ -277,22 +291,17 @@
     };
 
 
-    WebWorker.prototype.throwError = function (error, throwException) {
+    WebWorker.prototype.throwError = function (error, data, throwException) {
         var worker = this;
 
         error = error || Error.UNKNOWN;
+        data = (typeof data === 'undefined') ? null : data;
         throwException = throwException || false;
 
         worker._lastError = error;
         WebWorker._lastError = error;
 
-        worker.off(Event.ERROR).on(Event.ERROR, function () {
-            console.log('error');
-            console.log(arguments);
-            return;
-        });
-
-        worker._triggerError(error, throwException);
+        worker._triggerError(error, data, throwException);
 
         if (throwException) {
             throw new window.Error(error);
@@ -301,12 +310,13 @@
         return;
     };
 
-    WebWorker.prototype._triggerError = function (error, throwException) {
+    WebWorker.prototype._triggerError = function (error, data, throwException) {
         var worker = this,
             errorEvent = null;
 
         errorEvent = new $.Event(Event.ERROR);
         errorEvent.message = worker.getLastError();
+        errorEvent.data = data;
         errorEvent.throwsException = (!!throwException);
 
         worker.trigger(errorEvent);
@@ -344,7 +354,7 @@
     Error = {
         UNKNOWN: "An unknown error occured.",
         INVALID_ARGUMENTS: "Invalid arguments were supplied to this method.",
-        WORKER_NOT_LOADED: "Unable to load worker."
+        WORKER_DID_NOT_LOAD: "Unable to load worker."
     };
     WebWorker.Error = Error;
 

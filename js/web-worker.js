@@ -99,14 +99,13 @@
                 this._workerScript = scriptContents;
             }
             else {
-                //this.throwError(Error.UNKNOWN);
                 workerUrl = opts;
             }
         }
 
         this._workerUrl = workerUrl;
 
-        this._triggerEvent(Event.INITIALIZED);
+        this.trigger(Event.INITIALIZED);
 
         return;
     };
@@ -184,7 +183,7 @@
             if ((typeof actionMessage === 'object')
                 && ('action' in actionMessage)
                 && actionMessage.action === 'trigger') {
-                worker._triggerEvent.apply(worker, actionMessage.data.args);
+                worker.trigger.apply(worker, actionMessage.data.args);
                 return;
             }
 
@@ -230,33 +229,6 @@
         return;
     };
 
-    WebWorker.prototype._triggerEvent = function (eventType, data, extendedProps) {
-        var argsLength = arguments.length,
-            event = null;
-
-        eventType = eventType || null;
-        data = data || null;
-        extendedProps = extendedProps || null;
-
-        if (argsLength === 1 && (typeof eventType === 'object')) {
-            event = eventType;
-            eventType = event.type;
-        }
-
-        if (eventType === null) {
-            return;
-        }
-
-        if (event === null) {
-            event = new $.Event(eventType, extendedProps);
-        }
-
-        event.data = data;
-
-        this.trigger(event);
-        return;
-    };
-
     WebWorker.prototype.on = function () {
         var $worker = this.$;
         $worker.on.apply($worker, arguments);
@@ -275,9 +247,26 @@
         return this;
     };
 
-    WebWorker.prototype.trigger = function () {
-        var $worker = this.$;
-        $worker.trigger.apply($worker, arguments);
+    WebWorker.prototype.trigger = function (event) {
+        var worker = this,
+            $worker = null,
+            eventType = null,
+            eventArgs = null;
+
+        if (typeof event === 'string') {
+            eventType = event;
+            event = new $.Event(eventType);
+        }
+
+        event.worker = worker;
+        eventArgs = [event];
+        if (arguments.length > 1) {
+            eventArgs = eventArgs.concat(Array.slice(arguments, 1));
+        }
+
+        $worker = worker.$;
+        $worker.trigger.apply($worker, eventArgs);
+
         return this;
     };
 

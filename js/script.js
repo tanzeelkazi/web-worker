@@ -25,6 +25,7 @@
     });
 
     worker.load().on(WebWorker.Event.WORKER_LOADED, function () {
+        console.log('has loaded');
         worker.start();
         return;
     });

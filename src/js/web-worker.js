@@ -297,6 +297,7 @@
             nativeWorker = worker.getNativeWorker() || null;
 
         if (nativeWorker !== null) {
+            worker._isTerminateInitialized = true;
             worker.trigger(Event.WORKER_TERMINATING);
             worker.sendMessage(Action.SET_TERMINATING_STATUS, [true]);
             worker.sendMessage(Action.TERMINATE, slice.call(arguments));

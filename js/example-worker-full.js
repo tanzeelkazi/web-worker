@@ -257,7 +257,7 @@
             returnValue = terminateHandler.apply(self, arguments);
         }
 
-        self.trigger(Event.WORKER_TERMINATED, [returnValue]);
+        self.sendMessage(Action.TERMINATE_NOW, [returnValue]);
         return;
     };
 

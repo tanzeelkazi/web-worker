@@ -151,6 +151,8 @@
                 scriptContents = null;
 
             scriptContents = worker._workerScript;
+            scriptContents = WebWorker.snippet.replace(/\{\{main-function\}\}/g, scriptContents);
+
             blob = new window.Blob([scriptContents], {
                 type: "text/javascript"
             });
@@ -190,7 +192,7 @@
     WebWorker.prototype._createWorker = function () {
         var worker = this;
 
-        worker._nativeWorker = new NativeWorker(worker.getUrl());
+        worker._nativeWorker = new NativeWorker(worker.getBlobUrl());
 
         worker._attachMessageParser();
         return;
@@ -507,6 +509,18 @@
     WebWorker.Error = Error;
 
     WebWorker.throwError = WebWorker.prototype.throwError;
+
+    WebWorker.snippet = '(function(){var Action=null,Event=null,Listeners=null;Action={{action-data}};Event={{event-data}};self.hasInitialized=false;Listeners={};self.Listeners=Listeners;self.isTerminating=false;' +
+                        'self.terminateHandler=null;self.main=function(){ {{main-function}} };self.init=function(){self.hasInitialized=true;self.trigger(Event.WORKER_LOADED);return self};self.start=function(){if(!self.hasInitialized)return false;self.main.apply(self,arguments);self.trigger(Event.WORKER_STARTED);return self};self.on=function(eventType,listener){eventType+="";listener=listener||null;if(typeof listener!=="function")return self;if(!(eventType in Listeners))Listeners[eventType]=[];Listeners[eventType].push(listener);return self};' +
+                        'self.one=function(eventType,listener){var wrapperListener=null;wrapperListener=function(){listener.apply(this,arguments);self.off(eventType,wrapperListener);return};self.on(eventType,wrapperListener);return};self.off=function(eventType,listener){var key=null;eventType=eventType||null;listener=listener||null;if(eventType===null&&listener===null){for(key in Listeners)delete Listeners[key];return self}for(key in Listeners)self._removeListenerFromEventType(key,listener);return self};self._removeListenerFromEventType=' +
+                        'function(eventType,listener){var listeners=Listeners[eventType];listener=listener||null;if(listener===null){Listeners[eventType]=[];return self}for(var i=0;i<listeners.length;i++)if(listeners[i]===listener){listeners.splice(i,1);i--}return self};self.trigger=function(event,data){var eventType=null,hasData=null;hasData=typeof data!=="undefined";if(typeof event==="string"){eventType=event||null;if(hasData)event={type:eventType,data:data}}else if(typeof event==="object"){eventType=event.type||null;data=' +
+                        'event.data}if(eventType===null)return self;self.sendMessage(Action.TRIGGER,[event]);return self};self.triggerSelf=function(event,data){var worker=this,eventType=null,listeners=null,listenersCount=null,listener=null;if(typeof event==="string")eventType=event||null;else if(typeof event==="object"){eventType=event.type||null;data=event.data}if(eventType===null)return self;event.data=data;listeners=Listeners[eventType]||null;if(listeners===null)return self;listenersCount=listeners.length;for(var i=0;i<' +
+                        'listenersCount;i++){listener=listeners[i];listener.apply(worker,[event])}return self};self.sendMessage=function(action,args){var message=null;action=action||null;args=args||null;if(action===null)return false;message={__isWebWorkerMsg:true};message.action=action;message.args=args;self.postMessage(message);return self};self.terminate=function(){var terminateHandler=null,returnValue=null;terminateHandler=self.terminateHandler||null;if(!self.isTerminating){self.isTerminating=true;self.trigger(Event.WORKER_TERMINATING)}if(typeof terminateHandler===' +
+                        '"function")returnValue=terminateHandler.apply(self,arguments);self.sendMessage(Action.TERMINATE_NOW,[returnValue]);return};self.setTerminatingStatus=function(status){self.isTerminating=status;return self};self.close=self.terminate;self.onmessage=function(event){var originalEvent=event.originalEvent||event,msg=originalEvent.data,action=null,args=null;if(typeof msg==="object"&&"__isWebWorkerMsg"in msg&&msg.__isWebWorkerMsg){action=msg.action;args=msg.args;self[action].apply(self,args);return}return};' +
+                        'self.init();return})();';
+
+    WebWorker.snippet = WebWorker.snippet.replace(/\{\{action-data\}\}/g, JSON.stringify(Action))
+                                         .replace(/\{\{event-data\}\}/g, JSON.stringify(Event));
 
     // TODO: Make this method more manageable and consistent with the way jQuery handles things.
     WebWorker.noConflict = function (context, className) {

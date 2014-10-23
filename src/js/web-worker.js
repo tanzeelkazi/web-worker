@@ -3,7 +3,7 @@
     'use strict';
 
     var WebWorker = null,
-        BrowserWorker = null,
+        NativeWorker = null,
 
         context = null,
         className = null,
@@ -11,10 +11,16 @@
         defaultContext = window,
         defaultClassName = 'WebWorker',
 
+        Action = null,
+
         Event = null,
         eventPrefix = 'webworker:',
 
-        Error = null;
+        EventMap = null,
+
+        Error = null,
+
+        slice = null;
 
     var windowConsole = window.console,
         console = null;
@@ -48,7 +54,8 @@
         return;
     }
 
-    BrowserWorker = window.Worker;
+    slice = Array.prototype.slice;
+    NativeWorker = window.Worker;
 
     WebWorker = function () {
         this._constructor.apply(this, arguments);
@@ -62,7 +69,7 @@
 
     WebWorker.prototype._workerScript = null;
 
-    WebWorker.prototype._worker = null;
+    WebWorker.prototype._nativeWorker = null;
     WebWorker.prototype._lastError = null;
 
     WebWorker.prototype._hasLoaded = false;
@@ -118,6 +125,10 @@
 
     WebWorker.prototype.getBlobUrl = function () {
         return this._workerBlobUrl;
+    };
+
+    WebWorker.prototype.getNativeWorker = function () {
+        return this._nativeWorker;
     };
 
     WebWorker.prototype.hasLoaded = function () {
@@ -177,21 +188,28 @@
     WebWorker.prototype._createWorker = function () {
         var worker = this;
 
-        worker._worker = new BrowserWorker(worker._workerUrl);
+        worker._nativeWorker = new NativeWorker(worker.getUrl());
 
         // TODO: Cleanup
-        $(worker._worker).on('message', function (event) {
+        $(worker.getNativeWorker()).on('message', function (event) {
+            console.log('onmessage');
             console.log(event, true);
-            var actionMessage = event.originalEvent.data;
 
-            if ((typeof actionMessage === 'object')
-                && ('action' in actionMessage)
-                && actionMessage.action === 'trigger') {
-                worker.trigger.apply(worker, actionMessage.data.args);
+            var originalEvent = event.originalEvent || event,
+                msg = originalEvent.data,
+                action = null,
+                args = null;
+
+            if ((typeof msg === 'object')
+                && ('__isWebWorkerMsg' in msg)
+                && (msg.__isWebWorkerMsg)) {
+                action = msg.action;
+                args = msg.args;
+
+                worker[action].apply(worker, args);
                 return;
             }
 
-            worker.trigger.apply(worker, [event]);
             return;
         });
 
@@ -217,35 +235,78 @@
     };
 
     WebWorker.prototype.start = function () {
-        console.log('pending >> start the worker');
-        var worker = this;
+        var worker = this,
+            args = null;
+
+        if (!worker.hasLoaded()) {
+            return false;
+        }
 
         worker.trigger(Event.WORKER_STARTING);
+
+        args = slice.call(arguments);
+        worker.sendMessage(Action.START, args);
+
+        return worker;
+    };
+
+    WebWorker.prototype.sendMessage = function (action, args) {
+        var worker = this,
+            nativeWorker = null,
+            message = null;
+
+        action = action || null;
+        args = args || null;
+
+        if (action === null) {
+            return false;
+        }
+
+        message = {
+            __isWebWorkerMsg: true
+        };
+
+        message.action = action;
+        message.args = args;
+
+        nativeWorker = worker.getNativeWorker();
+
+        if (nativeWorker !== null) {
+            nativeWorker.postMessage(message);
+        }
 
         return worker;
     };
 
     WebWorker.prototype._initializeWorker = function () {
-        this._worker.postMessage({
-            action: 'init',
-            data: {
-                args: []
-            }
-        });
-
-        return;
+        var worker = this;
+        //worker.sendMessage(Action.INIT);
+        return worker;
     };
 
     WebWorker.prototype.terminate = function () {
         var worker = this,
-            nativeWorker = worker._worker || null;
+            nativeWorker = worker.getNativeWorker() || null;
+
+        if (nativeWorker !== null) {
+            worker.trigger(Event.WORKER_TERMINATING);
+            worker.sendMessage(Action.TERMINATE, arguments);
+        }
+
+        return;
+    };
+
+    WebWorker.prototype.terminateNow = function (returnValue) {
+        var worker = this,
+            nativeWorker = null;
+
+        nativeWorker = worker.getNativeWorker() || null;
 
         if (nativeWorker !== null) {
             nativeWorker.terminate();
             worker._hasLoaded = false;
-            worker.trigger(Event.WORKER_TERMINATED);
+            worker.trigger(Event.WORKER_TERMINATED, {returnValue: returnValue});
         }
-
         return;
     };
 
@@ -273,7 +334,51 @@
 
     WebWorker.prototype.trigger = function (event) {
         var worker = this,
-            $worker = null,
+            passedEventString = false,
+            eventType = null,
+            eventArgs = null;
+
+        if (typeof event === 'object') {
+            eventType = event.type || null;
+        }
+
+        if (typeof event === 'string') {
+            eventType = event || null;
+            passedEventString = true;
+        }
+
+        if (eventType === null) {
+            return worker;
+        }
+
+        if (eventType in EventMap) {
+            if (passedEventString) {
+                event = new $.Event(eventType);
+            }
+            event.worker = worker;
+            eventArgs = [event];
+            if (arguments.length > 1) {
+                eventArgs = eventArgs.concat(slice.call(arguments, 1));
+            }
+
+            worker._triggerSelf.apply(worker, eventArgs);
+            return worker;
+        }
+
+        if (passedEventString) {
+            event = {
+                type: eventType,
+                data: null
+            };
+        }
+        eventArgs = [event];
+        worker.sendMessage(Action.TRIGGER_SELF, eventArgs);
+
+        return worker;
+    };
+
+    WebWorker.prototype.triggerSelf = function (event) {
+        var worker = this,
             eventType = null,
             eventArgs = null;
 
@@ -285,13 +390,22 @@
         event.worker = worker;
         eventArgs = [event];
         if (arguments.length > 1) {
-            eventArgs = eventArgs.concat(Array.prototype.slice.call(arguments, 1));
+            eventArgs = eventArgs.concat(slice.call(arguments, 1));
         }
 
-        $worker = worker.$;
-        $worker.trigger.apply($worker, eventArgs);
+        worker._triggerSelf.apply(worker, eventArgs);
 
-        return this;
+        return;
+    };
+
+    WebWorker.prototype._triggerSelf = function () {
+        var worker = this,
+            $worker = null;
+
+        $worker = worker.$;
+        $worker.trigger.apply($worker, arguments);
+
+        return;
     };
 
 
@@ -338,6 +452,16 @@
 
     WebWorker._lastError = null;
 
+    Action = {
+        INIT: 'init',
+        START: 'start',
+        TERMINATE: 'terminate',
+        TERMINATE_NOW: 'terminateNow',
+        TRIGGER: 'trigger',
+        TRIGGER_SELF: 'triggerSelf'
+    };
+    WebWorker.Action = Action;
+
     Event = {
         INITIALIZED: 'initialized',
         ERROR: 'error',
@@ -348,13 +472,16 @@
         WORKER_STARTING: 'worker-starting',
         WORKER_STARTED: 'worker-started',
 
+        WORKER_TERMINATING: 'worker-terminating',
         WORKER_TERMINATED: 'worker-terminated'
     };
     WebWorker.Event = Event;
 
+    EventMap = {};
     // Add eventPrefix to all event types
     for (var key in Event) {
         Event[key] = eventPrefix + Event[key];
+        EventMap[Event[key]] = key;
     }
 
     Error = {

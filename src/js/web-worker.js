@@ -285,7 +285,7 @@
         event.worker = worker;
         eventArgs = [event];
         if (arguments.length > 1) {
-            eventArgs = eventArgs.concat(Array.slice(arguments, 1));
+            eventArgs = eventArgs.concat(Array.prototype.slice.call(arguments, 1));
         }
 
         $worker = worker.$;

@@ -192,30 +192,7 @@
 
         worker._nativeWorker = new NativeWorker(worker.getUrl());
 
-        // TODO: Cleanup
-        $(worker.getNativeWorker()).on('message', function (event) {
-            console.log('onmessage');
-            console.log(event, true);
-
-            var originalEvent = event.originalEvent || event,
-                msg = originalEvent.data,
-                action = null,
-                args = null;
-
-            if ((typeof msg === 'object')
-                && ('__isWebWorkerMsg' in msg)
-                && (msg.__isWebWorkerMsg)) {
-                action = msg.action;
-                args = msg.args;
-
-                worker[action].apply(worker, args);
-                return;
-            }
-
-            return;
-        });
-
-        worker._initializeWorker();
+        worker._attachMessageParser();
         return;
     };
 
@@ -289,9 +266,29 @@
         return worker;
     };
 
-    WebWorker.prototype._initializeWorker = function () {
-        var worker = this;
-        //worker.sendMessage(Action.INIT);
+    WebWorker.prototype._attachMessageParser = function () {
+        var worker = this,
+            nativeWorker = worker.getNativeWorker();
+
+        $(nativeWorker).on('message', function (event) {
+            var originalEvent = event.originalEvent || event,
+                msg = originalEvent.data,
+                action = null,
+                args = null;
+
+            if ((typeof msg === 'object')
+                && ('__isWebWorkerMsg' in msg)
+                && (msg.__isWebWorkerMsg)) {
+                action = msg.action;
+                args = msg.args;
+
+                worker[action].apply(worker, args);
+                return;
+            }
+
+            return;
+        });
+
         return worker;
     };
 
@@ -301,7 +298,8 @@
 
         if (nativeWorker !== null) {
             worker.trigger(Event.WORKER_TERMINATING);
-            worker.sendMessage(Action.TERMINATE, arguments);
+            worker.sendMessage(Action.SET_TERMINATING_STATUS, [true]);
+            worker.sendMessage(Action.TERMINATE, slice.call(arguments));
         }
 
         return;
@@ -468,8 +466,8 @@
     WebWorker._lastError = null;
 
     Action = {
-        INIT: 'init',
         START: 'start',
+        SET_TERMINATING_STATUS: 'setTerminatingStatus',
         TERMINATE: 'terminate',
         TERMINATE_NOW: 'terminateNow',
         TRIGGER: 'trigger',

@@ -34,6 +34,8 @@
     Listeners = {};
     self.Listeners = Listeners;
 
+    self.isTerminating = false;
+
     self.terminateHandler = null;
 
     self.main = function () {
@@ -153,10 +155,19 @@
 
     self.trigger = function (event, data) {
 
-        var eventType = null;
+        var eventType = null,
+            hasData = null;
+
+        hasData = (typeof data !== 'undefined');
 
         if (typeof event === 'string') {
             eventType = event || null;
+            if (hasData) {
+                event = {
+                    type: eventType,
+                    data: data
+                };
+            }
         }
         else if (typeof event === 'object') {
             eventType = event.type || null;
@@ -167,9 +178,7 @@
             return self;
         }
 
-        event.data = data;
-
-        self.sendMessage(Action.TRIGGER, [eventType, data]);
+        self.sendMessage(Action.TRIGGER, [event]);
         return self;
     };
 
@@ -238,13 +247,26 @@
             returnValue = null;
 
         terminateHandler = self.terminateHandler || null;
+
+        if (!self.isTerminating) {
+            self.isTerminating = true;
+            self.trigger(Event.WORKER_TERMINATING);
+        }
+
         if (typeof terminateHandler === 'function') {
             returnValue = terminateHandler.apply(self, arguments);
         }
 
-        self.sendMessage(Event.WORKER_TERMINATED, [returnValue]);
+        self.trigger(Event.WORKER_TERMINATED, [returnValue]);
         return;
     };
+
+    self.setTerminatingStatus = function (status) {
+        self.isTerminating = status;
+        return self;
+    };
+
+    self.close = self.terminate;
 
     self.onmessage = function (event) {
         var originalEvent = event.originalEvent || event,

@@ -19,17 +19,36 @@
     /**/
 
     worker = new WebWorker('/js/example-worker.js');
+    window.worker = worker;
 
     worker.on('message', function (event) {
         $output.text(event.data);
         return;
     });
 
-    worker.load().on(WebWorker.Event.WORKER_LOADED, function () {
+
+    worker.on(WebWorker.Event.WORKER_LOADING, function () {
+        console.log('worker loading');
+        return;
+    });
+
+    worker.on(WebWorker.Event.WORKER_LOADED, function () {
         console.log('has loaded');
         worker.start();
         return;
     });
+
+    worker.on(WebWorker.Event.WORKER_STARTING, function () {
+        console.log('worker starting');
+        return;
+    });
+
+    worker.on(WebWorker.Event.WORKER_STARTED, function () {
+        console.log('worker started');
+        return;
+    });
+
+    worker.load();
 
     return;
 })();

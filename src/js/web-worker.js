@@ -74,6 +74,8 @@
 
     WebWorker.prototype._hasLoaded = false;
 
+    WebWorker.prototype._isTerminateInitialized = false;
+
 
     WebWorker.prototype._constructor = function (opts) {
         var $scriptElement = null,
@@ -231,7 +233,16 @@
             return;
         });
 
+        worker.on(Event.TERMINATE, function () {
+            worker._isTerminateInitialized = true;
+            return;
+        });
+
         return worker;
+    };
+
+    WebWorker.prototype.isTerminateInitialized = function () {
+        return this._isTerminateInitialized;
     };
 
     WebWorker.prototype.start = function () {
@@ -299,6 +310,10 @@
     WebWorker.prototype.terminateNow = function (returnValue) {
         var worker = this,
             nativeWorker = null;
+
+        if (!worker.isTerminateInitialized()) {
+            worker.trigger(Event.WORKER_TERMINATING);
+        }
 
         nativeWorker = worker.getNativeWorker() || null;
 
@@ -478,6 +493,7 @@
     WebWorker.Event = Event;
 
     EventMap = {};
+
     // Add eventPrefix to all event types
     for (var key in Event) {
         Event[key] = eventPrefix + Event[key];

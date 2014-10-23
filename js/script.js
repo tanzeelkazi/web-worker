@@ -33,7 +33,7 @@
     });
 
     worker.on(WebWorker.Event.WORKER_LOADED, function () {
-        console.log('has loaded');
+        console.log('worker loaded');
         worker.start();
         return;
     });
@@ -45,6 +45,17 @@
 
     worker.on(WebWorker.Event.WORKER_STARTED, function () {
         console.log('worker started');
+        worker.terminate();
+        return;
+    });
+
+    worker.on(WebWorker.Event.WORKER_TERMINATING, function () {
+        console.log('worker terminating');
+        return;
+    });
+
+    worker.on(WebWorker.Event.WORKER_TERMINATED, function () {
+        console.log('worker terminated');
         return;
     });
 

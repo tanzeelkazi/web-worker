@@ -48,7 +48,7 @@
                 it("should trigger the WORKER_LOADING event when called", function (done) {
 
                     var Listeners = {
-                        WORKER_LOADING: function () {
+                        "WORKER_LOADING": function () {
                             expect(Listeners.WORKER_LOADING).toHaveBeenCalled();
                             done();
                             return;
@@ -69,7 +69,7 @@
                 it("should trigger the WORKER_LOADED event once the worker has loaded", function (done) {
 
                     var Listeners = {
-                        WORKER_LOADED: function () {
+                        "WORKER_LOADED": function () {
                             expect(Listeners.WORKER_LOADED).toHaveBeenCalled();
                             done();
                             return;
@@ -95,7 +95,7 @@
                 it("should trigger the WORKER_STARTING event when called", function (done) {
 
                     var Listeners = {
-                        WORKER_STARTING: function () {
+                        "WORKER_STARTING": function () {
                             expect(Listeners.WORKER_STARTING).toHaveBeenCalled();
                             done();
                             return;
@@ -115,10 +115,10 @@
                     return;
                 });
 
-                xit("should trigger the WORKER_STARTED event once the worker has started", function (done) {
+                it("should trigger the WORKER_STARTED event once the worker has started", function (done) {
 
                     var Listeners = {
-                        WORKER_STARTED: function () {
+                        "WORKER_STARTED": function () {
                             expect(Listeners.WORKER_STARTED).toHaveBeenCalled();
                             done();
                             return;
@@ -131,7 +131,9 @@
 
                     worker.on(WebWorker.Event.WORKER_STARTED, Listeners.WORKER_STARTED);
 
-                    worker.on(WebWorkerEvent.WORKER_LOADED, worker.start);
+                    worker.on(WebWorkerEvent.WORKER_LOADED, function () {
+                        worker.start();
+                    });
 
                     worker.load();
 
@@ -215,7 +217,7 @@
 
                     errorMsg = "This is an error!";
                     Listeners = {
-                        ERROR: function (event) {
+                        "ERROR": function (event) {
                             expect(Listeners.ERROR).toHaveBeenCalled();
                             expect(event.message).toEqual(errorMsg);
                             done();
@@ -248,7 +250,7 @@
                     errorMsg2 = "This is error #2!";
 
                     Listeners = {
-                        ERROR1: function (event) {
+                        "ERROR1": function (event) {
                             expect(event.message).toEqual(errorMsg1);
 
                             worker.off().on(WebWorkerEvent.ERROR, Listeners.ERROR2);
@@ -256,7 +258,7 @@
                             return;
                         },
 
-                        ERROR2: function (event) {
+                        "ERROR2": function (event) {
                             expect(event.message).toEqual(errorMsg2);
                             done();
                             return;
@@ -294,21 +296,21 @@
                     var eventType = null,
                         Listeners = null;
 
-                    eventType = "some-event";
+                    eventType = "webworker:initialized";
 
                     Listeners = {
-                        SOME_EVENT: function (event) {
-                            expect(Listeners.SOME_EVENT).toHaveBeenCalled();
+                        "INITIALIZED": function (event) {
+                            expect(Listeners.INITIALIZED).toHaveBeenCalled();
                             done();
                             return;
                         }
                     };
 
-                    spyOn(Listeners, 'SOME_EVENT').and.callThrough();
+                    spyOn(Listeners, 'INITIALIZED').and.callThrough();
 
                     worker = new WebWorker(exampleWorkerUrl);
 
-                    worker.on(eventType, Listeners.SOME_EVENT);
+                    worker.on(eventType, Listeners.INITIALIZED);
                     worker.trigger(eventType);
 
                     return;

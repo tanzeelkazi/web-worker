@@ -95,6 +95,10 @@
                 it("should trigger the WORKER_STARTING event when called", function (done) {
 
                     var Listeners = {
+                        "WORKER_LOADED": function () {
+                            worker.start();
+                            return;
+                        },
                         "WORKER_STARTING": function () {
                             expect(Listeners.WORKER_STARTING).toHaveBeenCalled();
                             done();
@@ -108,7 +112,7 @@
 
                     worker.on(WebWorkerEvent.WORKER_STARTING, Listeners.WORKER_STARTING);
 
-                    worker.on(WebWorkerEvent.WORKER_LOADED, worker.start);
+                    worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.WORKER_LOADED);
 
                     worker.load();
 
@@ -118,6 +122,10 @@
                 it("should trigger the WORKER_STARTED event once the worker has started", function (done) {
 
                     var Listeners = {
+                        "WORKER_LOADED": function () {
+                            worker.start();
+                            return;
+                        },
                         "WORKER_STARTED": function () {
                             expect(Listeners.WORKER_STARTED).toHaveBeenCalled();
                             done();
@@ -131,9 +139,7 @@
 
                     worker.on(WebWorker.Event.WORKER_STARTED, Listeners.WORKER_STARTED);
 
-                    worker.on(WebWorkerEvent.WORKER_LOADED, function () {
-                        worker.start();
-                    });
+                    worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.WORKER_LOADED);
 
                     worker.load();
 

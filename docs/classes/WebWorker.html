@@ -172,7 +172,7 @@
                 <li class="param">
                     
                         <code class="param-name">opts</code>
-                        <span class="type">Mixed</span>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a> | <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
                     
 
                     
@@ -255,6 +255,13 @@
                             </li>
                         
                             <li class="index-item method private">
+                                <a href="#method__triggerError">_triggerError</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method private">
                                 <a href="#method__triggerSelf">_triggerSelf</a>
 
                                 
@@ -263,6 +270,13 @@
                         
                             <li class="index-item method">
                                 <a href="#method_getBlobUrl">getBlobUrl</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_getLastError">getLastError</a>
 
                                 
                                 
@@ -347,6 +361,13 @@
                         
                             <li class="index-item method">
                                 <a href="#method_terminateNow">terminateNow</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_throwError">throwError</a>
 
                                 
                                 
@@ -704,6 +725,141 @@ code clean.</p>
 </div>
 
                 
+                    <div id="method__triggerError" class="method item private">
+    <h3 class="name"><code>_triggerError</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>error</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[data]</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[throwException]</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+
+    
+
+    
+        <span class="flag private">private</span>
+    
+
+    
+
+    
+
+    
+        <span class="flag chainable">chainable</span>
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Internal method used to trigger the <code>error</code> event on the instance.</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">error</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>Error string that describes the error.</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[data]</code>
+                        <span class="type">Mixed</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>Data that is to be associated with the error event.</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[throwException]</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>Set to <code>true</code> if you want to throw an exception in addition to the error event.</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+
+    
+</div>
+
+                
                     <div id="method__triggerSelf" class="method item private">
     <h3 class="name"><code>_triggerSelf</code></h3>
 
@@ -854,6 +1010,75 @@ code clean.</p>
                         <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>:
                     
                     <p>The worker blob URL, <code>null</code> otherwise.</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_getLastError" class="method item">
+    <h3 class="name"><code>getLastError</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Returns the last error that was trigger on this worker instance.</p>
+
+    </div>
+
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>:
+                    
+                    <p>The last error message that was thrown on this worker instance.</p>
 
                 
             </div>
@@ -1783,6 +2008,143 @@ passes control back to the instance to execute the final terminate.</p>
 
     </div>
 
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="method_throwError" class="method item">
+    <h3 class="name"><code>throwError</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>error</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[data]</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[throwException]</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <span class="flag chainable">chainable</span>
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Throw error on the worker instance. This internally triggers the <code>error</code> event.
+Optionally you can also make this method throw an exception.
+<br />
+This method also internally updates the <code>lastError</code> value on the instance
+and static properties.</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">error</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>Error string that describes the error.</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[data]</code>
+                        <span class="type">Mixed</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>Data that is to be associated with the error event.</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[throwException]</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>Set to <code>true</code> if you want to throw an exception in addition to the error event.</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
     
 
     

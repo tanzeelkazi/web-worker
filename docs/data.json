@@ -51,7 +51,7 @@
                 {
                     "name": "opts",
                     "description": "The options to be passed into the constructor.\n           <br />\n           If you pass a `String`, the code will first search\n           for an element selector with the worker script.\n           If it does not find the element it will then use\n           it as a URL to the actual worker script.",
-                    "type": "Mixed"
+                    "type": "Object|String"
                 }
             ]
         }
@@ -457,28 +457,80 @@
             "chainable": 1,
             "class": "WebWorker",
             "module": "WebWorker"
+        },
+        {
+            "file": "src/js/web-worker.js",
+            "line": 642,
+            "description": "Throw error on the worker instance. This internally triggers the `error` event.\nOptionally you can also make this method throw an exception.\n<br />\nThis method also internally updates the `lastError` value on the instance\nand static properties.",
+            "itemtype": "method",
+            "name": "throwError",
+            "params": [
+                {
+                    "name": "error",
+                    "description": "Error string that describes the error.",
+                    "type": "String"
+                },
+                {
+                    "name": "data",
+                    "description": "Data that is to be associated with the error event.",
+                    "type": "Mixed",
+                    "optional": true
+                },
+                {
+                    "name": "throwException",
+                    "description": "Set to `true` if you want to throw an exception in addition to the error event.",
+                    "type": "Boolean",
+                    "optional": true
+                }
+            ],
+            "chainable": 1,
+            "class": "WebWorker",
+            "module": "WebWorker"
+        },
+        {
+            "file": "src/js/web-worker.js",
+            "line": 675,
+            "description": "Internal method used to trigger the `error` event on the instance.",
+            "itemtype": "method",
+            "name": "_triggerError",
+            "access": "private",
+            "tagname": "",
+            "params": [
+                {
+                    "name": "error",
+                    "description": "Error string that describes the error.",
+                    "type": "String"
+                },
+                {
+                    "name": "data",
+                    "description": "Data that is to be associated with the error event.",
+                    "type": "Mixed",
+                    "optional": true
+                },
+                {
+                    "name": "throwException",
+                    "description": "Set to `true` if you want to throw an exception in addition to the error event.",
+                    "type": "Boolean",
+                    "optional": true
+                }
+            ],
+            "chainable": 1,
+            "class": "WebWorker",
+            "module": "WebWorker"
+        },
+        {
+            "file": "src/js/web-worker.js",
+            "line": 697,
+            "description": "Returns the last error that was trigger on this worker instance.",
+            "itemtype": "method",
+            "name": "getLastError",
+            "return": {
+                "description": "The last error message that was thrown on this worker instance.",
+                "type": "String"
+            },
+            "class": "WebWorker",
+            "module": "WebWorker"
         }
     ],
-    "warnings": [
-        {
-            "message": "replacing incorrect tag: returns with return",
-            "line": " src/js/web-worker.js:192"
-        },
-        {
-            "message": "replacing incorrect tag: returns with return",
-            "line": " src/js/web-worker.js:201"
-        },
-        {
-            "message": "replacing incorrect tag: returns with return",
-            "line": " src/js/web-worker.js:210"
-        },
-        {
-            "message": "replacing incorrect tag: returns with return",
-            "line": " src/js/web-worker.js:219"
-        },
-        {
-            "message": "replacing incorrect tag: returns with return",
-            "line": " src/js/web-worker.js:328"
-        }
-    ]
+    "warnings": []
 }

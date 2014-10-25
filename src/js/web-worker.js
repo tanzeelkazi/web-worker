@@ -44,7 +44,7 @@
      * The main WebWorker class.
      * @class WebWorker
      * @constructor
-     * @param {Mixed} opts
+     * @param {Object|String} opts
      *            The options to be passed into the constructor.
      *            <br />
      *            If you pass a `String`, the code will first search
@@ -192,7 +192,7 @@
     /**
      * Returns the worker URL if one was provided during object instantiation.
      * @method getUrl
-     * @returns {String} The worker URL, `null` otherwise.
+     * @return {String} The worker URL, `null` otherwise.
      */
     WebWorker.prototype.getUrl = function () {
         return this._workerUrl;
@@ -201,7 +201,7 @@
     /**
      * Returns the worker blob URL if one has been generated.
      * @method getBlobUrl
-     * @returns {String} The worker blob URL, `null` otherwise.
+     * @return {String} The worker blob URL, `null` otherwise.
      */
     WebWorker.prototype.getBlobUrl = function () {
         return this._workerBlobUrl;
@@ -210,7 +210,7 @@
     /**
      * Returns the native browser worker instance if one has been generated.
      * @method getNativeWorker
-     * @returns {Object} The native worker instance, `null` otherwise.
+     * @return {Object} The native worker instance, `null` otherwise.
      */
     WebWorker.prototype.getNativeWorker = function () {
         return this._nativeWorker;
@@ -219,7 +219,7 @@
     /**
      * Returns whether the worker script has been loaded.
      * @method hasLoaded
-     * @returns {Boolean} Returns `true` if the worker script has loaded, `false` otherwise.
+     * @return {Boolean} Returns `true` if the worker script has loaded, `false` otherwise.
      */
     WebWorker.prototype.hasLoaded = function () {
         return this._hasLoaded;
@@ -328,7 +328,7 @@
     /**
      * Returns whether a worker terminate was initialized.
      * @method isTerminateInitialized
-     * @returns {Boolean} Returns `true` if a terminate has been initialized, `false` otherwise.
+     * @return {Boolean} Returns `true` if a terminate has been initialized, `false` otherwise.
      */
     WebWorker.prototype.isTerminateInitialized = function () {
         return this._isTerminateInitialized;
@@ -639,7 +639,18 @@
         return self;
     };
 
-
+    /**
+     * Throw error on the worker instance. This internally triggers the `error` event.
+     * Optionally you can also make this method throw an exception.
+     * <br />
+     * This method also internally updates the `lastError` value on the instance
+     * and static properties.
+     * @method throwError
+     * @param {String} error Error string that describes the error.
+     * @param {Mixed} [data] Data that is to be associated with the error event.
+     * @param {Boolean} [throwException] Set to `true` if you want to throw an exception in addition to the error event.
+     * @chainable
+     */
     WebWorker.prototype.throwError = function (error, data, throwException) {
         var self = this;
 
@@ -661,6 +672,15 @@
         return self;
     };
 
+    /**
+     * Internal method used to trigger the `error` event on the instance.
+     * @method _triggerError
+     * @private
+     * @param {String} error Error string that describes the error.
+     * @param {Mixed} [data] Data that is to be associated with the error event.
+     * @param {Boolean} [throwException] Set to `true` if you want to throw an exception in addition to the error event.
+     * @chainable
+     */
     WebWorker.prototype._triggerError = function (error, data, throwException) {
         var self = this,
             errorEvent = null;
@@ -674,6 +694,11 @@
         return self;
     };
 
+    /**
+     * Returns the last error that was trigger on this worker instance.
+     * @method getLastError
+     * @return {String} The last error message that was thrown on this worker instance.
+     */
     WebWorker.prototype.getLastError = function () {
         return this._lastError;
     };

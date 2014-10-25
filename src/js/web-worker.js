@@ -61,7 +61,12 @@
             scriptContents = null,
             workerUrl = null;
 
-        this.$ = $(this);
+        Object.defineProperty(this, '$', {
+            "configurable": false,
+            "enumerable": true,
+            "value": $(this),
+            "writable": false
+        });
 
         opts = opts || null;
 
@@ -226,7 +231,7 @@
         args = args || null;
 
         if (action === null) {
-            return false;
+            return self;
         }
 
         message = {
@@ -285,7 +290,7 @@
             self.sendMessage(Action.TERMINATE, slice.call(arguments));
         }
 
-        return;
+        return self;
     };
 
     WebWorker.prototype.terminateNow = function (returnValue) {
@@ -303,7 +308,8 @@
             self._hasLoaded = false;
             self.trigger(Event.WORKER_TERMINATED, {"returnValue": returnValue});
         }
-        return;
+
+        return self;
     };
 
     WebWorker.prototype.on = function () {
@@ -391,7 +397,7 @@
 
         self._triggerSelf.apply(self, eventArgs);
 
-        return;
+        return self;
     };
 
     WebWorker.prototype._triggerSelf = function () {
@@ -401,7 +407,7 @@
         $worker = self.$;
         $worker.trigger.apply($worker, arguments);
 
-        return;
+        return self;
     };
 
 

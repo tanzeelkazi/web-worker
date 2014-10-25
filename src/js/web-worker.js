@@ -59,12 +59,13 @@
 
     /**
      * A jQuery object created from the webworker instance.
-     * @property $
+     * @property _$
+     * @private
      * @type {jQuery}
      * @default $(this)
      * @readOnly
      */
-    WebWorker.prototype.$ = null;
+    WebWorker.prototype._$ = null;
 
 
     /**
@@ -147,7 +148,7 @@
             scriptContents = null,
             workerUrl = null;
 
-        Object.defineProperty(this, '$', {
+        Object.defineProperty(this, '_$', {
             "configurable": false,
             "enumerable": true,
             "value": $(this),
@@ -505,7 +506,7 @@
      * @chainable
      */
     WebWorker.prototype.on = function () {
-        var $worker = this.$;
+        var $worker = this._$;
         $worker.on.apply($worker, arguments);
         return this;
     };
@@ -517,7 +518,7 @@
      * @chainable
      */
     WebWorker.prototype.one = function () {
-        var $worker = this.$;
+        var $worker = this._$;
         $worker.one.apply($worker, arguments);
         return this;
     };
@@ -530,7 +531,7 @@
      */
     WebWorker.prototype.off = function () {
         var self = this,
-            $worker = self.$;
+            $worker = self._$;
 
         $worker.off.apply($worker, arguments);
         self._assignEventHandlers();
@@ -633,7 +634,7 @@
         var self = this,
             $worker = null;
 
-        $worker = self.$;
+        $worker = self._$;
         $worker.trigger.apply($worker, arguments);
 
         return self;

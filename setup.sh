@@ -2,9 +2,9 @@
 
 clear
 
-echo ==========================
+echo ===========================
 echo = WebWorker project setup =
-echo ==========================
+echo ===========================
 
 echo
 echo Deleting 'node_modules' directory...

@@ -1,6 +1,6 @@
 ﻿(function () {
     'use strict';
-    
+
     var os = null,
         fse = null,
         cliColor = null,
@@ -13,16 +13,15 @@
         error = null,
         warn = null,
         notice = null,
-            
+
         bowerDir = null,
         libsDir = null,
 
         jQuerySourceDir = null,
         jQueryDestDir = null,
-        
+
         jasmineSourceArchivePath = null,
         jasmineSourceArchive = null,
-        jasmineSourceDir = null,
         jasmineDestDir = null;
 
     console.time(label);
@@ -37,9 +36,9 @@
 
     ok = cliColor.green.bold;
     error = cliColor.red.bold;
-    warn = cliColor.yellow,
+    warn = cliColor.yellow;
     notice = cliColor.blue;
-    
+
     bowerDir = './bower_components';
     libsDir = './libs';
 
@@ -47,12 +46,11 @@
     jQueryDestDir = libsDir + '/jquery';
 
     jasmineSourceArchivePath = bowerDir + '/jasmine/dist/jasmine-standalone-2.0.3.zip';
-    jasmineSourceDir = 'lib/jasmine-2.0.3/';
     jasmineDestDir = libsDir + '/jasmine';
 
-    console.log('==================================' + EOL +
+    console.log('=====================================' + EOL +
                 '= WebWorker npm post-install script =' + EOL +
-                '==================================' + EOL);
+                '=====================================' + EOL);
 
     console.log('Start cleaning directories for install' + EOL);
 

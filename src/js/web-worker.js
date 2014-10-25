@@ -658,7 +658,7 @@
             throw new window.Error(error);
         }
 
-        return;
+        return self;
     };
 
     WebWorker.prototype._triggerError = function (error, data, throwException) {
@@ -671,7 +671,7 @@
         errorEvent.throwsException = !!throwException;
 
         self.trigger(errorEvent);
-        return;
+        return self;
     };
 
     WebWorker.prototype.getLastError = function () {

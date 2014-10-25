@@ -18,7 +18,8 @@
 		"cli-color": "*",
 		"fs-extra": "*",
 		"bower": "*",
-		"adm-zip": "*"
+		"adm-zip": "*",
+		"yuidocjs": "~0.3.45"
 	},
 	"scripts": {
 		"postinstall": "node config/install/post-install.js"

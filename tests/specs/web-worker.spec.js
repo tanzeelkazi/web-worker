@@ -4,9 +4,12 @@
 
     var worker = null,
         WebWorkerEvent = null,
+        exampleWorkerElemSelector = null,
         exampleWorkerUrl = null;
 
     WebWorkerEvent = WebWorker.Event;
+
+    exampleWorkerElemSelector = "#test-worker-script-elem";
     exampleWorkerUrl = "/js/example-worker.js";
 
     describe("WebWorker", function () {
@@ -29,7 +32,7 @@
             describe("constructor", function () {
 
                 it("should accept string selector if first argument is string and if the element exists", function () {
-                    worker = new WebWorker("#test-worker-script-elem");
+                    worker = new WebWorker(exampleWorkerElemSelector);
                     expect(worker).not.toBe(null);
                     return;
                 });
@@ -245,6 +248,58 @@
                     worker = new WebWorker(exampleWorkerUrl);
 
                     worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.WORKER_LOADED);
+
+                    worker.load();
+
+                    return;
+                });
+
+                it("should trigger the error WORKER_DID_NOT_LOAD if the worker URL could not be loaded", function (done) {
+                    var Listeners = null;
+
+                    Listeners = {
+                        "LOADED": function (event) {
+                            return;
+                        },
+
+                        "ERROR": function (event) {
+                            expect(Listeners.LOADED).not.toHaveBeenCalled();
+                            expect(Listeners.ERROR).toHaveBeenCalled();
+                            expect(event.message).toEqual(WebWorker.Error.WORKER_DID_NOT_LOAD);
+                            done();
+                            return;
+                        }
+                    };
+
+                    spyOn(Listeners, 'LOADED').and.callThrough();
+                    spyOn(Listeners, 'ERROR').and.callThrough();
+
+                    worker = new WebWorker(exampleWorkerUrl + 'some-garbage-text');
+
+                    worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.LOADED);
+                    worker.on(WebWorkerEvent.ERROR, Listeners.ERROR);
+
+                    worker.load();
+
+                    return;
+                });
+
+                it("should be able to pre-defined load script elements", function (done) {
+                    var Listeners = null;
+
+                    Listeners = {
+                        "LOADED": function (event) {
+                            expect(Listeners.LOADED).toHaveBeenCalled();
+                            done();
+                            return;
+                        }
+                    };
+
+                    spyOn(Listeners, 'LOADED').and.callThrough();
+
+                    worker = new WebWorker(exampleWorkerElemSelector);
+
+                    worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.LOADED);
 
                     worker.load();
 

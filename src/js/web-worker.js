@@ -160,7 +160,6 @@
 
         if (opts === null) {
             this.throwError(Error.INVALID_ARGUMENTS, null, true);
-            return;
         }
 
         if (typeof opts === 'string') {
@@ -319,11 +318,6 @@
             return;
         });
 
-        self.on(Event.TERMINATE, function () {
-            self._isTerminateInitialized = true;
-            return;
-        });
-
         return self;
     };
 
@@ -442,10 +436,9 @@
                 return;
             }
 
-            window.console.log('message');
-            window.console.log(msg);
+            //window.console.log('message');
+            //window.console.log(msg);
 
-            return;
         });
 
         return self;

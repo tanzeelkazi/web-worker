@@ -351,7 +351,7 @@
             args = null;
 
         if (!self.hasLoaded()) {
-            return false;
+            return self;
         }
 
         self.trigger(Event.WORKER_STARTING);
@@ -608,6 +608,12 @@
         var self = this,
             eventType = null,
             eventArgs = null;
+
+        event = event || null;
+
+        if (event === null) {
+            return self;
+        }
 
         if (typeof event === 'string') {
             eventType = event;

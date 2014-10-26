@@ -1,4 +1,4 @@
-﻿/*global WebWorker:false */
+﻿/*global jasmine:false, WebWorker:false */
 (function () {
     'use strict';
 
@@ -37,6 +37,156 @@
                 it("should accept string URL if first argument is string and an element of same selector does not exist", function () {
                     worker = new WebWorker(exampleWorkerUrl);
                     expect(worker).not.toBe(null);
+                    return;
+                });
+
+                return;
+            });
+
+            describe("getBlobUrl", function () {
+
+                it("should return the blob Url once the worker has loaded", function (done) {
+                    worker = new WebWorker(exampleWorkerUrl);
+
+                    expect(worker.getBlobUrl()).toBeNull();
+
+                    worker.on(WebWorkerEvent.WORKER_LOADED, function () {
+                        expect(worker.getBlobUrl()).not.toBeNull();
+                        done();
+                        return;
+                    });
+
+                    worker.load();
+
+                    return;
+                });
+
+                return;
+            });
+
+            describe("getLastError", function () {
+
+                it("should return the last error message", function (done) {
+                    var errorMsg1 = null,
+                        errorMsg2 = null,
+                        Listeners = null;
+
+                    errorMsg1 = "This is error #1!";
+                    errorMsg2 = "This is error #2!";
+
+                    Listeners = {
+                        "ERROR1": function (event) {
+                            expect(event.message).toEqual(errorMsg1);
+
+                            worker.off().on(WebWorkerEvent.ERROR, Listeners.ERROR2);
+                            worker.throwError(errorMsg2);
+                            return;
+                        },
+
+                        "ERROR2": function (event) {
+                            expect(event.message).toEqual(errorMsg2);
+                            done();
+                            return;
+                        }
+                    };
+
+                    worker = new WebWorker(exampleWorkerUrl);
+
+                    expect(worker.getLastError()).toBeNull();
+
+                    worker.on(WebWorkerEvent.ERROR, Listeners.ERROR1);
+                    worker.throwError(errorMsg1);
+
+                    return;
+                });
+
+                return;
+            });
+
+            describe("getNativeWorker", function () {
+
+                it("should return the native browser worker once it has loaded, null otherwise", function (done) {
+                    worker = new WebWorker(exampleWorkerUrl);
+
+                    expect(worker.getNativeWorker()).toBeNull();
+
+                    worker.on(WebWorkerEvent.WORKER_LOADED, function () {
+                        var nativeWorker = null;
+
+                        nativeWorker = worker.getNativeWorker();
+                        expect(nativeWorker).not.toBeNull();
+                        expect(nativeWorker).toEqual(jasmine.any(window.Worker));
+                        done();
+                        return;
+                    });
+
+                    worker.load();
+
+                    return;
+                });
+
+                return;
+            });
+
+            describe("getUrl", function () {
+
+                it("should return the worker Url", function () {
+                    worker = new WebWorker(exampleWorkerUrl);
+                    expect(worker.getUrl()).toEqual(exampleWorkerUrl);
+                    return;
+                });
+
+                return;
+            });
+
+            describe("hasLoaded", function () {
+
+                it("should return true once the worker has loaded, false otherwise", function (done) {
+                    worker = new WebWorker(exampleWorkerUrl);
+
+                    expect(worker.hasLoaded()).toBe(false);
+
+                    worker.on(WebWorkerEvent.WORKER_LOADED, function () {
+                        expect(worker.hasLoaded()).toBe(true);
+                        done();
+                        return;
+                    });
+
+                    worker.load();
+
+                    return;
+                });
+
+                return;
+            });
+
+            describe("isTerminateInitialized", function () {
+
+                it("should return true when terminate has initialized, false otherwise", function (done) {
+                    var Listeners = null;
+
+                    Listeners = {
+                        "LOADED": function (event) {
+                            worker.terminate();
+                            return;
+                        },
+
+                        "TERMINATING": function (event) {
+                            expect(worker.isTerminateInitialized()).toBe(true);
+                            done();
+                            return;
+                        }
+                    };
+
+                    worker = new WebWorker(exampleWorkerUrl);
+
+                    worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.LOADED);
+                    worker.on(WebWorkerEvent.WORKER_TERMINATING, Listeners.TERMINATING);
+
+                    expect(worker.isTerminateInitialized()).toBe(false);
+
+                    worker.load();
+
                     return;
                 });
 
@@ -90,258 +240,47 @@
                 return;
             });
 
-            describe("start", function () {
-
-                it("should trigger the WORKER_STARTING event when called", function (done) {
-
-                    var Listeners = {
-                        "WORKER_LOADED": function () {
-                            worker.start();
-                            return;
-                        },
-                        "WORKER_STARTING": function () {
-                            expect(Listeners.WORKER_STARTING).toHaveBeenCalled();
-                            done();
-                            return;
-                        }
-                    };
-
-                    spyOn(Listeners, 'WORKER_STARTING').and.callThrough();
-
-                    worker = new WebWorker(exampleWorkerUrl);
-
-                    worker.on(WebWorkerEvent.WORKER_STARTING, Listeners.WORKER_STARTING);
-
-                    worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.WORKER_LOADED);
-
-                    worker.load();
-
-                    return;
-                });
-
-                it("should trigger the WORKER_STARTED event once the worker has started", function (done) {
-
-                    var Listeners = {
-                        "WORKER_LOADED": function () {
-                            worker.start();
-                            return;
-                        },
-                        "WORKER_STARTED": function () {
-                            expect(Listeners.WORKER_STARTED).toHaveBeenCalled();
-                            done();
-                            return;
-                        }
-                    };
-
-                    spyOn(Listeners, 'WORKER_STARTED').and.callThrough();
-
-                    worker = new WebWorker(exampleWorkerUrl);
-
-                    worker.on(WebWorker.Event.WORKER_STARTED, Listeners.WORKER_STARTED);
-
-                    worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.WORKER_LOADED);
-
-                    worker.load();
-
-                    return;
-                });
-
-                return;
-            });
-
-            describe("terminate", function () {
-
-                it("should trigger the WORKER_TERMINATING event and call the worker to terminate", function (done) {
-                    var Listeners = null;
-
-                    Listeners = {
-                        "LOADED": function (event) {
-                            spyOn(worker, 'sendMessage').and.callThrough();
-                            worker.terminate();
-                            expect(Listeners.sendMessage).toHaveBeenCalled();
-                            return;
-                        },
-
-                        "TERMINATING": function (event) {
-                            expect(Listeners.TERMINATING).toHaveBeenCalled();
-                            done();
-                            return;
-                        }
-                    };
-
-                    spyOn(Listeners, 'TERMINATING').and.callThrough();
-
-                    worker = new WebWorker(exampleWorkerUrl);
-
-                    worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.LOADED);
-                    worker.on(WebWorkerEvent.WORKER_TERMINATING, Listeners.TERMINATING);
-
-                    worker.load();
-
-                    return;
-                });
-
-                return;
-            });
-
-            describe("terminateNow", function () {
-
-                it("should trigger the WORKER_TERMINATING and WORKER_TERMINATED events and terminate the worker immediately", function (done) {
-                    var Listeners = null;
-
-                    Listeners = {
-                        "LOADED": function (event) {
-                            spyOn(worker, 'sendMessage').and.callThrough();
-                            worker.terminate();
-                            expect(Listeners.sendMessage).toHaveBeenCalled();
-                            return;
-                        },
-
-                        "TERMINATING": function (event) {
-                            expect(Listeners.TERMINATING).toHaveBeenCalled();
-                            return;
-                        },
-
-                        "TERMINATED": function (event) {
-                            expect(Listeners.TERMINATED).toHaveBeenCalled();
-                            expect(worker.getNativeWorker()).toBeNull();
-                            done();
-                            return;
-                        }
-                    };
-
-                    spyOn(Listeners, 'TERMINATING').and.callThrough();
-                    spyOn(Listeners, 'TERMINATED').and.callThrough();
-
-                    worker = new WebWorker(exampleWorkerUrl);
-
-                    worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.LOADED);
-                    worker.on(WebWorkerEvent.WORKER_TERMINATING, Listeners.TERMINATING);
-                    worker.on(WebWorkerEvent.WORKER_TERMINATED, Listeners.TERMINATED);
-
-                    worker.load();
-
-                    return;
-                });
-
-                return;
-            });
-
-            describe("getUrl", function () {
-
-                it("should return the worker Url", function () {
-                    worker = new WebWorker(exampleWorkerUrl);
-                    expect(worker.getUrl()).toEqual(exampleWorkerUrl);
-                    return;
-                });
-
-                return;
-            });
-
-            describe("getBlobUrl", function () {
-
-                it("should return the blob Url once the worker has loaded", function (done) {
-                    worker = new WebWorker(exampleWorkerUrl);
-
-                    expect(worker.getBlobUrl()).toBeNull();
-
-                    worker.on(WebWorkerEvent.WORKER_LOADED, function () {
-                        expect(worker.getBlobUrl()).not.toBeNull();
-                        done();
-                        return;
-                    });
-
-                    worker.load();
-
-                    return;
-                });
-
-                return;
-            });
-
-            describe("hasLoaded", function () {
-
-                it("should return true once the worker has loaded, false otherwise", function (done) {
-                    worker = new WebWorker(exampleWorkerUrl);
-
-                    expect(worker.hasLoaded()).toBe(false);
-
-                    worker.on(WebWorkerEvent.WORKER_LOADED, function () {
-                        expect(worker.hasLoaded()).toBe(true);
-                        done();
-                        return;
-                    });
-
-                    worker.load();
-
-                    return;
-                });
-
-                return;
-            });
-
-            describe("throwError", function () {
-
-                it("should trigger the ERROR event with the error message", function (done) {
-                    var errorMsg = null,
-                        Listeners = null;
-
-                    errorMsg = "This is an error!";
-                    Listeners = {
-                        "ERROR": function (event) {
-                            expect(Listeners.ERROR).toHaveBeenCalled();
-                            expect(event.message).toEqual(errorMsg);
-                            done();
-                            return;
-                        }
-                    };
-
-                    spyOn(Listeners, 'ERROR').and.callThrough();
-
-                    worker = new WebWorker(exampleWorkerUrl);
-
-                    worker.on(WebWorkerEvent.ERROR, Listeners.ERROR);
-
-                    worker.throwError(errorMsg);
-
-                    return;
-                });
-
-                return;
-            });
-
-            describe("getLastError", function () {
-
-                it("should return the last error message", function (done) {
-                    var errorMsg1 = null,
-                        errorMsg2 = null,
-                        Listeners = null;
-
-                    errorMsg1 = "This is error #1!";
-                    errorMsg2 = "This is error #2!";
+            describe("off", function () {
+
+                it("should be able to unbind events", function (done) {
+                    var Listeners = null,
+                        isCalledOnce = false;
 
                     Listeners = {
                         "ERROR1": function (event) {
-                            expect(event.message).toEqual(errorMsg1);
-
-                            worker.off().on(WebWorkerEvent.ERROR, Listeners.ERROR2);
-                            worker.throwError(errorMsg2);
                             return;
                         },
 
                         "ERROR2": function (event) {
-                            expect(event.message).toEqual(errorMsg2);
-                            done();
+
+
+                            if (isCalledOnce) {
+                                expect(Listeners.ERROR1.calls.count()).toEqual(1);
+                                expect(Listeners.ERROR2.calls.count()).toEqual(2);
+                                done();
+                            } else {
+                                isCalledOnce = true;
+                                expect(Listeners.ERROR1.calls.count()).toEqual(1);
+                                expect(Listeners.ERROR2.calls.count()).toEqual(1);
+
+                                worker.off(WebWorkerEvent.ERROR, Listeners.ERROR1);
+
+                                worker.throwError();
+                            }
+
                             return;
                         }
                     };
 
+                    spyOn(Listeners, 'ERROR1').and.callThrough();
+                    spyOn(Listeners, 'ERROR2').and.callThrough();
+
                     worker = new WebWorker(exampleWorkerUrl);
 
-                    expect(worker.getLastError()).toBeNull();
-
                     worker.on(WebWorkerEvent.ERROR, Listeners.ERROR1);
-                    worker.throwError(errorMsg1);
+                    worker.on(WebWorkerEvent.ERROR, Listeners.ERROR2);
+
+                    worker.throwError();
 
                     return;
                 });
@@ -420,47 +359,218 @@
                 return;
             });
 
-            describe("off", function () {
+            describe("sendMessage", function () {
 
-                it("should be able to unbind events", function (done) {
+                it("should be able to send messages to the native worker with the pre-defined protocol", function (done) {
                     var Listeners = null,
-                        isCalledOnce = false;
+                        nativeWorker = null,
+                        testMethodName = 'testMethod',
+                        testArgs = [1,2,3];
 
                     Listeners = {
-                        "ERROR1": function (event) {
+                        "LOADED": function (event) {
+                            nativeWorker = worker.getNativeWorker();
+
+                            spyOn(nativeWorker, 'postMessage').and.callFake(Listeners.POST_MESSAGE);
+
+                            worker.sendMessage(testMethodName, testArgs);
                             return;
                         },
 
-                        "ERROR2": function (event) {
+                        "POST_MESSAGE": function (data) {
+                            expect(nativeWorker.postMessage).toHaveBeenCalled();
 
+                            expect(data).toEqual(jasmine.any(Object));
 
-                            if (isCalledOnce) {
-                                expect(Listeners.ERROR1.calls.count()).toEqual(1);
-                                expect(Listeners.ERROR2.calls.count()).toEqual(2);
-                                done();
-                            } else {
-                                isCalledOnce = true;
-                                expect(Listeners.ERROR1.calls.count()).toEqual(1);
-                                expect(Listeners.ERROR2.calls.count()).toEqual(1);
+                            expect('__isWebWorkerMsg' in data).toBe(true);
+                            expect(data.__isWebWorkerMsg).toBe(true);
 
-                                worker.off(WebWorkerEvent.ERROR, Listeners.ERROR1);
+                            expect('action' in data).toBe(true);
+                            expect(data.action).toEqual(testMethodName);
 
-                                worker.throwError();
-                            }
+                            expect('args' in data).toBe(true);
+                            expect(data.args).toEqual(testArgs);
+
+                            done();
 
                             return;
                         }
                     };
 
-                    spyOn(Listeners, 'ERROR1').and.callThrough();
-                    spyOn(Listeners, 'ERROR2').and.callThrough();
+                    worker = new WebWorker(exampleWorkerUrl);
+
+                    worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.LOADED);
+
+                    worker.load();
+
+                    return;
+                });
+
+                return;
+            });
+
+            describe("start", function () {
+
+                it("should trigger the WORKER_STARTING event when called", function (done) {
+
+                    var Listeners = {
+                        "WORKER_LOADED": function () {
+                            worker.start();
+                            return;
+                        },
+                        "WORKER_STARTING": function () {
+                            expect(Listeners.WORKER_STARTING).toHaveBeenCalled();
+                            done();
+                            return;
+                        }
+                    };
+
+                    spyOn(Listeners, 'WORKER_STARTING').and.callThrough();
 
                     worker = new WebWorker(exampleWorkerUrl);
 
-                    worker.on(WebWorkerEvent.ERROR, Listeners.ERROR1);
-                    worker.on(WebWorkerEvent.ERROR, Listeners.ERROR2);
+                    worker.on(WebWorkerEvent.WORKER_STARTING, Listeners.WORKER_STARTING);
 
-                    worker.throwError();
+                    worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.WORKER_LOADED);
+
+                    worker.load();
+
+                    return;
+                });
+
+                it("should trigger the WORKER_STARTED event once the worker has started", function (done) {
+
+                    var Listeners = {
+                        "WORKER_LOADED": function () {
+                            worker.start();
+                            return;
+                        },
+                        "WORKER_STARTED": function () {
+                            expect(Listeners.WORKER_STARTED).toHaveBeenCalled();
+                            done();
+                            return;
+                        }
+                    };
+
+                    spyOn(Listeners, 'WORKER_STARTED').and.callThrough();
+
+                    worker = new WebWorker(exampleWorkerUrl);
+
+                    worker.on(WebWorker.Event.WORKER_STARTED, Listeners.WORKER_STARTED);
+
+                    worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.WORKER_LOADED);
+
+                    worker.load();
+
+                    return;
+                });
+
+                return;
+            });
+
+            describe("terminate", function () {
+
+                it("should trigger the WORKER_TERMINATING event and call the worker to terminate", function (done) {
+                    var Listeners = null;
+
+                    Listeners = {
+                        "LOADED": function (event) {
+                            worker.terminate();
+                            expect(WebWorker.prototype.sendMessage).toHaveBeenCalled();
+                            return;
+                        },
+
+                        "TERMINATING": function (event) {
+                            expect(Listeners.TERMINATING).toHaveBeenCalled();
+                            done();
+                            return;
+                        }
+                    };
+
+                    spyOn(WebWorker.prototype, 'sendMessage').and.callThrough();
+                    spyOn(Listeners, 'TERMINATING').and.callThrough();
+
+                    worker = new WebWorker(exampleWorkerUrl);
+
+                    worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.LOADED);
+                    worker.on(WebWorkerEvent.WORKER_TERMINATING, Listeners.TERMINATING);
+
+                    worker.load();
+
+                    return;
+                });
+
+                return;
+            });
+
+            describe("terminateNow", function () {
+
+                it("should trigger the WORKER_TERMINATING and WORKER_TERMINATED events and terminate the worker immediately", function (done) {
+                    var Listeners = null;
+
+                    Listeners = {
+                        "LOADED": function (event) {
+                            worker.terminateNow();
+                            return;
+                        },
+
+                        "TERMINATING": function (event) {
+                            expect(Listeners.TERMINATING).toHaveBeenCalled();
+                            return;
+                        },
+
+                        "TERMINATED": function (event) {
+                            expect(Listeners.TERMINATED).toHaveBeenCalled();
+                            expect(WebWorker.prototype.sendMessage).toHaveBeenCalled();
+                            expect(worker.getNativeWorker()).toBeNull();
+
+                            done();
+
+                            return;
+                        }
+                    };
+
+                    spyOn(WebWorker.prototype, 'sendMessage').and.callThrough();
+                    spyOn(Listeners, 'TERMINATING').and.callThrough();
+                    spyOn(Listeners, 'TERMINATED').and.callThrough();
+
+                    worker = new WebWorker(exampleWorkerUrl);
+
+                    worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.LOADED);
+                    worker.on(WebWorkerEvent.WORKER_TERMINATING, Listeners.TERMINATING);
+                    worker.on(WebWorkerEvent.WORKER_TERMINATED, Listeners.TERMINATED);
+
+                    worker.load();
+
+                    return;
+                });
+
+                return;
+            });
+
+            describe("throwError", function () {
+
+                it("should trigger the ERROR event with the error message", function (done) {
+                    var errorMsg = null,
+                        Listeners = null;
+
+                    errorMsg = "This is an error!";
+                    Listeners = {
+                        "ERROR": function (event) {
+                            expect(Listeners.ERROR).toHaveBeenCalled();
+                            expect(event.message).toEqual(errorMsg);
+                            done();
+                            return;
+                        }
+                    };
+
+                    spyOn(Listeners, 'ERROR').and.callThrough();
+
+                    worker = new WebWorker(exampleWorkerUrl);
+
+                    worker.on(WebWorkerEvent.ERROR, Listeners.ERROR);
+
+                    worker.throwError(errorMsg);
 
                     return;
                 });
@@ -493,6 +603,13 @@
 
                     return;
                 });
+
+                return;
+            });
+
+            describe("triggerSelf", function () {
+
+                it("should do something");
 
                 return;
             });

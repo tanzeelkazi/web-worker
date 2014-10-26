@@ -20,7 +20,7 @@
 
             afterEach(function () {
                 if (worker) {
-                    worker.terminate();
+                    worker.terminateNow();
                 }
                 worker = null;
                 return;
@@ -151,11 +151,76 @@
 
             describe("terminate", function () {
 
-                it("should terminate the worker", function () {
+                it("should trigger the WORKER_TERMINATING event and call the worker to terminate", function (done) {
+                    var Listeners = null;
+
+                    Listeners = {
+                        "LOADED": function (event) {
+                            spyOn(worker, 'sendMessage').and.callThrough();
+                            worker.terminate();
+                            expect(Listeners.sendMessage).toHaveBeenCalled();
+                            return;
+                        },
+
+                        "TERMINATING": function (event) {
+                            expect(Listeners.TERMINATING).toHaveBeenCalled();
+                            done();
+                            return;
+                        }
+                    };
+
+                    spyOn(Listeners, 'TERMINATING').and.callThrough();
+
                     worker = new WebWorker(exampleWorkerUrl);
-                    spyOn(worker, 'terminate').and.callThrough();
-                    worker.terminate();
-                    expect(worker.terminate).toHaveBeenCalled();
+
+                    worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.LOADED);
+                    worker.on(WebWorkerEvent.WORKER_TERMINATING, Listeners.TERMINATING);
+
+                    worker.load();
+
+                    return;
+                });
+
+                return;
+            });
+
+            describe("terminateNow", function () {
+
+                it("should trigger the WORKER_TERMINATING and WORKER_TERMINATED events and terminate the worker immediately", function (done) {
+                    var Listeners = null;
+
+                    Listeners = {
+                        "LOADED": function (event) {
+                            spyOn(worker, 'sendMessage').and.callThrough();
+                            worker.terminate();
+                            expect(Listeners.sendMessage).toHaveBeenCalled();
+                            return;
+                        },
+
+                        "TERMINATING": function (event) {
+                            expect(Listeners.TERMINATING).toHaveBeenCalled();
+                            return;
+                        },
+
+                        "TERMINATED": function (event) {
+                            expect(Listeners.TERMINATED).toHaveBeenCalled();
+                            expect(worker.getNativeWorker()).toBeNull();
+                            done();
+                            return;
+                        }
+                    };
+
+                    spyOn(Listeners, 'TERMINATING').and.callThrough();
+                    spyOn(Listeners, 'TERMINATED').and.callThrough();
+
+                    worker = new WebWorker(exampleWorkerUrl);
+
+                    worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.LOADED);
+                    worker.on(WebWorkerEvent.WORKER_TERMINATING, Listeners.TERMINATING);
+                    worker.on(WebWorkerEvent.WORKER_TERMINATED, Listeners.TERMINATED);
+
+                    worker.load();
+
                     return;
                 });
 
@@ -285,14 +350,121 @@
             });
 
             describe("on", function () {
+
+                it("should be able to bind events", function (done) {
+                    var Listeners = null;
+
+                    Listeners = {
+                        "ERROR": function (event) {
+                            expect(Listeners.ERROR).toHaveBeenCalled();
+                            done();
+                            return;
+                        }
+                    };
+
+                    spyOn(Listeners, 'ERROR').and.callThrough();
+
+                    worker = new WebWorker(exampleWorkerUrl);
+
+                    worker.on(WebWorkerEvent.ERROR, Listeners.ERROR);
+
+                    worker.throwError();
+
+                });
+
                 return;
             });
 
             describe("one", function () {
+
+                it("should be able to bind events for execution only once", function (done) {
+                    var Listeners = null,
+                        isCalledOnce = false;
+
+                    Listeners = {
+                        "ERROR1": function (event) {
+                            return;
+                        },
+
+                        "ERROR2": function (event) {
+
+
+                            if (isCalledOnce) {
+                                expect(Listeners.ERROR1.calls.count()).toEqual(1);
+                                expect(Listeners.ERROR2.calls.count()).toEqual(2);
+                                done();
+                            } else {
+                                isCalledOnce = true;
+                                expect(Listeners.ERROR1.calls.count()).toEqual(1);
+                                expect(Listeners.ERROR2.calls.count()).toEqual(1);
+                                worker.throwError();
+                            }
+
+                            return;
+                        }
+                    };
+
+                    spyOn(Listeners, 'ERROR1').and.callThrough();
+                    spyOn(Listeners, 'ERROR2').and.callThrough();
+
+                    worker = new WebWorker(exampleWorkerUrl);
+
+                    worker.one(WebWorkerEvent.ERROR, Listeners.ERROR1);
+                    worker.on(WebWorkerEvent.ERROR, Listeners.ERROR2);
+
+                    worker.throwError();
+
+                    return;
+                });
+
                 return;
             });
 
             describe("off", function () {
+
+                it("should be able to unbind events", function (done) {
+                    var Listeners = null,
+                        isCalledOnce = false;
+
+                    Listeners = {
+                        "ERROR1": function (event) {
+                            return;
+                        },
+
+                        "ERROR2": function (event) {
+
+
+                            if (isCalledOnce) {
+                                expect(Listeners.ERROR1.calls.count()).toEqual(1);
+                                expect(Listeners.ERROR2.calls.count()).toEqual(2);
+                                done();
+                            } else {
+                                isCalledOnce = true;
+                                expect(Listeners.ERROR1.calls.count()).toEqual(1);
+                                expect(Listeners.ERROR2.calls.count()).toEqual(1);
+
+                                worker.off(WebWorkerEvent.ERROR, Listeners.ERROR1);
+
+                                worker.throwError();
+                            }
+
+                            return;
+                        }
+                    };
+
+                    spyOn(Listeners, 'ERROR1').and.callThrough();
+                    spyOn(Listeners, 'ERROR2').and.callThrough();
+
+                    worker = new WebWorker(exampleWorkerUrl);
+
+                    worker.on(WebWorkerEvent.ERROR, Listeners.ERROR1);
+                    worker.on(WebWorkerEvent.ERROR, Listeners.ERROR2);
+
+                    worker.throwError();
+
+                    return;
+                });
+
                 return;
             });
 

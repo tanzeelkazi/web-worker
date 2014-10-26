@@ -690,7 +690,7 @@
 
         errorEvent = new $.Event(Event.ERROR);
         errorEvent.message = self.getLastError();
-        errorEvent.data = data;
+        errorEvent.errorData = data;
         errorEvent.throwsException = !!throwException;
 
         self.trigger(errorEvent);
@@ -751,8 +751,6 @@
         "WORKER_DID_NOT_LOAD": "Unable to load worker."
     };
     WebWorker.Error = Error;
-
-    WebWorker.throwError = WebWorker.prototype.throwError;
 
     WebWorker.snippet = '(function(){var Action=null,Event=null,Listeners=null;Action={{action-data}};Event={{event-data}};self.hasInitialized=false;Listeners={};self.Listeners=Listeners;self.isTerminating=false;' +
                         'self.terminateHandler=null;self.main=function(){ {{main-function}} };self.init=function(){self.hasInitialized=true;self.trigger(Event.WORKER_LOADED);return self};self.start=function(){if(!self.hasInitialized)return false;self.main.apply(self,arguments);self.trigger(Event.WORKER_STARTED);return self};self.on=function(eventType,listener){eventType+="";listener=listener||null;if(typeof listener!=="function")return self;if(!(eventType in Listeners))Listeners[eventType]=[];Listeners[eventType].push(listener);return self};' +

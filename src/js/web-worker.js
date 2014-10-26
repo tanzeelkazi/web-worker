@@ -770,6 +770,15 @@
     WebWorker.snippet = WebWorker.snippet.replace(/\{\{action-data\}\}/g, JSON.stringify(Action))
                                          .replace(/\{\{event-data\}\}/g, JSON.stringify(Event));
 
+
+    /**
+     * Retrieves the last error thrown by any WebWorker instance.
+     * @method getLastError
+     * @static
+     * @return {String} The last error string thrown by any WebWorker instance.
+     */
+    WebWorker.getLastError = WebWorker.prototype.getLastError;
+
     // TODO: Make this method more manageable and consistent with the way jQuery handles things.
     WebWorker.noConflict = function (context, className) {
         context = context || defaultContext;

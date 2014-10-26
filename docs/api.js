@@ -10,7 +10,7 @@ YUI.add("yuidoc-meta", function(Y) {
         {
             "displayName": "WebWorker",
             "name": "WebWorker",
-            "description": "The WebWorker module"
+            "description": "The WebWorker module."
         }
     ]
 } };

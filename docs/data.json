@@ -29,7 +29,7 @@
             "tag": "module",
             "file": "src/js/web-worker.js",
             "line": 43,
-            "description": "The WebWorker module"
+            "description": "The WebWorker module."
         }
     },
     "classes": {
@@ -354,7 +354,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 502,
+            "line": 504,
             "description": "Used to bind event listeners to the worker. Internally it uses the jQuery `.on` method.",
             "itemtype": "method",
             "name": "on",
@@ -372,7 +372,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 514,
+            "line": 516,
             "description": "Used to bind event listeners to the worker for single execution. Internally it uses the jQuery `.one` method.",
             "itemtype": "method",
             "name": "one",
@@ -390,7 +390,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 526,
+            "line": 528,
             "description": "Used to unbind event listeners from the worker. Internally it uses the jQuery `.off` method.",
             "itemtype": "method",
             "name": "off",
@@ -408,7 +408,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 542,
+            "line": 544,
             "description": "Used to trigger events on the worker. Internally it uses a combination of the jQuery `.trigger` method\nand a custom trigger for triggering events on the native worker script.\n<br /><br />\nIf an event type is recognized as an internal event type, the trigger is executed on the base instance\nusing jQuery. Otherwise the `.sendMessage` API is used to pass the trigger to the worker script.",
             "itemtype": "method",
             "name": "trigger",
@@ -425,7 +425,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 598,
+            "line": 600,
             "description": "You may want to trigger an event on the base worker instance irrespective of it's event type. Use this\nmethod to achieve the same.",
             "itemtype": "method",
             "name": "triggerSelf",
@@ -442,7 +442,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 626,
+            "line": 628,
             "description": "Internal method to trigger events on the base worker instance.",
             "itemtype": "method",
             "name": "_triggerSelf",
@@ -462,7 +462,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 643,
+            "line": 645,
             "description": "Throw error on the worker instance. This internally triggers the `error` event.\nOptionally you can also make this method throw an exception.\n<br />\nThis method also internally updates the `lastError` value on the instance\nand static properties.",
             "itemtype": "method",
             "name": "throwError",
@@ -491,7 +491,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 676,
+            "line": 678,
             "description": "Internal method used to trigger the `error` event on the instance.",
             "itemtype": "method",
             "name": "_triggerError",
@@ -522,7 +522,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 698,
+            "line": 700,
             "description": "Returns the last error that was trigger on this worker instance.",
             "itemtype": "method",
             "name": "getLastError",

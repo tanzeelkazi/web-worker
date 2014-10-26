@@ -3,7 +3,7 @@
     'use strict';
 
     /**
-     * The WebWorker module
+     * The WebWorker module.
      * @module WebWorker
      */
     var WebWorker = null,
@@ -493,6 +493,8 @@
         if (nativeWorker !== null) {
             nativeWorker.terminate();
             self._hasLoaded = false;
+            self._isTerminateInitialized = false;
+            self._nativeWorker = null;
             self.trigger(Event.WORKER_TERMINATED, {"returnValue": returnValue});
         }
 

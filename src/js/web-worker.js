@@ -7,6 +7,7 @@
      * @module WebWorker
      */
     var WebWorker = null,
+        _WebWorker = null,
         NativeWorker = null,
 
         context = null,
@@ -779,17 +780,24 @@
      */
     WebWorker.getLastError = WebWorker.prototype.getLastError;
 
-    // TODO: Make this method more manageable and consistent with the way jQuery handles things.
     WebWorker.noConflict = function (context, className) {
-        context = context || defaultContext;
-        className = className || defaultClassName;
+        context = context || null;
+        className = className || null;
 
-        context[className] = WebWorker;
+        if (defaultContext[defaultClassName]) {
+            delete defaultContext[defaultClassName];
+        }
+
+        if (context !== null && className !== null) {
+            context[className] = WebWorker;
+        }
 
         return WebWorker;
     };
 
-    WebWorker.noConflict(context, className);
+    _WebWorker = defaultContext[defaultClassName] || null;
+
+    context[className] = WebWorker;
 
     return;
 })(jQuery);

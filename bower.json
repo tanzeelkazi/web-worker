@@ -22,6 +22,7 @@
     "jquery": "~1.11.x"
   },
   "devDependencies": {
-	"jasmine": "~2.0.3"
+    "jasmine": "~2.0.3",
+    "blanket": "~1.1.5"
   }
 }

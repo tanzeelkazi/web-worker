@@ -4,13 +4,16 @@
         <title>WebWorker - Jasmine Test Runner</title>
 
         <link href="libs/jasmine/lib/jasmine-2.0.3/jasmine.css" rel="stylesheet" type="text/css" />
+        <link href="css/blanket-override.css" rel="stylesheet" type="text/css" />
 
         <script src="libs/jasmine/lib/jasmine-2.0.3/jasmine.js" type="text/javascript"></script>
         <script src="libs/jasmine/lib/jasmine-2.0.3/jasmine-html.js" type="text/javascript"></script>
         <script src="libs/jasmine/lib/jasmine-2.0.3/boot.js" type="text/javascript"></script>
 
+        <script src="libs/blanket/blanket_jasmine.js" type="text/javascript"></script>
+
         <script src="libs/jquery/jquery.js" type="text/javascript"></script>
-        <script src="src/js/web-worker.js" type="text/javascript"></script>
+        <script src="src/js/web-worker.js" type="text/javascript" data-cover></script>
 
     </head>
     <body>

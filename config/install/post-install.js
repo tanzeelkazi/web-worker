@@ -22,7 +22,13 @@
 
         jasmineSourceArchivePath = null,
         jasmineSourceArchive = null,
-        jasmineDestDir = null;
+        jasmineDestDir = null,
+
+        blanketSourceDir = null,
+        blanketDestDir = null,
+        blanketAdapterSource = null,
+        blanketAdapterJasmine2ReplacementPath = null,
+        blanketAdapterJasmine2Replacement = null;
 
     console.time(label);
 
@@ -47,6 +53,10 @@
 
     jasmineSourceArchivePath = bowerDir + '/jasmine/dist/jasmine-standalone-2.0.3.zip';
     jasmineDestDir = libsDir + '/jasmine';
+
+    blanketSourceDir = bowerDir + '/blanket/dist';
+    blanketDestDir = libsDir + '/blanket';
+    blanketAdapterJasmine2ReplacementPath = './config/blanket/blanket-jasmine-2.x.js';
 
     console.log('=====================================' + EOL +
                 '= WebWorker npm post-install script =' + EOL +
@@ -81,6 +91,20 @@
         jasmineSourceArchive = new AdmZip(jasmineSourceArchivePath);
         jasmineSourceArchive.extractAllTo(jasmineDestDir, true);
         console.log(ok('Done' + EOL));
+
+        console.log('Building `blanket` for `jasmine-2.x`...');
+        fse.mkdirsSync(blanketDestDir);
+
+        blanketAdapterSource = fse.readFileSync(blanketSourceDir + '/jasmine/blanket_jasmine.js', {"encoding": "utf-8"});
+        blanketAdapterJasmine2Replacement = fse.readFileSync(blanketAdapterJasmine2ReplacementPath, {"encoding": "utf-8"});
+
+        blanketAdapterSource = blanketAdapterSource.replace(/\(function\(\) \{[\r\n]+[\s]+if \(! jasmine\) \{(?:(?:.|[\r\n\s])+?)\}\)\(\)\;/gi, blanketAdapterJasmine2Replacement);
+
+        fse.writeFileSync(blanketDestDir + '/blanket_jasmine.js', blanketAdapterSource);
+
+        console.log(ok('Done' + EOL));
+
+        console.log('Resource copy completed!' + EOL);
 
         console.timeEnd(label);
         return;

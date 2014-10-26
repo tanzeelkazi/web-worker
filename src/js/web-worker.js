@@ -856,8 +856,11 @@
         context = context || null;
         className = className || null;
 
-        if (defaultContext[defaultClassName]) {
+        if (defaultContext[defaultClassName] === WebWorker) {
             delete defaultContext[defaultClassName];
+            if (_WebWorker !== null) {
+                defaultContext[defaultClassName] = _WebWorker;
+            }
         }
 
         if (context !== null && className !== null) {

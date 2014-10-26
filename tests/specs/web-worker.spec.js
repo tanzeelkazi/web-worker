@@ -237,6 +237,12 @@
                     return;
                 });
 
+                it("should be chainable", function () {
+                    worker = new WebWorker(exampleWorkerUrl);
+                    expect(worker.load()).toEqual(worker);
+                    return;
+                });
+
                 return;
             });
 
@@ -285,6 +291,12 @@
                     return;
                 });
 
+                it("should be chainable", function () {
+                    worker = new WebWorker(exampleWorkerUrl);
+                    expect(worker.off()).toEqual(worker);
+                    return;
+                });
+
                 return;
             });
 
@@ -309,6 +321,12 @@
 
                     worker.throwError();
 
+                });
+
+                it("should be chainable", function () {
+                    worker = new WebWorker(exampleWorkerUrl);
+                    expect(worker.on()).toEqual(worker);
+                    return;
                 });
 
                 return;
@@ -353,6 +371,12 @@
 
                     worker.throwError();
 
+                    return;
+                });
+
+                it("should be chainable", function () {
+                    worker = new WebWorker(exampleWorkerUrl);
+                    expect(worker.one()).toEqual(worker);
                     return;
                 });
 
@@ -403,6 +427,12 @@
 
                     worker.load();
 
+                    return;
+                });
+
+                it("should be chainable", function () {
+                    worker = new WebWorker(exampleWorkerUrl);
+                    expect(worker.sendMessage()).toEqual(worker);
                     return;
                 });
 
@@ -465,6 +495,12 @@
                     return;
                 });
 
+                it("should be chainable", function () {
+                    worker = new WebWorker(exampleWorkerUrl);
+                    expect(worker.start()).toEqual(worker);
+                    return;
+                });
+
                 return;
             });
 
@@ -497,6 +533,12 @@
 
                     worker.load();
 
+                    return;
+                });
+
+                it("should be chainable", function () {
+                    worker = new WebWorker(exampleWorkerUrl);
+                    expect(worker.terminate()).toEqual(worker);
                     return;
                 });
 
@@ -545,12 +587,18 @@
                     return;
                 });
 
+                it("should be chainable", function () {
+                    worker = new WebWorker(exampleWorkerUrl);
+                    expect(worker.terminateNow()).toEqual(worker);
+                    return;
+                });
+
                 return;
             });
 
             describe("throwError", function () {
 
-                it("should trigger the ERROR event with the error message", function (done) {
+                it("should be able to trigger the ERROR event with the specified error message", function (done) {
                     var errorMsg = null,
                         Listeners = null;
 
@@ -575,32 +623,144 @@
                     return;
                 });
 
-                return;
-            });
-
-            describe("trigger", function () {
-
-                it("should be able to trigger events", function (done) {
-                    var eventType = null,
+                it("should be able to trigger the ERROR event with the specified error message and data", function (done) {
+                    var errorMsg = null,
+                        data = null,
                         Listeners = null;
 
-                    eventType = "webworker:initialized";
+                    errorMsg = "This is an error!";
+                    data = {
+                        "test": true
+                    };
 
                     Listeners = {
-                        "INITIALIZED": function (event) {
-                            expect(Listeners.INITIALIZED).toHaveBeenCalled();
+                        "ERROR": function (event) {
+                            expect(Listeners.ERROR).toHaveBeenCalled();
+                            expect(event.message).toEqual(errorMsg);
+                            expect(event.errorData).toEqual(data);
                             done();
                             return;
                         }
                     };
 
-                    spyOn(Listeners, 'INITIALIZED').and.callThrough();
+                    spyOn(Listeners, 'ERROR').and.callThrough();
 
                     worker = new WebWorker(exampleWorkerUrl);
 
-                    worker.on(eventType, Listeners.INITIALIZED);
-                    worker.trigger(eventType);
+                    worker.on(WebWorkerEvent.ERROR, Listeners.ERROR);
 
+                    worker.throwError(errorMsg, data);
+
+                    return;
+                });
+
+                it("should be able to trigger the ERROR event with the specified error message and data and throw an exception", function (done) {
+                    var errorMsg = null,
+                        data = null,
+                        Listeners = null;
+
+                    errorMsg = "This is an error!";
+                    data = {
+                        "test": true
+                    };
+
+                    Listeners = {
+                        "ERROR": function (event) {
+                            expect(Listeners.ERROR).toHaveBeenCalled();
+                            expect(event.message).toEqual(errorMsg);
+                            expect(event.errorData).toEqual(data);
+                            done();
+                            return;
+                        }
+                    };
+
+                    spyOn(Listeners, 'ERROR').and.callThrough();
+
+                    worker = new WebWorker(exampleWorkerUrl);
+
+                    worker.on(WebWorkerEvent.ERROR, Listeners.ERROR);
+
+                    spyOn(worker, 'throwError').and.callThrough();
+
+                    try {
+                        worker.throwError(errorMsg, data, true);
+                    } catch (err) {
+                        expect(err.message).toEqual(errorMsg);
+                    }
+
+                    return;
+                });
+
+                it("should be chainable", function () {
+                    worker = new WebWorker(exampleWorkerUrl);
+                    expect(worker.throwError()).toEqual(worker);
+                    return;
+                });
+
+                return;
+            });
+
+            describe("trigger", function () {
+
+                it("should be able to trigger internal events on the worker instance and pass other events to the worker", function (done) {
+                    var Listeners = null,
+                        nativeWorker = null,
+                        eventType1 = null,
+                        eventType2 = null;
+
+                    Listeners = {
+                        "LOADED": function (event) {
+                            nativeWorker = worker.getNativeWorker();
+                            spyOn(nativeWorker, 'postMessage').and.callFake(Listeners.POST_MESSAGE);
+
+                            worker.trigger(eventType1);
+                            worker.trigger(eventType2);
+
+                            return;
+                        },
+
+                        "INITIALIZED": function (event) {
+                            expect(Listeners.INITIALIZED).toHaveBeenCalled();
+                            expect(Listeners.POST_MESSAGE).not.toHaveBeenCalled();
+                            return;
+                        },
+
+                        "SOME_EVENT": function (event) {
+                            return;
+                        },
+
+                        "POST_MESSAGE": function (data) {
+
+                            expect(Listeners.SOME_EVENT).not.toHaveBeenCalled();
+                            expect(Listeners.POST_MESSAGE).toHaveBeenCalled();
+
+                            done();
+
+                            return;
+                        }
+                    };
+
+                    spyOn(Listeners, 'INITIALIZED').and.callThrough();
+                    spyOn(Listeners, 'SOME_EVENT').and.callThrough();
+                    spyOn(Listeners, 'POST_MESSAGE').and.callThrough();
+
+                    eventType1 = WebWorkerEvent.INITIALIZED;
+                    eventType2 = 'some-event';
+
+                    worker = new WebWorker(exampleWorkerUrl);
+
+                    worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.LOADED);
+                    worker.on(eventType1, Listeners.INITIALIZED);
+                    worker.on(eventType2, Listeners.SOME_EVENT);
+
+                    worker.load();
+
+                    return;
+                });
+
+                it("should be chainable", function () {
+                    worker = new WebWorker(exampleWorkerUrl);
+                    expect(worker.trigger()).toEqual(worker);
                     return;
                 });
 
@@ -609,7 +769,44 @@
 
             describe("triggerSelf", function () {
 
-                it("should do something");
+                it("should be able to trigger any event on the worker instance", function (done) {
+                    var someEventType = null,
+                        Listeners = null;
+
+                    Listeners = {
+                        "INITIALIZED": function (event) {
+                            expect(Listeners.INITIALIZED).toHaveBeenCalled();
+                            return;
+                        },
+
+                        "SOME_EVENT": function (event) {
+                            expect(Listeners.SOME_EVENT).toHaveBeenCalled();
+                            done();
+                            return;
+                        }
+                    };
+
+                    spyOn(Listeners, 'INITIALIZED').and.callThrough();
+                    spyOn(Listeners, 'SOME_EVENT').and.callThrough();
+
+                    worker = new WebWorker(exampleWorkerUrl);
+
+                    someEventType = 'some-event';
+
+                    worker.on(WebWorkerEvent.INITIALIZED, Listeners.INITIALIZED);
+                    worker.on(someEventType, Listeners.SOME_EVENT);
+
+                    worker.triggerSelf(WebWorkerEvent.INITIALIZED);
+                    worker.triggerSelf(someEventType);
+
+                    return;
+                });
+
+                it("should be chainable", function () {
+                    worker = new WebWorker(exampleWorkerUrl);
+                    expect(worker.triggerSelf()).toEqual(worker);
+                    return;
+                });
 
                 return;
             });
@@ -618,6 +815,85 @@
         });
 
         describe("static", function () {
+
+            describe("getLastError", function () {
+
+                it("should be able to retrieve the last error thrown amongst all worker instances", function () {
+                    var worker1 = null,
+                        worker2 = null,
+                        errorMsg1 = null,
+                        errorMsg2 = null;
+
+                    worker1 = new WebWorker(exampleWorkerUrl);
+                    worker2 = new WebWorker(exampleWorkerUrl);
+
+                    errorMsg1 = "This is error #1";
+                    errorMsg2 = "This is error #2";
+
+
+                    expect(worker1.getLastError()).toBeNull();
+                    expect(worker2.getLastError()).toBeNull();
+
+                    worker1.throwError(errorMsg1);
+                    expect(worker1.getLastError()).toEqual(errorMsg1);
+                    expect(worker2.getLastError()).toBeNull();
+                    expect(WebWorker.getLastError()).toEqual(errorMsg1);
+
+                    worker2.throwError(errorMsg2);
+                    expect(worker1.getLastError()).toEqual(errorMsg1);
+                    expect(worker2.getLastError()).toEqual(errorMsg2);
+                    expect(WebWorker.getLastError()).toEqual(errorMsg2);
+
+                    return;
+                });
+
+                return;
+            });
+
+            describe("noConflict", function () {
+                var cachedWebWorker = WebWorker;
+
+                afterEach(function () {
+                    window.WebWorker = cachedWebWorker;
+                    return;
+                });
+
+                it("should be able to remove WebWorker from the window object and re-insert into the context and classname provided", function () {
+                    var someContext = {},
+                        someClassName = 'someClass',
+                        returnValue = null;
+
+                    expect(window.WebWorker).toBeDefined();
+
+                    returnValue = WebWorker.noConflict(someContext, someClassName);
+
+                    expect(window.WebWorker).toBeUndefined();
+
+                    expect(someContext[someClassName]).toBeDefined();
+                    expect(someContext[someClassName]).toEqual(cachedWebWorker);
+                    expect(returnValue).toEqual(cachedWebWorker);
+
+                    return;
+                });
+
+                it("should be able to remove WebWorker from the window object even if context and classname are not provided", function () {
+                    var returnValue = null;
+
+                    expect(window.WebWorker).toBeDefined();
+
+                    returnValue = WebWorker.noConflict();
+
+                    expect(window.WebWorker).toBeUndefined();
+
+                    expect(returnValue).toEqual(cachedWebWorker);
+
+                    return;
+                });
+
+                return;
+            });
+
+            return;
         });
 
         return;

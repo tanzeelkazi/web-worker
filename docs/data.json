@@ -183,7 +183,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 194,
+            "line": 193,
             "description": "Returns the worker URL if one was provided during object instantiation.",
             "itemtype": "method",
             "name": "getUrl",
@@ -196,7 +196,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 203,
+            "line": 202,
             "description": "Returns the worker blob URL if one has been generated.",
             "itemtype": "method",
             "name": "getBlobUrl",
@@ -209,7 +209,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 212,
+            "line": 211,
             "description": "Returns the native browser worker instance if one has been generated.",
             "itemtype": "method",
             "name": "getNativeWorker",
@@ -222,7 +222,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 221,
+            "line": 220,
             "description": "Returns whether the worker script has been loaded.",
             "itemtype": "method",
             "name": "hasLoaded",
@@ -235,7 +235,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 230,
+            "line": 229,
             "description": "Triggers the instance to load the worker script and generate a native browser worker.",
             "itemtype": "method",
             "name": "load",
@@ -245,7 +245,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 286,
+            "line": 285,
             "description": "Generates the native browser worker and attaches the message parser to it.",
             "itemtype": "method",
             "name": "_createWorker",
@@ -257,7 +257,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 302,
+            "line": 301,
             "description": "Assigns the basic internal event handlers to the worker instance.",
             "itemtype": "method",
             "name": "_assignEventHandlers",
@@ -269,7 +269,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 330,
+            "line": 324,
             "description": "Returns whether a worker terminate was initialized.",
             "itemtype": "method",
             "name": "isTerminateInitialized",
@@ -282,7 +282,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 339,
+            "line": 333,
             "description": "Start the worker (if it has loaded). Any arguments passed to this method\nwill be passed internally to the worker script.\n<br />\nNote that you should start the worker only AFTER it has loaded. If you call this\nmethod before the worker has loaded it will fail silently.",
             "itemtype": "method",
             "name": "start",
@@ -300,7 +300,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 369,
+            "line": 363,
             "description": "This method acts as the main communications interface with the worker and is used internally.\n<br /><br />\n**You are recommended to use the trigger interface _ONLY_ as it is the most reliable mode of\ncommunication between the instance and the actual worker.**\n<br /><br />\nIf you do understand the risks, you are welcome to use this method (a reason why it is\nleft public instead of private).\n<br /><br />\nIt's basic usage is very simple. Specify the `action`, which is the\nmethod name to call _inside_ the worker script, and the arguments to pass in. The worker\ndoes the rest of the heavy lifting.\n<br /><br />\nNote: This method is NOT synchronous and will not warn you of any errors.",
             "itemtype": "method",
             "name": "sendMessage",
@@ -322,7 +322,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 417,
+            "line": 411,
             "description": "Attaches the message parser to the native worker. This allows the worker to hook into\n`postMessage` API and set up a communications protocol between the instance and the\nnative browser worker.",
             "itemtype": "method",
             "name": "_attachMessageParser",
@@ -334,7 +334,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 454,
+            "line": 447,
             "description": "This method triggers the worker to terminate. Terminating is ASYNCHRONOUS. This method\nsets the ball rolling. It sends the message to the worker which may have a\n`terminateHandler` that can do some cleanup operations before control is passed back\nto the instance and the final terminate (`terminateNow`) is executed.",
             "itemtype": "method",
             "name": "terminate",
@@ -344,7 +344,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 476,
+            "line": 469,
             "description": "Terminates the worker _immediately_.\n<br />\nThis method can be used to terminate the worker\n_immediately_, instead of waiting for the asynchronous terminate cycle to complete.\n<br />\nIt is also called internally once the asynchronous `terminate` cycle\npasses control back to the instance to execute the final terminate.",
             "itemtype": "method",
             "name": "terminateNow",
@@ -362,7 +362,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 512,
+            "line": 505,
             "description": "Used to bind event listeners to the worker. Internally it uses the jQuery `.on` method.",
             "itemtype": "method",
             "name": "on",
@@ -380,7 +380,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 524,
+            "line": 517,
             "description": "Used to bind event listeners to the worker for single execution. Internally it uses the jQuery `.one` method.",
             "itemtype": "method",
             "name": "one",
@@ -398,7 +398,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 536,
+            "line": 529,
             "description": "Used to unbind event listeners from the worker. Internally it uses the jQuery `.off` method.",
             "itemtype": "method",
             "name": "off",
@@ -416,7 +416,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 552,
+            "line": 545,
             "description": "Used to trigger events on the worker. Internally it uses a combination of the jQuery `.trigger` method\nand a custom trigger for triggering events on the native worker script.\n<br /><br />\nIf an event type is recognized as an internal event type, the trigger is executed on the base instance\nusing jQuery. Otherwise the `.sendMessage` API is used to pass the trigger to the worker script.",
             "itemtype": "method",
             "name": "trigger",
@@ -433,7 +433,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 608,
+            "line": 601,
             "description": "You may want to trigger an event on the base worker instance irrespective of it's event type. Use this\nmethod to achieve the same.",
             "itemtype": "method",
             "name": "triggerSelf",
@@ -450,7 +450,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 642,
+            "line": 635,
             "description": "Internal method to trigger events on the base worker instance.",
             "itemtype": "method",
             "name": "_triggerSelf",
@@ -470,7 +470,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 659,
+            "line": 652,
             "description": "Throw error on the worker instance. This internally triggers the `error` event.\nOptionally you can also make this method throw an exception.\n<br />\nThis method also internally updates the `lastError` value on the instance\nand static properties.",
             "itemtype": "method",
             "name": "throwError",
@@ -499,7 +499,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 692,
+            "line": 685,
             "description": "Internal method used to trigger the `error` event on the instance.",
             "itemtype": "method",
             "name": "_triggerError",
@@ -530,7 +530,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 714,
+            "line": 707,
             "description": "Returns the last error that was trigger on this worker instance.",
             "itemtype": "method",
             "name": "getLastError",
@@ -543,7 +543,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 726,
+            "line": 719,
             "description": "The last error encountered across all WebWorker instances.",
             "itemtype": "property",
             "name": "_lastError",
@@ -556,7 +556,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 735,
+            "line": 728,
             "description": "List of pre-defined actions for the WebWorker instance.\n\n     \"START\"                 : 'start'\n     \"SET_TERMINATING_STATUS\": 'setTerminatingStatus'\n     \"TERMINATE\"             : 'terminate'\n     \"TERMINATE_NOW\"         : 'terminateNow'\n     \"TRIGGER\"               : 'trigger'\n     \"TRIGGER_SELF\"          : 'triggerSelf'",
             "itemtype": "property",
             "name": "Action",
@@ -567,7 +567,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 759,
+            "line": 752,
             "description": "List of pre-defined events for the WebWorker instance.\n\n     \"INITIALIZED\"       : 'webworker:initialized'\n     \"ERROR\"             : 'webworker:error'\n     \"WORKER_LOADING\"    : 'webworker:worker-loading'\n     \"WORKER_LOADED\"     : 'webworker:worker-loaded'\n     \"WORKER_STARTING\"   : 'webworker:worker-starting'\n     \"WORKER_STARTED\"    : 'webworker:worker-started'\n     \"WORKER_TERMINATING\": 'webworker:worker-terminating'\n     \"WORKER_TERMINATED\" : 'webworker:worker-terminated'",
             "itemtype": "property",
             "name": "Event",
@@ -578,7 +578,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 790,
+            "line": 783,
             "description": "Reverse mapping of pre-defined events for faster lookup.",
             "itemtype": "property",
             "name": "EventMap",
@@ -589,7 +589,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 805,
+            "line": 798,
             "description": "Pre-defined list of errors for the WebWorker instance.\n\n     \"UNKNOWN\"            : \"An unknown error occured.\"\n     \"INVALID_ARGUMENTS\"  : \"Invalid arguments were supplied to this method.\"\n     \"WORKER_DID_NOT_LOAD\": \"Unable to load worker.\"",
             "itemtype": "property",
             "name": "Error",
@@ -600,7 +600,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 836,
+            "line": 829,
             "description": "Retrieves the last error thrown by any WebWorker instance.",
             "itemtype": "method",
             "name": "getLastError",
@@ -614,7 +614,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 844,
+            "line": 837,
             "description": "A jQuery-like method to assign the WebWorker class under a different context and className.\nYou may either provide the context and class name as params\nOR use the return value to set it\nOR both.",
             "itemtype": "method",
             "name": "noConflict",

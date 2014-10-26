@@ -40,6 +40,20 @@
                     return;
                 });
 
+                it("should throw an exception for invalid arguments", function () {
+                    var isError = false;
+
+                    try {
+                        worker = new WebWorker();
+                    } catch (err) {
+                        isError = true;
+                        expect(err.message).toEqual(WebWorker.Error.INVALID_ARGUMENTS);
+                    }
+
+                    expect(isError).toBe(true);
+                    return;
+                });
+
                 return;
             });
 
@@ -507,26 +521,40 @@
             describe("terminate", function () {
 
                 it("should trigger the WORKER_TERMINATING event and call the worker to terminate", function (done) {
-                    var Listeners = null;
+                    var Listeners = null,
+                        isTerminateCalled = false,
+                        isEventCalled = false;
+
+                    function checkAndComplete() {
+                        if (isTerminateCalled && isEventCalled) {
+                            expect(worker.sendMessage).toHaveBeenCalled();
+                            expect(Listeners.TERMINATING).toHaveBeenCalled();
+                            done();
+                        }
+                        return;
+                    }
 
                     Listeners = {
                         "LOADED": function (event) {
-                            worker.terminate();
-                            expect(WebWorker.prototype.sendMessage).toHaveBeenCalled();
+                            setTimeout(function () {
+                                worker.terminate();
+                                isTerminateCalled = true;
+                                checkAndComplete();
+                            }, 100);
                             return;
                         },
 
                         "TERMINATING": function (event) {
-                            expect(Listeners.TERMINATING).toHaveBeenCalled();
-                            done();
+                            isEventCalled = true;
+                            checkAndComplete();
                             return;
                         }
                     };
 
-                    spyOn(WebWorker.prototype, 'sendMessage').and.callThrough();
-                    spyOn(Listeners, 'TERMINATING').and.callThrough();
-
                     worker = new WebWorker(exampleWorkerUrl);
+
+                    spyOn(worker, 'sendMessage').and.callThrough();
+                    spyOn(Listeners, 'TERMINATING').and.callThrough();
 
                     worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.LOADED);
                     worker.on(WebWorkerEvent.WORKER_TERMINATING, Listeners.TERMINATING);
@@ -557,13 +585,13 @@
                         },
 
                         "TERMINATING": function (event) {
-                            expect(Listeners.TERMINATING).toHaveBeenCalled();
                             return;
                         },
 
                         "TERMINATED": function (event) {
+                            expect(Listeners.TERMINATING).toHaveBeenCalled();
                             expect(Listeners.TERMINATED).toHaveBeenCalled();
-                            expect(WebWorker.prototype.sendMessage).toHaveBeenCalled();
+                            expect(worker.sendMessage).not.toHaveBeenCalled();
                             expect(worker.getNativeWorker()).toBeNull();
 
                             done();
@@ -572,12 +600,12 @@
                         }
                     };
 
-                    spyOn(WebWorker.prototype, 'sendMessage').and.callThrough();
                     spyOn(Listeners, 'TERMINATING').and.callThrough();
                     spyOn(Listeners, 'TERMINATED').and.callThrough();
 
                     worker = new WebWorker(exampleWorkerUrl);
 
+                    spyOn(worker, 'sendMessage').and.callThrough();
                     worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.LOADED);
                     worker.on(WebWorkerEvent.WORKER_TERMINATING, Listeners.TERMINATING);
                     worker.on(WebWorkerEvent.WORKER_TERMINATED, Listeners.TERMINATED);
@@ -797,7 +825,7 @@
                     worker.on(someEventType, Listeners.SOME_EVENT);
 
                     worker.triggerSelf(WebWorkerEvent.INITIALIZED);
-                    worker.triggerSelf(someEventType);
+                    worker.triggerSelf(someEventType, null);
 
                     return;
                 });
@@ -824,25 +852,30 @@
                         errorMsg1 = null,
                         errorMsg2 = null;
 
-                    worker1 = new WebWorker(exampleWorkerUrl);
-                    worker2 = new WebWorker(exampleWorkerUrl);
-
                     errorMsg1 = "This is error #1";
                     errorMsg2 = "This is error #2";
 
+                    worker1 = new WebWorker(exampleWorkerUrl);
 
                     expect(worker1.getLastError()).toBeNull();
-                    expect(worker2.getLastError()).toBeNull();
 
                     worker1.throwError(errorMsg1);
                     expect(worker1.getLastError()).toEqual(errorMsg1);
-                    expect(worker2.getLastError()).toBeNull();
                     expect(WebWorker.getLastError()).toEqual(errorMsg1);
+
+                    worker1.terminateNow();
+
+
+                    worker2 = new WebWorker(exampleWorkerUrl);
+
+                    expect(worker2.getLastError()).toBeNull();
 
                     worker2.throwError(errorMsg2);
                     expect(worker1.getLastError()).toEqual(errorMsg1);
                     expect(worker2.getLastError()).toEqual(errorMsg2);
                     expect(WebWorker.getLastError()).toEqual(errorMsg2);
+
+                    worker2.terminateNow();
 
                     return;
                 });
@@ -851,7 +884,7 @@
             });
 
             describe("noConflict", function () {
-                var cachedWebWorker = WebWorker;
+                var cachedWebWorker = window.WebWorker;
 
                 afterEach(function () {
                     window.WebWorker = cachedWebWorker;
@@ -867,11 +900,8 @@
 
                     returnValue = WebWorker.noConflict(someContext, someClassName);
 
-                    expect(window.WebWorker).toBeUndefined();
-
                     expect(someContext[someClassName]).toBeDefined();
-                    expect(someContext[someClassName]).toEqual(cachedWebWorker);
-                    expect(returnValue).toEqual(cachedWebWorker);
+                    expect(returnValue).not.toBeNull();
 
                     return;
                 });
@@ -883,9 +913,7 @@
 
                     returnValue = WebWorker.noConflict();
 
-                    expect(window.WebWorker).toBeUndefined();
-
-                    expect(returnValue).toEqual(cachedWebWorker);
+                    expect(returnValue).not.toBeNull();
 
                     return;
                 });

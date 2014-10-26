@@ -339,6 +339,9 @@
     /**
      * Start the worker (if it has loaded). Any arguments passed to this method
      * will be passed internally to the worker script.
+     * <br />
+     * Note that you should start the worker only AFTER it has loaded. If you call this
+     * method before the worker has loaded it will fail silently.
      * @method start
      * @param {Mixed} args* Arguments to be passed internally to the worker
      *                      script.<br />
@@ -479,6 +482,10 @@
      * It is also called internally once the asynchronous `terminate` cycle
      * passes control back to the instance to execute the final terminate.
      * @method terminateNow
+     * @param {Mixed} [returnValue] This value is passed to with the data on the
+     *                              WORKER_TERMINATED event. It is also used internally to
+     *                              pass the return value of the `terminateHandler` from
+     *                              the worker in the asynchronous terminate cycle.
      * @chainable
      */
     WebWorker.prototype.terminateNow = function (returnValue) {
@@ -716,8 +723,29 @@
 
     // Static
 
+    /**
+     * The last error encountered across all WebWorker instances.
+     * @property _lastError
+     * @private
+     * @static
+     * @type {String}
+     */
     WebWorker._lastError = null;
 
+    /**
+     * List of pre-defined actions for the WebWorker instance.
+     *
+     *      "START"                 : 'start'
+     *      "SET_TERMINATING_STATUS": 'setTerminatingStatus'
+     *      "TERMINATE"             : 'terminate'
+     *      "TERMINATE_NOW"         : 'terminateNow'
+     *      "TRIGGER"               : 'trigger'
+     *      "TRIGGER_SELF"          : 'triggerSelf'
+     *
+     * @property Action
+     * @static
+     * @type {Object}
+     */
     Action = {
         "START": 'start',
         "SET_TERMINATING_STATUS": 'setTerminatingStatus',
@@ -728,6 +756,22 @@
     };
     WebWorker.Action = Action;
 
+    /**
+     * List of pre-defined events for the WebWorker instance.
+     *
+     *      "INITIALIZED"       : 'webworker:initialized'
+     *      "ERROR"             : 'webworker:error'
+     *      "WORKER_LOADING"    : 'webworker:worker-loading'
+     *      "WORKER_LOADED"     : 'webworker:worker-loaded'
+     *      "WORKER_STARTING"   : 'webworker:worker-starting'
+     *      "WORKER_STARTED"    : 'webworker:worker-started'
+     *      "WORKER_TERMINATING": 'webworker:worker-terminating'
+     *      "WORKER_TERMINATED" : 'webworker:worker-terminated'
+     *
+     * @property Event
+     * @static
+     * @type {Object}
+     */
     Event = {
         "INITIALIZED": 'initialized',
         "ERROR": 'error',
@@ -743,6 +787,12 @@
     };
     WebWorker.Event = Event;
 
+    /**
+     * Reverse mapping of pre-defined events for faster lookup.
+     * @property EventMap
+     * @static
+     * @type {Object}
+     */
     EventMap = {};
     WebWorker.EventMap = EventMap;
 
@@ -752,6 +802,17 @@
         EventMap[Event[key]] = key;
     }
 
+    /**
+     * Pre-defined list of errors for the WebWorker instance.
+     *
+     *      "UNKNOWN"            : "An unknown error occured."
+     *      "INVALID_ARGUMENTS"  : "Invalid arguments were supplied to this method."
+     *      "WORKER_DID_NOT_LOAD": "Unable to load worker."
+     *
+     * @property Error
+     * @static
+     * @type {Object}
+     */
     Error = {
         "UNKNOWN": "An unknown error occured.",
         "INVALID_ARGUMENTS": "Invalid arguments were supplied to this method.",
@@ -780,6 +841,17 @@
      */
     WebWorker.getLastError = WebWorker.prototype.getLastError;
 
+    /**
+     * A jQuery-like method to assign the WebWorker class under a different context and className.
+     * You may either provide the context and class name as params
+     * OR use the return value to set it
+     * OR both.
+     * @method noConflict
+     * @static
+     * @param {Object} context The context to which the WebWorker instance needs to be associated.
+     * @param {String} className The class name with which the WebWorker instance will be identified.
+     * @return {String} The last error string thrown by any WebWorker instance.
+     */
     WebWorker.noConflict = function (context, className) {
         context = context || null;
         className = className || null;

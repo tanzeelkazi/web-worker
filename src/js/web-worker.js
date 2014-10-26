@@ -35,7 +35,7 @@
     WebWorker = context[className] || null;
 
     if (WebWorker !== null) {
-        return;
+        _WebWorker = WebWorker;
     }
 
     slice = Array.prototype.slice;
@@ -869,8 +869,6 @@
 
         return WebWorker;
     };
-
-    _WebWorker = defaultContext[defaultClassName] || null;
 
     context[className] = WebWorker;
 

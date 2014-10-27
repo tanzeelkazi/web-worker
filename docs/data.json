@@ -15,6 +15,15 @@
             },
             "fors": {},
             "namespaces": {}
+        },
+        "src/js/worker-wrapper.js": {
+            "name": "src/js/worker-wrapper.js",
+            "modules": {},
+            "classes": {
+                "Wrapper": 1
+            },
+            "fors": {},
+            "namespaces": {}
         }
     },
     "modules": {
@@ -22,13 +31,14 @@
             "name": "WebWorker",
             "submodules": {},
             "classes": {
-                "WebWorker": 1
+                "WebWorker": 1,
+                "Wrapper": 1
             },
             "fors": {},
             "namespaces": {},
             "tag": "module",
-            "file": "src/js/web-worker.js",
-            "line": 44,
+            "file": "src/js/worker-wrapper.js",
+            "line": 34,
             "description": "The WebWorker module."
         }
     },
@@ -54,6 +64,21 @@
                     "type": "Object|String"
                 }
             ]
+        },
+        "Wrapper": {
+            "name": "Wrapper",
+            "shortname": "Wrapper",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "WebWorker",
+            "namespace": "",
+            "file": "src/js/worker-wrapper.js",
+            "line": 34,
+            "description": "This documentation is for the worker script _wrapper_. Every user webworker\nscript is wrapped within this shell. All properties and methods described\nhere are attached to the `'self'` object within the worker script.",
+            "static": 1
         }
     },
     "classitems": [
@@ -727,6 +752,218 @@
                 "type": "String"
             },
             "class": "WebWorker",
+            "module": "WebWorker"
+        },
+        {
+            "file": "src/js/worker-wrapper.js",
+            "line": 42,
+            "description": "Boolean indicating whether the worker (wrapper) script has initialized.",
+            "itemtype": "property",
+            "name": "hasInitialized",
+            "type": "{Boolean}",
+            "default": "false",
+            "class": "Wrapper",
+            "module": "WebWorker"
+        },
+        {
+            "file": "src/js/worker-wrapper.js",
+            "line": 50,
+            "description": "Object in which all internal worker listeners are tracked.",
+            "itemtype": "property",
+            "name": "Listeners",
+            "type": "{Object}",
+            "class": "Wrapper",
+            "module": "WebWorker"
+        },
+        {
+            "file": "src/js/worker-wrapper.js",
+            "line": 58,
+            "description": "Boolean indicating if the worker script has been initiated to be terminated.",
+            "itemtype": "property",
+            "name": "isTerminating",
+            "type": "{Boolean}",
+            "default": "false",
+            "class": "Wrapper",
+            "module": "WebWorker"
+        },
+        {
+            "file": "src/js/worker-wrapper.js",
+            "line": 66,
+            "description": "Boolean indicating if the worker script has been initiated to be terminated.",
+            "itemtype": "property",
+            "name": "isTerminating",
+            "type": "{Boolean}",
+            "default": "null",
+            "class": "Wrapper",
+            "module": "WebWorker"
+        },
+        {
+            "file": "src/js/worker-wrapper.js",
+            "line": 74,
+            "description": "The main worker script that is provided by the user is injected into this function.\nAlso any arguments passed to the {{#crossLink \"Wrapper/start:method\"}}{{/crossLink}} method are passed on to this function.",
+            "itemtype": "method",
+            "name": "main",
+            "chainable": 1,
+            "class": "Wrapper",
+            "module": "WebWorker"
+        },
+        {
+            "file": "src/js/worker-wrapper.js",
+            "line": 84,
+            "description": "This method is called when initializing the worker script.\nIt also triggers the WORKER_LOADED event on the base worker instance.",
+            "itemtype": "method",
+            "name": "init",
+            "chainable": 1,
+            "class": "Wrapper",
+            "module": "WebWorker"
+        },
+        {
+            "file": "src/js/worker-wrapper.js",
+            "line": 98,
+            "description": "This method is called by the base worker instance when it's {{#crossLink \"WebWorker/start:method\"}}{{/crossLink}}\nmethod is invoked. It also gets the arguments from the base worker.\nInternally it calls the {{#crossLink \"Wrapper/main:method\"}}{{/crossLink}} method with arguments.",
+            "itemtype": "method",
+            "name": "start",
+            "chainable": 1,
+            "class": "Wrapper",
+            "module": "WebWorker"
+        },
+        {
+            "file": "src/js/worker-wrapper.js",
+            "line": 116,
+            "description": "This method emulates basic jQuery `.on` event binding behavior.",
+            "itemtype": "method",
+            "name": "on",
+            "params": [
+                {
+                    "name": "eventType",
+                    "description": "The string event type that needs to be bound to.",
+                    "type": "String"
+                },
+                {
+                    "name": "listener",
+                    "description": "The function that will listen to the event.",
+                    "type": "Function"
+                }
+            ],
+            "chainable": 1,
+            "class": "Wrapper",
+            "module": "WebWorker"
+        },
+        {
+            "file": "src/js/worker-wrapper.js",
+            "line": 139,
+            "description": "This method emulates basic jQuery `.one` event binding behavior.",
+            "itemtype": "method",
+            "name": "one",
+            "params": [
+                {
+                    "name": "eventType",
+                    "description": "The string event type that needs to be bound to.",
+                    "type": "String"
+                },
+                {
+                    "name": "listener",
+                    "description": "The function that will listen to the event.",
+                    "type": "Function"
+                }
+            ],
+            "chainable": 1,
+            "class": "Wrapper",
+            "module": "WebWorker"
+        },
+        {
+            "file": "src/js/worker-wrapper.js",
+            "line": 159,
+            "description": "This method emulates basic jQuery `.off` event unbinding behavior.",
+            "itemtype": "method",
+            "name": "off",
+            "params": [
+                {
+                    "name": "eventType",
+                    "description": "The string event type that needs to be unbound.\n                            If not provided or passed as `null` all event\n                            listeners are unbound.",
+                    "type": "String",
+                    "optional": true
+                },
+                {
+                    "name": "listener",
+                    "description": "The function that needs to be unbound from the event.\n                             If not provided or passed as `null` then all event\n                             listeners for that particular event type are unbound.",
+                    "type": "Function",
+                    "optional": true
+                }
+            ],
+            "chainable": 1,
+            "class": "Wrapper",
+            "module": "WebWorker"
+        },
+        {
+            "file": "src/js/worker-wrapper.js",
+            "line": 190,
+            "description": "Removes an event listener for a particular event type. Optionally if\nthe listener is not passed or is `null` it removes all listeners for\nthe specified event type.",
+            "itemtype": "method",
+            "name": "_removeListenerFromEventType",
+            "access": "private",
+            "tagname": "",
+            "params": [
+                {
+                    "name": "eventType",
+                    "description": "Event type for which the listener is\n                           being removed.",
+                    "type": "String"
+                },
+                {
+                    "name": "listener",
+                    "description": "The listener that needs to be removed.\n                               If not passed in or passed as `null`\n                               all listeners for the specified event\n                               type are removed.",
+                    "type": "Function",
+                    "optional": true
+                }
+            ],
+            "chainable": 1,
+            "class": "Wrapper",
+            "module": "WebWorker"
+        },
+        {
+            "file": "src/js/worker-wrapper.js",
+            "line": 223,
+            "description": "Trigger events on the base worker instance.",
+            "itemtype": "method",
+            "name": "trigger",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "The event to be triggered. Generally\n                              expected to be a `String` but can\n                              also be an `Object`.",
+                    "type": "String|Object"
+                },
+                {
+                    "name": "data",
+                    "description": "Optional data to associate with the event.",
+                    "type": "Mixed",
+                    "optional": true
+                }
+            ],
+            "chainable": 1,
+            "class": "Wrapper",
+            "module": "WebWorker"
+        },
+        {
+            "file": "src/js/worker-wrapper.js",
+            "line": 261,
+            "description": "Trigger events on the thread worker instance.",
+            "itemtype": "method",
+            "name": "triggerSelf",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "The event to be triggered. Generally\n                              expected to be a `String` but can\n                              also be an `Object`.",
+                    "type": "String|Object"
+                },
+                {
+                    "name": "data",
+                    "description": "Optional data to associate with the event.",
+                    "type": "Mixed",
+                    "optional": true
+                }
+            ],
+            "chainable": 1,
+            "class": "Wrapper",
             "module": "WebWorker"
         }
     ],

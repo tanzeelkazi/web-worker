@@ -1,4 +1,7 @@
 ﻿(function () {
+    /**
+     * @module WebWorker
+     */
     var Action = null,
         Event = null,
         Listeners = null;
@@ -28,44 +31,62 @@
         Event[key] = 'webworker:' + Event[key];
     }
 
+    /**
+     * This documentation is for the worker script _wrapper_. Every user webworker
+     * script is wrapped within this shell. All properties and methods described
+     * here are attached to the `'self'` object within the worker script.
+     * @class Wrapper
+     * @static
+     */
+
+    /**
+     * Boolean indicating whether the worker (wrapper) script has initialized.
+     * @property hasInitialized
+     * @type {Boolean}
+     * @default false
+     */
     self.hasInitialized = false;
 
+    /**
+     * Object in which all internal worker listeners are tracked.
+     * @property Listeners
+     * @type {Object}
+     */
     Listeners = {};
     self.Listeners = Listeners;
 
+    /**
+     * Boolean indicating if the worker script has been initiated to be terminated.
+     * @property isTerminating
+     * @type {Boolean}
+     * @default false
+     */
     self.isTerminating = false;
 
+    /**
+     * Boolean indicating if the worker script has been initiated to be terminated.
+     * @property isTerminating
+     * @type {Boolean}
+     * @default null
+     */
     self.terminateHandler = null;
 
+    /**
+     * The main worker script that is provided by the user is injected into this function.
+     * Also any arguments passed to the {{#crossLink "Wrapper/start:method"}}{{/crossLink}} method are passed on to this function.
+     * @method main
+     * @chainable
+     */
     self.main = function () {
-        (function () {
-
-            self.on('tk', function () {
-                self.postMessage('chal gaya boss');
-            });
-
-            return;
-            var counter = 0,
-                timer = null;
-
-
-            timer = setInterval(function () {
-                counter++;
-                self.postMessage(counter);
-
-                if (counter === 50) {
-                    clearInterval(timer);
-                    self.close();
-                }
-
-                return;
-            }, 10);
-
-            return;
-        })();
-        return;
+        return self;
     };
 
+    /**
+     * This method is called when initializing the worker script.
+     * It also triggers the WORKER_LOADED event on the base worker instance.
+     * @method init
+     * @chainable
+     */
     self.init = function () {
         self.hasInitialized = true;
 
@@ -74,6 +95,13 @@
         return self;
     };
 
+    /**
+     * This method is called by the base worker instance when it's {{#crossLink "WebWorker/start:method"}}{{/crossLink}}
+     * method is invoked. It also gets the arguments from the base worker.
+     * Internally it calls the {{#crossLink "Wrapper/main:method"}}{{/crossLink}} method with arguments.
+     * @method start
+     * @chainable
+     */
     self.start = function () {
         if (!self.hasInitialized) {
             return false;
@@ -85,6 +113,13 @@
         return self;
     };
 
+    /**
+     * This method emulates basic jQuery `.on` event binding behavior.
+     * @method on
+     * @param {String} eventType The string event type that needs to be bound to.
+     * @param {Function} listener The function that will listen to the event.
+     * @chainable
+     */
     self.on = function (eventType, listener) {
         eventType += '';
         listener = listener || null;
@@ -101,6 +136,13 @@
         return self;
     };
 
+    /**
+     * This method emulates basic jQuery `.one` event binding behavior.
+     * @method one
+     * @param {String} eventType The string event type that needs to be bound to.
+     * @param {Function} listener The function that will listen to the event.
+     * @chainable
+     */
     self.one = function (eventType, listener) {
         var wrapperListener = null;
 
@@ -114,6 +156,17 @@
         return;
     };
 
+    /**
+     * This method emulates basic jQuery `.off` event unbinding behavior.
+     * @method off
+     * @param {String} [eventType] The string event type that needs to be unbound.
+     *                             If not provided or passed as `null` all event
+     *                             listeners are unbound.
+     * @param {Function} [listener] The function that needs to be unbound from the event.
+     *                              If not provided or passed as `null` then all event
+     *                              listeners for that particular event type are unbound.
+     * @chainable
+     */
     self.off = function (eventType, listener) {
         var key = null;
 
@@ -134,8 +187,23 @@
         return self;
     };
 
+    /**
+     * Removes an event listener for a particular event type. Optionally if
+     * the listener is not passed or is `null` it removes all listeners for
+     * the specified event type.
+     * @method _removeListenerFromEventType
+     * @private
+     * @param  {String} eventType Event type for which the listener is
+     *                            being removed.
+     * @param  {Function} [listener]  The listener that needs to be removed.
+     *                                If not passed in or passed as `null`
+     *                                all listeners for the specified event
+     *                                type are removed.
+     * @chainable
+     */
     self._removeListenerFromEventType = function (eventType, listener) {
-        var listeners = Listeners[eventType];
+        var listeners = Listeners[eventType],
+            i = 0;
 
         listener = listener || null;
         if (listener === null) {
@@ -143,7 +211,7 @@
             return self;
         }
 
-        for (var i = 0; i < listeners.length; i++) {
+        for (; i < listeners.length; i++) {
             if (listeners[i] === listener) {
                 listeners.splice(i, 1);
                 i--;
@@ -152,19 +220,28 @@
         return self;
     };
 
+    /**
+     * Trigger events on the base worker instance.
+     * @method trigger
+     * @param  {String|Object} event The event to be triggered. Generally
+     *                               expected to be a `String` but can
+     *                               also be an `Object`.
+     * @param  {Mixed} [data] Optional data to associate with the event.
+     * @chainable
+     */
     self.trigger = function (event, data) {
 
         var eventType = null,
             hasData = null;
 
-        hasData = (typeof data !== 'undefined');
+        hasData = typeof data !== 'undefined';
 
         if (typeof event === 'string') {
             eventType = event || null;
             if (hasData) {
                 event = {
-                    type: eventType,
-                    data: data
+                    "type": eventType,
+                    "data": data
                 };
             }
         }
@@ -181,14 +258,23 @@
         return self;
     };
 
-
+    /**
+     * Trigger events on the thread worker instance.
+     * @method triggerSelf
+     * @param  {String|Object} event The event to be triggered. Generally
+     *                               expected to be a `String` but can
+     *                               also be an `Object`.
+     * @param  {Mixed} [data] Optional data to associate with the event.
+     * @chainable
+     */
     self.triggerSelf = function (event, data) {
 
-        var worker = this,
+        var self = this,
             eventType = null,
             listeners = null,
             listenersCount = null,
-            listener = null;
+            listener = null,
+            i = 0;
 
         if (typeof event === 'string') {
             eventType = event || null;
@@ -211,9 +297,9 @@
 
         listenersCount = listeners.length;
 
-        for (var i = 0; i < listenersCount; i++) {
+        for (; i < listenersCount; i++) {
             listener = listeners[i];
-            listener.apply(worker, [event]);
+            listener.apply(self, [event]);
         }
 
         return self;
@@ -230,7 +316,7 @@
         }
 
         message = {
-            __isWebWorkerMsg: true
+            "__isWebWorkerMsg": true
         };
 
         message.action = action;

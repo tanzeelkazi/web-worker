@@ -1,6 +1,6 @@
 #Web Worker
 
-The right way to communicate with your web workers.
+The better way of working with web workers.
 
 Don't you just hate having only the `postMessage` API to communicate with your workers?
 Does it leave you wanting for more and distract you away from actual development

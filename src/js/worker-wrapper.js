@@ -1,27 +1,26 @@
 ﻿(function () {
-    'use strict';
     var Action = null,
         Event = null,
         Listeners = null;
 
     Action = {
-        INIT: 'init',
-        START: 'start',
-        TRIGGER: 'trigger'
+        "INIT": 'init',
+        "START": 'start',
+        "TRIGGER": 'trigger'
     };
 
     Event = {
-        INITIALIZED: 'initialized',
-        ERROR: 'error',
+        "INITIALIZED": 'initialized',
+        "ERROR": 'error',
 
-        WORKER_LOADING: 'worker-loading',
-        WORKER_LOADED: 'worker-loaded',
+        "WORKER_LOADING": 'worker-loading',
+        "WORKER_LOADED": 'worker-loaded',
 
-        WORKER_STARTING: 'worker-starting',
-        WORKER_STARTED: 'worker-started',
+        "WORKER_STARTING": 'worker-starting',
+        "WORKER_STARTED": 'worker-started',
 
-        WORKER_TERMINATING: 'worker-terminating',
-        WORKER_TERMINATED: 'worker-terminated'
+        "WORKER_TERMINATING": 'worker-terminating',
+        "WORKER_TERMINATED": 'worker-terminated'
     };
 
     // Add eventPrefix to all event types
@@ -265,6 +264,8 @@
         self.isTerminating = status;
         return self;
     };
+
+    self.nativeClose = self.close;
 
     self.close = self.terminate;
 

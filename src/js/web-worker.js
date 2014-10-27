@@ -728,16 +728,15 @@
     /**
      * List of pre-defined actions for the WebWorker instance.
      *
-     *      "START"                 : 'start'
-     *      "SET_TERMINATING_STATUS": 'setTerminatingStatus'
-     *      "TERMINATE"             : 'terminate'
-     *      "TERMINATE_NOW"         : 'terminateNow'
-     *      "TRIGGER"               : 'trigger'
-     *      "TRIGGER_SELF"          : 'triggerSelf'
+     * @property {Object} Action
+     *     @property {String} Action.START 'start'
+     *     @property {String} Action.SET_TERMINATING_STATUS 'setTerminatingStatus'
+     *     @property {String} Action.TERMINATE 'terminate'
+     *     @property {String} Action.TERMINATE_NOW 'terminateNow'
+     *     @property {String} Action.TRIGGER 'trigger'
+     *     @property {String} Action.TRIGGER_SELF 'triggerSelf'
      *
-     * @property Action
      * @static
-     * @type {Object}
      */
     Action = {
         "START": 'start',
@@ -752,18 +751,17 @@
     /**
      * List of pre-defined events for the WebWorker instance.
      *
-     *      "INITIALIZED"       : 'webworker:initialized'
-     *      "ERROR"             : 'webworker:error'
-     *      "WORKER_LOADING"    : 'webworker:worker-loading'
-     *      "WORKER_LOADED"     : 'webworker:worker-loaded'
-     *      "WORKER_STARTING"   : 'webworker:worker-starting'
-     *      "WORKER_STARTED"    : 'webworker:worker-started'
-     *      "WORKER_TERMINATING": 'webworker:worker-terminating'
-     *      "WORKER_TERMINATED" : 'webworker:worker-terminated'
+     * @property {Object} Event
+     *     @property {String} Event.INITIALIZED 'webworker:initialized'
+     *     @property {String} Event.ERROR 'webworker:error'
+     *     @property {String} Event.WORKER_LOADING 'webworker:worker-loading'
+     *     @property {String} Event.WORKER_LOADED 'webworker:worker-loaded'
+     *     @property {String} Event.WORKER_STARTING 'webworker:worker-starting'
+     *     @property {String} Event.WORKER_STARTED 'webworker:worker-started'
+     *     @property {String} Event.WORKER_TERMINATING 'webworker:worker-terminating'
+     *     @property {String} Event.WORKER_TERMINATED 'webworker:worker-terminated'
      *
-     * @property Event
      * @static
-     * @type {Object}
      */
     Event = {
         "INITIALIZED": 'initialized',
@@ -798,13 +796,12 @@
     /**
      * Pre-defined list of errors for the WebWorker instance.
      *
-     *      "UNKNOWN"            : "An unknown error occured."
-     *      "INVALID_ARGUMENTS"  : "Invalid arguments were supplied to this method."
-     *      "WORKER_DID_NOT_LOAD": "Unable to load worker."
+     * @property {Object} Error
+     *     @property {String} Error.UNKNOWN "An unknown error occured."
+     *     @property {String} Error.INVALID_ARGUMENTS "Invalid arguments were supplied to this method."
+     *     @property {String} Error.WORKER_DID_NOT_LOAD "Unable to load worker."
      *
-     * @property Error
      * @static
-     * @type {Object}
      */
     Error = {
         "UNKNOWN": "An unknown error occured.",

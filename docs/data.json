@@ -557,28 +557,102 @@
         {
             "file": "src/js/web-worker.js",
             "line": 728,
-            "description": "List of pre-defined actions for the WebWorker instance.\n\n     \"START\"                 : 'start'\n     \"SET_TERMINATING_STATUS\": 'setTerminatingStatus'\n     \"TERMINATE\"             : 'terminate'\n     \"TERMINATE_NOW\"         : 'terminateNow'\n     \"TRIGGER\"               : 'trigger'\n     \"TRIGGER_SELF\"          : 'triggerSelf'",
+            "description": "List of pre-defined actions for the WebWorker instance.",
             "itemtype": "property",
             "name": "Action",
+            "type": "Object",
             "static": 1,
-            "type": "{Object}",
             "class": "WebWorker",
-            "module": "WebWorker"
+            "module": "WebWorker",
+            "subprops": [
+                {
+                    "name": "START",
+                    "description": "'start'",
+                    "type": "String"
+                },
+                {
+                    "name": "SET_TERMINATING_STATUS",
+                    "description": "'setTerminatingStatus'",
+                    "type": "String"
+                },
+                {
+                    "name": "TERMINATE",
+                    "description": "'terminate'",
+                    "type": "String"
+                },
+                {
+                    "name": "TERMINATE_NOW",
+                    "description": "'terminateNow'",
+                    "type": "String"
+                },
+                {
+                    "name": "TRIGGER",
+                    "description": "'trigger'",
+                    "type": "String"
+                },
+                {
+                    "name": "TRIGGER_SELF",
+                    "description": "'triggerSelf'",
+                    "type": "String"
+                }
+            ]
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 752,
-            "description": "List of pre-defined events for the WebWorker instance.\n\n     \"INITIALIZED\"       : 'webworker:initialized'\n     \"ERROR\"             : 'webworker:error'\n     \"WORKER_LOADING\"    : 'webworker:worker-loading'\n     \"WORKER_LOADED\"     : 'webworker:worker-loaded'\n     \"WORKER_STARTING\"   : 'webworker:worker-starting'\n     \"WORKER_STARTED\"    : 'webworker:worker-started'\n     \"WORKER_TERMINATING\": 'webworker:worker-terminating'\n     \"WORKER_TERMINATED\" : 'webworker:worker-terminated'",
+            "line": 751,
+            "description": "List of pre-defined events for the WebWorker instance.",
             "itemtype": "property",
             "name": "Event",
+            "type": "Object",
             "static": 1,
-            "type": "{Object}",
             "class": "WebWorker",
-            "module": "WebWorker"
+            "module": "WebWorker",
+            "subprops": [
+                {
+                    "name": "INITIALIZED",
+                    "description": "'webworker:initialized'",
+                    "type": "String"
+                },
+                {
+                    "name": "ERROR",
+                    "description": "'webworker:error'",
+                    "type": "String"
+                },
+                {
+                    "name": "WORKER_LOADING",
+                    "description": "'webworker:worker-loading'",
+                    "type": "String"
+                },
+                {
+                    "name": "WORKER_LOADED",
+                    "description": "'webworker:worker-loaded'",
+                    "type": "String"
+                },
+                {
+                    "name": "WORKER_STARTING",
+                    "description": "'webworker:worker-starting'",
+                    "type": "String"
+                },
+                {
+                    "name": "WORKER_STARTED",
+                    "description": "'webworker:worker-started'",
+                    "type": "String"
+                },
+                {
+                    "name": "WORKER_TERMINATING",
+                    "description": "'webworker:worker-terminating'",
+                    "type": "String"
+                },
+                {
+                    "name": "WORKER_TERMINATED",
+                    "description": "'webworker:worker-terminated'",
+                    "type": "String"
+                }
+            ]
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 783,
+            "line": 781,
             "description": "Reverse mapping of pre-defined events for faster lookup.",
             "itemtype": "property",
             "name": "EventMap",
@@ -589,18 +663,35 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 798,
-            "description": "Pre-defined list of errors for the WebWorker instance.\n\n     \"UNKNOWN\"            : \"An unknown error occured.\"\n     \"INVALID_ARGUMENTS\"  : \"Invalid arguments were supplied to this method.\"\n     \"WORKER_DID_NOT_LOAD\": \"Unable to load worker.\"",
+            "line": 796,
+            "description": "Pre-defined list of errors for the WebWorker instance.",
             "itemtype": "property",
             "name": "Error",
+            "type": "Object",
             "static": 1,
-            "type": "{Object}",
             "class": "WebWorker",
-            "module": "WebWorker"
+            "module": "WebWorker",
+            "subprops": [
+                {
+                    "name": "UNKNOWN",
+                    "description": "\"An unknown error occured.\"",
+                    "type": "String"
+                },
+                {
+                    "name": "INVALID_ARGUMENTS",
+                    "description": "\"Invalid arguments were supplied to this method.\"",
+                    "type": "String"
+                },
+                {
+                    "name": "WORKER_DID_NOT_LOAD",
+                    "description": "\"Unable to load worker.\"",
+                    "type": "String"
+                }
+            ]
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 829,
+            "line": 826,
             "description": "Retrieves the last error thrown by any WebWorker instance.",
             "itemtype": "method",
             "name": "getLastError",
@@ -614,7 +705,7 @@
         },
         {
             "file": "src/js/web-worker.js",
-            "line": 837,
+            "line": 834,
             "description": "A jQuery-like method to assign the WebWorker class under a different context and className.\nYou may either provide the context and class name as params\nOR use the return value to set it\nOR both.",
             "itemtype": "method",
             "name": "noConflict",

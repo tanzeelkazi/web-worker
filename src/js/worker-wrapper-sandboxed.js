@@ -136,7 +136,6 @@ WorkerWrapperSandbox.loadWorker = function () {
          * @chainable
          */
         self._main = function () {
-            self.trigger('some-event');
             return self;
         };
 
@@ -163,7 +162,7 @@ WorkerWrapperSandbox.loadWorker = function () {
          */
         self.start = function () {
             if (!self.isInitialized()) {
-                return false;
+                return self;
             }
 
             self._main.apply(self, arguments);

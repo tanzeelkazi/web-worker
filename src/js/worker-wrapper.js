@@ -146,7 +146,7 @@
      */
     self.start = function () {
         if (!self.isInitialized()) {
-            return false;
+            return self;
         }
 
         self._main.apply(self, arguments);

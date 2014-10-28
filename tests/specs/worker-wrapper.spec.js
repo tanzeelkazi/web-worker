@@ -566,6 +566,101 @@
         });
 
         describe("triggerSelf", function () {
+
+            afterEach(function () {
+                WorkerWrapperSandbox.off();
+                return;
+            });
+
+            it("should be able to trigger bound events on the worker", function (done) {
+                var Listeners = null,
+                    eventType = null;
+
+                Listeners = {
+                    "SOME_EVENT": function () {
+                        expect(Listeners.SOME_EVENT).toHaveBeenCalled();
+                        done();
+                        return;
+                    }
+                };
+
+                spyOn(Listeners, 'SOME_EVENT').and.callThrough();
+
+                eventType = 'some-event';
+
+                WorkerWrapperSandbox.on(eventType, Listeners.SOME_EVENT);
+                WorkerWrapperSandbox.triggerSelf(eventType);
+                return;
+            });
+
+            it("should be able to handle event objects", function (done) {
+                var Listeners = null,
+                    eventType = null;
+
+                Listeners = {
+                    "SOME_EVENT": function () {
+                        expect(Listeners.SOME_EVENT).toHaveBeenCalled();
+                        done();
+                        return;
+                    }
+                };
+
+                spyOn(Listeners, 'SOME_EVENT').and.callThrough();
+
+                eventType = 'some-event';
+
+                WorkerWrapperSandbox.on(eventType, Listeners.SOME_EVENT);
+                WorkerWrapperSandbox.triggerSelf({
+                    "type": eventType,
+                    "data": 'some-data'
+                });
+
+                return;
+            });
+
+            it("should fail silently if no event type is passed in or is garbage", function (done) {
+                var Listeners = null,
+                    eventType1 = null,
+                    eventType2 = null,
+                    checkExpectation = false;
+
+                Listeners = {
+                    "SOME_FN": function () {
+                        return;
+                    },
+
+                    "ANOTHER_FN": function () {
+                        if (checkExpectation) {
+                            expect(Listeners.SOME_FN).not.toHaveBeenCalled();
+                            expect(Listeners.ANOTHER_FN).toHaveBeenCalled();
+
+                            done();
+                            return;
+                        }
+
+                        WorkerWrapperSandbox.off(eventType1);
+                        checkExpectation = true;
+                        WorkerWrapperSandbox.triggerSelf(eventType1);
+                        WorkerWrapperSandbox.triggerSelf(eventType2);
+                        return;
+                    }
+                };
+
+                spyOn(Listeners, 'SOME_FN').and.callThrough();
+                spyOn(Listeners, 'ANOTHER_FN').and.callThrough();
+
+                eventType1 = 'some-event';
+                eventType2 = 'some-other-event';
+
+                WorkerWrapperSandbox.on(eventType1, Listeners.SOME_FN);
+                WorkerWrapperSandbox.on(eventType2, Listeners.ANOTHER_FN);
+
+                WorkerWrapperSandbox.triggerSelf(null);
+                WorkerWrapperSandbox.triggerSelf(true);
+                WorkerWrapperSandbox.triggerSelf(eventType2);
+                return;
+            });
+
             return;
         });
 

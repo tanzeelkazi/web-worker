@@ -1,6 +1,13 @@
-﻿var WorkerWrapperSandbox = {};
+﻿var WorkerWrapperSandbox = {},
+    noop = null;
 
-WorkerWrapperSandbox.postMessage = function () {};
+noop = function() {
+    return function () {};
+};
+
+WorkerWrapperSandbox.postMessage = noop();
+
+WorkerWrapperSandbox.close = noop();
 
 WorkerWrapperSandbox.onmessage = null;
 
@@ -201,11 +208,11 @@ WorkerWrapperSandbox.loadWorker = function () {
          * @param {Function} listener The function that will listen to the event.
          * @chainable
          */
-        self.one = function (eventType, listener) {
+        self.one = function (eventType, oneListener) {
             var wrapperListener = null;
 
             wrapperListener = function () {
-                listener.apply(this, arguments);
+                oneListener.apply(this, arguments);
                 self.off(eventType, wrapperListener);
                 return;
             };
@@ -238,9 +245,7 @@ WorkerWrapperSandbox.loadWorker = function () {
                 return self;
             }
 
-            for (key in _listeners) {
-                self._removeListenerFromEventType(key, listener);
-            }
+            self._removeListenerFromEventType(eventType, listener);
 
             return self;
         };
@@ -294,6 +299,12 @@ WorkerWrapperSandbox.loadWorker = function () {
 
             hasData = typeof data !== 'undefined';
 
+            event = event || null;
+
+            if (event === null) {
+                return self;
+            }
+
             if (typeof event === 'string') {
                 eventType = event || null;
                 if (hasData) {
@@ -334,6 +345,12 @@ WorkerWrapperSandbox.loadWorker = function () {
                 listener = null,
                 i = 0;
 
+            event = event || null;
+
+            if (event === null) {
+                return self;
+            }
+
             if (typeof event === 'string') {
                 eventType = event || null;
             }
@@ -358,6 +375,10 @@ WorkerWrapperSandbox.loadWorker = function () {
             for (; i < listenersCount; i++) {
                 listener = listeners[i];
                 listener.apply(self, [event]);
+                if (listenersCount !== listeners.length) {
+                    i--;
+                    listenersCount = listeners.length;
+                }
             }
 
             return self;
@@ -380,7 +401,7 @@ WorkerWrapperSandbox.loadWorker = function () {
             args = args || null;
 
             if (action === null) {
-                return false;
+                return self;
             }
 
             message = {

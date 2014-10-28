@@ -305,6 +305,16 @@
         return self;
     };
 
+    /**
+     * This method is used to format messages being sent between the worker
+     * and the base worker instance. It's usage is similar to the
+     * {{#crossLink "WebWorker/sendMessage:method"}}{{/crossLink}} method
+     * in the base class.
+     * @method sendMessage
+     * @param {String} action The name of the method on the base worker instance to call.
+     * @param {Array} args An array of arguments to pass to the action.
+     * @chainable
+     */
     self.sendMessage = function (action, args) {
         var message = null;
 
@@ -327,10 +337,37 @@
         return self;
     };
 
-    self.terminate = function () {
+    /**
+     * Terminates the worker from within the worker script.
+     * Note that terminates from within the worker are asynchronous.
+     * This method calls the
+     * {{#crossLink "Wrapper/terminateHandler"}}{{/crossLink}},
+     * if it is assigned and is a function, and then goes on to
+     * communicate with the base worker class to call the method
+     * {{#crossLink "WebWorker/terminateNow:method"}}{{/crossLink}}.
+     *
+     * The {{#crossLink "WebWorker"}}{{/crossLink}}
+     * class does provide a synchronous way to terminate the worker
+     * but it is not supported from within the worker script itself.
+     *
+     * @method terminate
+     * @param {Boolean} [terminateNow] If set to `true` the worker
+     *                                 also does a `self.close()`
+     *                                 after it communicates the
+     *                                 terminate status to the base
+     *                                 worker instance.
+     *                                 It is recommended to use the method
+     *                                 {{#crossLink "Wrapper/terminateNow:method"}}{{/crossLink}}
+     *                                 to achieve the same goal as
+     *                                 it gives a more clear semantics
+     *                                 in your code.
+     * @chainable
+     */
+    self.terminate = function (terminateNow) {
         var terminateHandler = null,
             returnValue = null;
 
+        terminateNow = !!terminateNow;
         terminateHandler = self.terminateHandler || null;
 
         if (!self.isTerminating) {
@@ -343,16 +380,59 @@
         }
 
         self.sendMessage(Action.TERMINATE_NOW, [returnValue]);
+
+        if (terminateNow) {
+            self._nativeClose();
+        }
+
         return self;
     };
 
+    /**
+     * Terminates the worker _immediately from within the worker script.
+     * This method internally calls the
+     * {{#crossLink "Wrapper/terminate:method"}}{{/crossLink}} method
+     * to terminate the worker.
+     *
+     * @method terminateNow
+     */
+    self.terminateNow = function () {
+        self.terminate(true);
+        return;
+    };
+
+    /**
+     * Set the terminating status. Used internally by the wrapper script
+     * to keep track of the terminating status.
+     * @method setTerminatingStatus
+     * @param {Boolean} status The status you want to set.
+     * @chainable
+     */
     self.setTerminatingStatus = function (status) {
         self.isTerminating = status;
         return self;
     };
 
-    self.nativeClose = self.close;
+    /**
+     * The native worker `close` method is overwritten in the wrapper to
+     * give consistent behaviour with the WebWorker class.
+     * This method serves as an alias for the native version of the
+     * method to be used internally.
+     * @method _nativeClose
+     * @private
+     */
+    self._nativeClose = self.close;
 
+    /**
+     * The native `close` method is overwritten to serve as an alias for
+     * {{#crossLink "Wrapper/terminate:method"}}{{/crossLink}}. This
+     * has been done to give a consistent behaviour for the script.
+     * You are encouraged to use
+     * {{#crossLink "Wrapper/terminateNow:method"}}{{/crossLink}}
+     * to terminate the script immediately.
+     * @method close
+     * @chainable
+     */
     self.close = self.terminate;
 
     // Add a handler for the message event
@@ -375,6 +455,7 @@
         return;
     }, false);
 
+    // Initialize the worker
     self.init();
 
     return;

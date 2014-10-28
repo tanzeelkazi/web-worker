@@ -139,7 +139,21 @@ here are attached to the <code>&#39;self&#39;</code> object within the worker sc
                     <ul class="index-list methods">
                         
                             <li class="index-item method private">
+                                <a href="#method__nativeClose">_nativeClose</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method private">
                                 <a href="#method__removeListenerFromEventType">_removeListenerFromEventType</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_close">close</a>
 
                                 
                                 
@@ -181,7 +195,35 @@ here are attached to the <code>&#39;self&#39;</code> object within the worker sc
                             </li>
                         
                             <li class="index-item method">
+                                <a href="#method_sendMessage">sendMessage</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_setTerminatingStatus">setTerminatingStatus</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
                                 <a href="#method_start">start</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_terminate">terminate</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_terminateNow">terminateNow</a>
 
                                 
                                 
@@ -251,6 +293,62 @@ here are attached to the <code>&#39;self&#39;</code> object within the worker sc
         
             <div id="methods" class="api-class-tabpanel">
                 <h2 class="off-left">Methods</h2>
+
+                
+                    <div id="method__nativeClose" class="method item private">
+    <h3 class="name"><code>_nativeClose</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+
+    
+
+    
+        <span class="flag private">private</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>The native worker <code>close</code> method is overwritten in the wrapper to
+give consistent behaviour with the WebWorker class.
+This method serves as an alias for the native version of the
+method to be used internally.</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
 
                 
                     <div id="method__removeListenerFromEventType" class="method item private">
@@ -363,6 +461,64 @@ the specified event type.</p>
             
             </ul>
         </div>
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="method_close" class="method item">
+    <h3 class="name"><code>close</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <span class="flag chainable">chainable</span>
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>The native <code>close</code> method is overwritten to serve as an alias for
+<a href="../classes/Wrapper.html#method_terminate" class="crosslink">terminate</a>. This
+has been done to give a consistent behaviour for the script.
+You are encouraged to use
+<a href="../classes/Wrapper.html#method_terminateNow" class="crosslink">terminateNow</a>
+to terminate the script immediately.</p>
+
+    </div>
+
     
 
     
@@ -812,6 +968,206 @@ Also any arguments passed to the <a href="../classes/Wrapper.html#method_start" 
 </div>
 
                 
+                    <div id="method_sendMessage" class="method item">
+    <h3 class="name"><code>sendMessage</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>action</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code>args</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <span class="flag chainable">chainable</span>
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>This method is used to format messages being sent between the worker
+and the base worker instance. It&#39;s usage is similar to the
+<a href="../classes/WebWorker.html#method_sendMessage" class="crosslink">sendMessage</a> method
+in the base class.</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">action</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The name of the method on the base worker instance to call.</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">args</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>An array of arguments to pass to the action.</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="method_setTerminatingStatus" class="method item">
+    <h3 class="name"><code>setTerminatingStatus</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>status</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <span class="flag chainable">chainable</span>
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Set the terminating status. Used internally by the wrapper script
+to keep track of the terminating status.</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">status</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The status you want to set.</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+
+    
+</div>
+
+                
                     <div id="method_start" class="method item">
     <h3 class="name"><code>start</code></h3>
 
@@ -856,6 +1212,166 @@ Also any arguments passed to the <a href="../classes/Wrapper.html#method_start" 
         <p>This method is called by the base worker instance when it&#39;s <a href="../classes/WebWorker.html#method_start" class="crosslink">start</a>
 method is invoked. It also gets the arguments from the base worker.
 Internally it calls the <a href="../classes/Wrapper.html#method_main" class="crosslink">main</a> method with arguments.</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="method_terminate" class="method item">
+    <h3 class="name"><code>terminate</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code class="optional">[terminateNow]</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <span class="flag chainable">chainable</span>
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Terminates the worker from within the worker script.
+Note that terminates from within the worker are asynchronous.
+This method calls the
+Wrapper/terminateHandler,
+if it is assigned and is a function, and then goes on to
+communicate with the base worker class to call the method
+<a href="../classes/WebWorker.html#method_terminateNow" class="crosslink">terminateNow</a>.</p>
+<p>The <a href="../classes/WebWorker.html" class="crosslink">WebWorker</a>
+class does provide a synchronous way to terminate the worker
+but it is not supported from within the worker script itself.</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[terminateNow]</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>If set to <code>true</code> the worker
+                                also does a <code>self.close()</code>
+                                after it communicates the
+                                terminate status to the base
+                                worker instance.
+                                It is recommended to use the method
+                                <a href="../classes/Wrapper.html#method_terminateNow" class="crosslink">terminateNow</a>
+                                to achieve the same goal as
+                                it gives a more clear semantics
+                                in your code.</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="method_terminateNow" class="method item">
+    <h3 class="name"><code>terminateNow</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Terminates the worker _immediately from within the worker script.
+This method internally calls the
+<a href="../classes/Wrapper.html#method_terminate" class="crosslink">terminate</a> method
+to terminate the worker.</p>
 
     </div>
 

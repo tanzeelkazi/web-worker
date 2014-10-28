@@ -965,6 +965,93 @@
             "chainable": 1,
             "class": "Wrapper",
             "module": "WebWorker"
+        },
+        {
+            "file": "src/js/worker-wrapper.js",
+            "line": 308,
+            "description": "This method is used to format messages being sent between the worker\nand the base worker instance. It's usage is similar to the\n{{#crossLink \"WebWorker/sendMessage:method\"}}{{/crossLink}} method\nin the base class.",
+            "itemtype": "method",
+            "name": "sendMessage",
+            "params": [
+                {
+                    "name": "action",
+                    "description": "The name of the method on the base worker instance to call.",
+                    "type": "String"
+                },
+                {
+                    "name": "args",
+                    "description": "An array of arguments to pass to the action.",
+                    "type": "Array"
+                }
+            ],
+            "chainable": 1,
+            "class": "Wrapper",
+            "module": "WebWorker"
+        },
+        {
+            "file": "src/js/worker-wrapper.js",
+            "line": 340,
+            "description": "Terminates the worker from within the worker script.\nNote that terminates from within the worker are asynchronous.\nThis method calls the\n{{#crossLink \"Wrapper/terminateHandler\"}}{{/crossLink}},\nif it is assigned and is a function, and then goes on to\ncommunicate with the base worker class to call the method\n{{#crossLink \"WebWorker/terminateNow:method\"}}{{/crossLink}}.\n\nThe {{#crossLink \"WebWorker\"}}{{/crossLink}}\nclass does provide a synchronous way to terminate the worker\nbut it is not supported from within the worker script itself.",
+            "itemtype": "method",
+            "name": "terminate",
+            "params": [
+                {
+                    "name": "terminateNow",
+                    "description": "If set to `true` the worker\n                                also does a `self.close()`\n                                after it communicates the\n                                terminate status to the base\n                                worker instance.\n                                It is recommended to use the method\n                                {{#crossLink \"Wrapper/terminateNow:method\"}}{{/crossLink}}\n                                to achieve the same goal as\n                                it gives a more clear semantics\n                                in your code.",
+                    "type": "Boolean",
+                    "optional": true
+                }
+            ],
+            "chainable": 1,
+            "class": "Wrapper",
+            "module": "WebWorker"
+        },
+        {
+            "file": "src/js/worker-wrapper.js",
+            "line": 391,
+            "description": "Terminates the worker _immediately from within the worker script.\nThis method internally calls the\n{{#crossLink \"Wrapper/terminate:method\"}}{{/crossLink}} method\nto terminate the worker.",
+            "itemtype": "method",
+            "name": "terminateNow",
+            "class": "Wrapper",
+            "module": "WebWorker"
+        },
+        {
+            "file": "src/js/worker-wrapper.js",
+            "line": 404,
+            "description": "Set the terminating status. Used internally by the wrapper script\nto keep track of the terminating status.",
+            "itemtype": "method",
+            "name": "setTerminatingStatus",
+            "params": [
+                {
+                    "name": "status",
+                    "description": "The status you want to set.",
+                    "type": "Boolean"
+                }
+            ],
+            "chainable": 1,
+            "class": "Wrapper",
+            "module": "WebWorker"
+        },
+        {
+            "file": "src/js/worker-wrapper.js",
+            "line": 416,
+            "description": "The native worker `close` method is overwritten in the wrapper to\ngive consistent behaviour with the WebWorker class.\nThis method serves as an alias for the native version of the\nmethod to be used internally.",
+            "itemtype": "method",
+            "name": "_nativeClose",
+            "access": "private",
+            "tagname": "",
+            "class": "Wrapper",
+            "module": "WebWorker"
+        },
+        {
+            "file": "src/js/worker-wrapper.js",
+            "line": 426,
+            "description": "The native `close` method is overwritten to serve as an alias for\n{{#crossLink \"Wrapper/terminate:method\"}}{{/crossLink}}. This\nhas been done to give a consistent behaviour for the script.\nYou are encouraged to use\n{{#crossLink \"Wrapper/terminateNow:method\"}}{{/crossLink}}\nto terminate the script immediately.",
+            "itemtype": "method",
+            "name": "close",
+            "chainable": 1,
+            "class": "Wrapper",
+            "module": "WebWorker"
         }
     ],
     "warnings": []

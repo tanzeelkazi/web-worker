@@ -139,6 +139,13 @@ here are attached to the <code>&#39;self&#39;</code> object within the worker sc
                     <ul class="index-list methods">
                         
                             <li class="index-item method private">
+                                <a href="#method__main">_main</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method private">
                                 <a href="#method__nativeClose">_nativeClose</a>
 
                                 
@@ -147,6 +154,13 @@ here are attached to the <code>&#39;self&#39;</code> object within the worker sc
                         
                             <li class="index-item method private">
                                 <a href="#method__removeListenerFromEventType">_removeListenerFromEventType</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method private">
+                                <a href="#method__setTerminatingStatus">_setTerminatingStatus</a>
 
                                 
                                 
@@ -167,7 +181,14 @@ here are attached to the <code>&#39;self&#39;</code> object within the worker sc
                             </li>
                         
                             <li class="index-item method">
-                                <a href="#method_main">main</a>
+                                <a href="#method_isInitialized">isInitialized</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_isTerminating">isTerminating</a>
 
                                 
                                 
@@ -202,13 +223,6 @@ here are attached to the <code>&#39;self&#39;</code> object within the worker sc
                             </li>
                         
                             <li class="index-item method">
-                                <a href="#method_setTerminatingStatus">setTerminatingStatus</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method">
                                 <a href="#method_start">start</a>
 
                                 
@@ -217,6 +231,13 @@ here are attached to the <code>&#39;self&#39;</code> object within the worker sc
                         
                             <li class="index-item method">
                                 <a href="#method_terminate">terminate</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_terminateHandler">terminateHandler</a>
 
                                 
                                 
@@ -253,29 +274,36 @@ here are attached to the <code>&#39;self&#39;</code> object within the worker sc
 
                     <ul class="index-list properties">
                         
-                            <li class="index-item property">
-                                <a href="#property_hasInitialized">hasInitialized</a>
+                            <li class="index-item property private">
+                                <a href="#property__isInitialized">_isInitialized</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property private">
+                                <a href="#property__isTerminating">_isTerminating</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property private">
+                                <a href="#property__listeners">_listeners</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item property">
-                                <a href="#property_isTerminating">isTerminating</a>
+                                <a href="#property_Action">Action</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item property">
-                                <a href="#property_isTerminating">isTerminating</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item property">
-                                <a href="#property_Listeners">Listeners</a>
+                                <a href="#property_Event">Event</a>
 
                                 
                                 
@@ -293,6 +321,62 @@ here are attached to the <code>&#39;self&#39;</code> object within the worker sc
         
             <div id="methods" class="api-class-tabpanel">
                 <h2 class="off-left">Methods</h2>
+
+                
+                    <div id="method__main" class="method item private">
+    <h3 class="name"><code>_main</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+
+    
+
+    
+        <span class="flag private">private</span>
+    
+
+    
+
+    
+
+    
+        <span class="flag chainable">chainable</span>
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>The main worker script that is provided by the user is injected into this function.
+Also any arguments passed to the <a href="../classes/Wrapper.html#method_start" class="crosslink">start</a> method are passed on to this function.</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
 
                 
                     <div id="method__nativeClose" class="method item private">
@@ -469,6 +553,96 @@ the specified event type.</p>
 </div>
 
                 
+                    <div id="method__setTerminatingStatus" class="method item private">
+    <h3 class="name"><code>_setTerminatingStatus</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>status</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+
+    
+
+    
+        <span class="flag private">private</span>
+    
+
+    
+
+    
+
+    
+        <span class="flag chainable">chainable</span>
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Set the terminating status. Used internally by the wrapper script
+to keep track of the terminating status.</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">status</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The status you want to set.</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+
+    
+</div>
+
+                
                     <div id="method_close" class="method item">
     <h3 class="name"><code>close</code></h3>
 
@@ -581,15 +755,17 @@ It also triggers the WORKER_LOADED event on the base worker instance.</p>
 </div>
 
                 
-                    <div id="method_main" class="method item">
-    <h3 class="name"><code>main</code></h3>
+                    <div id="method_isInitialized" class="method item">
+    <h3 class="name"><code>isInitialized</code></h3>
 
     
         <span class="paren">()</span>
     
 
     
-
+        <span class="returns-inline">
+            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
+        </span>
     
 
     
@@ -599,7 +775,7 @@ It also triggers the WORKER_LOADED event on the base worker instance.</p>
     
 
     
-        <span class="flag chainable">chainable</span>
+
     
 
     
@@ -622,13 +798,95 @@ It also triggers the WORKER_LOADED event on the base worker instance.</p>
     </div>
 
     <div class="description">
-        <p>The main worker script that is provided by the user is injected into this function.
-Also any arguments passed to the <a href="../classes/Wrapper.html#method_start" class="crosslink">start</a> method are passed on to this function.</p>
+        <p>Returns boolean indicating whether the worker (wrapper) script has initialized.</p>
 
     </div>
 
     
 
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>:
+                    
+                    <p>Boolean indicating whether the worker (wrapper) script has initialized.</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_isTerminating" class="method item">
+    <h3 class="name"><code>isTerminating</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Returns boolean indicating if the worker script has been initiated to be terminated.</p>
+
+    </div>
+
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>:
+                    
+                    <p>Boolean indicating if the worker script has been initiated to be terminated.</p>
+
+                
+            </div>
+        </div>
     
 
     
@@ -1080,94 +1338,6 @@ in the base class.</p>
 </div>
 
                 
-                    <div id="method_setTerminatingStatus" class="method item">
-    <h3 class="name"><code>setTerminatingStatus</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>status</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <span class="flag chainable">chainable</span>
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-            
-        
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>Set the terminating status. Used internally by the wrapper script
-to keep track of the terminating status.</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">status</code>
-                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The status you want to set.</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-
-    
-</div>
-
-                
                     <div id="method_start" class="method item">
     <h3 class="name"><code>start</code></h3>
 
@@ -1211,7 +1381,7 @@ to keep track of the terminating status.</p>
     <div class="description">
         <p>This method is called by the base worker instance when it&#39;s <a href="../classes/WebWorker.html#method_start" class="crosslink">start</a>
 method is invoked. It also gets the arguments from the base worker.
-Internally it calls the <a href="../classes/Wrapper.html#method_main" class="crosslink">main</a> method with arguments.</p>
+Internally it calls the Wrapper/main:method method with arguments.</p>
 
     </div>
 
@@ -1277,7 +1447,7 @@ Internally it calls the <a href="../classes/Wrapper.html#method_main" class="cro
         <p>Terminates the worker from within the worker script.
 Note that terminates from within the worker are asynchronous.
 This method calls the
-Wrapper/terminateHandler,
+<a href="../classes/Wrapper.html#method_terminateHandler" class="crosslink">terminateHandler</a>,
 if it is assigned and is a function, and then goes on to
 communicate with the base worker class to call the method
 <a href="../classes/WebWorker.html#method_terminateNow" class="crosslink">terminateNow</a>.</p>
@@ -1329,6 +1499,60 @@ but it is not supported from within the worker script itself.</p>
 </div>
 
                 
+                    <div id="method_terminateHandler" class="method item">
+    <h3 class="name"><code>terminateHandler</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>This method is called by the script whenever the worker is made to terminate.
+By default this method does nothing but it exists so that you can override it
+with a custom function to possibly perform cleanup operations if the worker is
+being made to terminate.</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
                     <div id="method_terminateNow" class="method item">
     <h3 class="name"><code>terminateNow</code></h3>
 
@@ -1368,7 +1592,7 @@ but it is not supported from within the worker script itself.</p>
     </div>
 
     <div class="description">
-        <p>Terminates the worker _immediately from within the worker script.
+        <p>Terminates the worker <em>immediately</em> from within the worker script.
 This method internally calls the
 <a href="../classes/Wrapper.html#method_terminate" class="crosslink">terminate</a> method
 to terminate the worker.</p>
@@ -1615,12 +1839,14 @@ to terminate the worker.</p>
                 <h2 class="off-left">Properties</h2>
 
                 
-                    <div id="property_hasInitialized" class="property item">
-    <h3 class="name"><code>hasInitialized</code></h3>
+                    <div id="property__isInitialized" class="property item private">
+    <h3 class="name"><code>_isInitialized</code></h3>
     <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
 
     
 
+    
+        <span class="flag private">private</span>
     
 
     
@@ -1658,12 +1884,14 @@ to terminate the worker.</p>
 </div>
 
                 
-                    <div id="property_isTerminating" class="property item">
-    <h3 class="name"><code>isTerminating</code></h3>
+                    <div id="property__isTerminating" class="property item private">
+    <h3 class="name"><code>_isTerminating</code></h3>
     <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
 
     
 
+    
+        <span class="flag private">private</span>
     
 
     
@@ -1701,12 +1929,14 @@ to terminate the worker.</p>
 </div>
 
                 
-                    <div id="property_isTerminating" class="property item">
-    <h3 class="name"><code>isTerminating</code></h3>
-    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
+                    <div id="property__listeners" class="property item private">
+    <h3 class="name"><code>_listeners</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
 
     
 
+    
+        <span class="flag private">private</span>
     
 
     
@@ -1730,12 +1960,10 @@ to terminate the worker.</p>
     </div>
 
     <div class="description">
-        <p>Boolean indicating if the worker script has been initiated to be terminated.</p>
+        <p>Object in which all internal worker listeners are tracked.</p>
 
     </div>
 
-    
-        <p><strong>Default:</strong> null</p>
     
 
     
@@ -1744,8 +1972,8 @@ to terminate the worker.</p>
 </div>
 
                 
-                    <div id="property_Listeners" class="property item">
-    <h3 class="name"><code>Listeners</code></h3>
+                    <div id="property_Action" class="property item">
+    <h3 class="name"><code>Action</code></h3>
     <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
 
     
@@ -1773,7 +2001,52 @@ to terminate the worker.</p>
     </div>
 
     <div class="description">
-        <p>Object in which all internal worker listeners are tracked.</p>
+        <p>List of pre-defined actions for the worker. This value is inherited from the
+base class. Refer to <a href="../classes/WebWorker.html#property_Action" class="crosslink">Action</a>
+for more information.</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="property_Event" class="property item">
+    <h3 class="name"><code>Event</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>List of pre-defined event types for the worker. This value is inherited from the
+base class. Refer to <a href="../classes/WebWorker.html#property_Event" class="crosslink">Event</a>
+for more information.</p>
 
     </div>
 

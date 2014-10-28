@@ -4,7 +4,7 @@
      */
     var Action = null,
         Event = null,
-        Listeners = null;
+        _listeners = null;
 
     Action = {
         "INIT": 'init',
@@ -41,43 +41,85 @@
 
     /**
      * Boolean indicating whether the worker (wrapper) script has initialized.
-     * @property hasInitialized
+     * @property _isInitialized
      * @type {Boolean}
+     * @private
      * @default false
      */
-    self.hasInitialized = false;
+    self._isInitialized = false;
 
     /**
      * Object in which all internal worker listeners are tracked.
-     * @property Listeners
+     * @property _listeners
      * @type {Object}
+     * @private
      */
-    Listeners = {};
-    self.Listeners = Listeners;
+    _listeners = {};
+    self._listeners = _listeners;
 
     /**
      * Boolean indicating if the worker script has been initiated to be terminated.
-     * @property isTerminating
+     * @property _isTerminating
      * @type {Boolean}
+     * @private
      * @default false
      */
-    self.isTerminating = false;
+    self._isTerminating = false;
 
     /**
-     * Boolean indicating if the worker script has been initiated to be terminated.
-     * @property isTerminating
-     * @type {Boolean}
-     * @default null
+     * List of pre-defined actions for the worker. This value is inherited from the
+     * base class. Refer to {{#crossLink "WebWorker/Action:property"}}{{/crossLink}}
+     * for more information.
+     * @property Action
+     * @type {Object}
+     */
+    self.Action = Action;
+
+    /**
+     * List of pre-defined event types for the worker. This value is inherited from the
+     * base class. Refer to {{#crossLink "WebWorker/Event:property"}}{{/crossLink}}
+     * for more information.
+     * @property Event
+     * @type {Object}
+     */
+    self.Event = Event;
+
+    /**
+     * This method is called by the script whenever the worker is made to terminate.
+     * By default this method does nothing but it exists so that you can override it
+     * with a custom function to possibly perform cleanup operations if the worker is
+     * being made to terminate.
+     * @method terminateHandler
      */
     self.terminateHandler = null;
 
     /**
+     * Returns boolean indicating whether the worker (wrapper) script has initialized.
+     * @method isInitialized
+     * @return {Boolean} Boolean indicating whether the worker (wrapper) script has initialized.
+     */
+    self.isInitialized = function () {
+        return self._isInitialized;
+    };
+
+    /**
+     * Returns boolean indicating if the worker script has been initiated to be terminated.
+     * @method isTerminating
+     * @return {Boolean} Boolean indicating if the worker script has been initiated to be terminated.
+     */
+    self.isTerminating = function () {
+        return self._isTerminating;
+    };
+
+    /**
      * The main worker script that is provided by the user is injected into this function.
      * Also any arguments passed to the {{#crossLink "Wrapper/start:method"}}{{/crossLink}} method are passed on to this function.
-     * @method main
+     * @method _main
+     * @private
      * @chainable
      */
-    self.main = function () {
+    self._main = function () {
+        self.trigger('some-event');
         return self;
     };
 
@@ -88,7 +130,7 @@
      * @chainable
      */
     self.init = function () {
-        self.hasInitialized = true;
+        self._isInitialized = true;
 
         self.trigger(Event.WORKER_LOADED);
 
@@ -103,11 +145,11 @@
      * @chainable
      */
     self.start = function () {
-        if (!self.hasInitialized) {
+        if (!self.isInitialized()) {
             return false;
         }
 
-        self.main.apply(self, arguments);
+        self._main.apply(self, arguments);
 
         self.trigger(Event.WORKER_STARTED);
         return self;
@@ -128,11 +170,11 @@
             return self;
         }
 
-        if (!(eventType in Listeners)) {
-            Listeners[eventType] = [];
+        if (!(eventType in _listeners)) {
+            _listeners[eventType] = [];
         }
 
-        Listeners[eventType].push(listener);
+        _listeners[eventType].push(listener);
         return self;
     };
 
@@ -174,13 +216,13 @@
         listener = listener || null;
 
         if (eventType === null && listener === null) {
-            for (key in Listeners) {
-                delete Listeners[key];
+            for (key in _listeners) {
+                delete _listeners[key];
             }
             return self;
         }
 
-        for (key in Listeners) {
+        for (key in _listeners) {
             self._removeListenerFromEventType(key, listener);
         }
 
@@ -202,12 +244,12 @@
      * @chainable
      */
     self._removeListenerFromEventType = function (eventType, listener) {
-        var listeners = Listeners[eventType],
+        var listeners = _listeners[eventType],
             i = 0;
 
         listener = listener || null;
         if (listener === null) {
-            Listeners[eventType] = [];
+            _listeners[eventType] = [];
             return self;
         }
 
@@ -290,7 +332,7 @@
 
         event.data = data;
 
-        listeners = Listeners[eventType] || null;
+        listeners = _listeners[eventType] || null;
         if (listeners === null) {
             return self;
         }
@@ -370,8 +412,8 @@
         terminateNow = !!terminateNow;
         terminateHandler = self.terminateHandler || null;
 
-        if (!self.isTerminating) {
-            self.isTerminating = true;
+        if (!self.isTerminating()) {
+            self._setTerminatingStatus(true);
             self.trigger(Event.WORKER_TERMINATING);
         }
 
@@ -389,7 +431,7 @@
     };
 
     /**
-     * Terminates the worker _immediately from within the worker script.
+     * Terminates the worker _immediately_ from within the worker script.
      * This method internally calls the
      * {{#crossLink "Wrapper/terminate:method"}}{{/crossLink}} method
      * to terminate the worker.
@@ -404,12 +446,13 @@
     /**
      * Set the terminating status. Used internally by the wrapper script
      * to keep track of the terminating status.
-     * @method setTerminatingStatus
+     * @method _setTerminatingStatus
+     * @private
      * @param {Boolean} status The status you want to set.
      * @chainable
      */
-    self.setTerminatingStatus = function (status) {
-        self.isTerminating = status;
+    self._setTerminatingStatus = function (status) {
+        self._isTerminating = status;
         return self;
     };
 

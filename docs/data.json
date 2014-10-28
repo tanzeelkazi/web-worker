@@ -716,6 +716,18 @@
         },
         {
             "file": "src/js/web-worker.js",
+            "line": 813,
+            "description": "This is the worker script wrapper that is internally used by the base class\nto establish communication from within the worker.",
+            "itemtype": "property",
+            "name": "_workerScriptWrapper",
+            "type": "{String}",
+            "access": "private",
+            "tagname": "",
+            "class": "WebWorker",
+            "module": "WebWorker"
+        },
+        {
+            "file": "src/js/web-worker.js",
             "line": 826,
             "description": "Retrieves the last error thrown by any WebWorker instance.",
             "itemtype": "method",
@@ -759,57 +771,109 @@
             "line": 42,
             "description": "Boolean indicating whether the worker (wrapper) script has initialized.",
             "itemtype": "property",
-            "name": "hasInitialized",
+            "name": "_isInitialized",
             "type": "{Boolean}",
+            "access": "private",
+            "tagname": "",
             "default": "false",
             "class": "Wrapper",
             "module": "WebWorker"
         },
         {
             "file": "src/js/worker-wrapper.js",
-            "line": 50,
+            "line": 51,
             "description": "Object in which all internal worker listeners are tracked.",
             "itemtype": "property",
-            "name": "Listeners",
+            "name": "_listeners",
+            "type": "{Object}",
+            "access": "private",
+            "tagname": "",
+            "class": "Wrapper",
+            "module": "WebWorker"
+        },
+        {
+            "file": "src/js/worker-wrapper.js",
+            "line": 60,
+            "description": "Boolean indicating if the worker script has been initiated to be terminated.",
+            "itemtype": "property",
+            "name": "_isTerminating",
+            "type": "{Boolean}",
+            "access": "private",
+            "tagname": "",
+            "default": "false",
+            "class": "Wrapper",
+            "module": "WebWorker"
+        },
+        {
+            "file": "src/js/worker-wrapper.js",
+            "line": 69,
+            "description": "List of pre-defined actions for the worker. This value is inherited from the\nbase class. Refer to {{#crossLink \"WebWorker/Action:property\"}}{{/crossLink}}\nfor more information.",
+            "itemtype": "property",
+            "name": "Action",
             "type": "{Object}",
             "class": "Wrapper",
             "module": "WebWorker"
         },
         {
             "file": "src/js/worker-wrapper.js",
-            "line": 58,
-            "description": "Boolean indicating if the worker script has been initiated to be terminated.",
+            "line": 78,
+            "description": "List of pre-defined event types for the worker. This value is inherited from the\nbase class. Refer to {{#crossLink \"WebWorker/Event:property\"}}{{/crossLink}}\nfor more information.",
             "itemtype": "property",
-            "name": "isTerminating",
-            "type": "{Boolean}",
-            "default": "false",
+            "name": "Event",
+            "type": "{Object}",
             "class": "Wrapper",
             "module": "WebWorker"
         },
         {
             "file": "src/js/worker-wrapper.js",
-            "line": 66,
-            "description": "Boolean indicating if the worker script has been initiated to be terminated.",
-            "itemtype": "property",
-            "name": "isTerminating",
-            "type": "{Boolean}",
-            "default": "null",
+            "line": 87,
+            "description": "This method is called by the script whenever the worker is made to terminate.\nBy default this method does nothing but it exists so that you can override it\nwith a custom function to possibly perform cleanup operations if the worker is\nbeing made to terminate.",
+            "itemtype": "method",
+            "name": "terminateHandler",
             "class": "Wrapper",
             "module": "WebWorker"
         },
         {
             "file": "src/js/worker-wrapper.js",
-            "line": 74,
+            "line": 96,
+            "description": "Returns boolean indicating whether the worker (wrapper) script has initialized.",
+            "itemtype": "method",
+            "name": "isInitialized",
+            "return": {
+                "description": "Boolean indicating whether the worker (wrapper) script has initialized.",
+                "type": "Boolean"
+            },
+            "class": "Wrapper",
+            "module": "WebWorker"
+        },
+        {
+            "file": "src/js/worker-wrapper.js",
+            "line": 105,
+            "description": "Returns boolean indicating if the worker script has been initiated to be terminated.",
+            "itemtype": "method",
+            "name": "isTerminating",
+            "return": {
+                "description": "Boolean indicating if the worker script has been initiated to be terminated.",
+                "type": "Boolean"
+            },
+            "class": "Wrapper",
+            "module": "WebWorker"
+        },
+        {
+            "file": "src/js/worker-wrapper.js",
+            "line": 114,
             "description": "The main worker script that is provided by the user is injected into this function.\nAlso any arguments passed to the {{#crossLink \"Wrapper/start:method\"}}{{/crossLink}} method are passed on to this function.",
             "itemtype": "method",
-            "name": "main",
+            "name": "_main",
+            "access": "private",
+            "tagname": "",
             "chainable": 1,
             "class": "Wrapper",
             "module": "WebWorker"
         },
         {
             "file": "src/js/worker-wrapper.js",
-            "line": 84,
+            "line": 126,
             "description": "This method is called when initializing the worker script.\nIt also triggers the WORKER_LOADED event on the base worker instance.",
             "itemtype": "method",
             "name": "init",
@@ -819,7 +883,7 @@
         },
         {
             "file": "src/js/worker-wrapper.js",
-            "line": 98,
+            "line": 140,
             "description": "This method is called by the base worker instance when it's {{#crossLink \"WebWorker/start:method\"}}{{/crossLink}}\nmethod is invoked. It also gets the arguments from the base worker.\nInternally it calls the {{#crossLink \"Wrapper/main:method\"}}{{/crossLink}} method with arguments.",
             "itemtype": "method",
             "name": "start",
@@ -829,7 +893,7 @@
         },
         {
             "file": "src/js/worker-wrapper.js",
-            "line": 116,
+            "line": 158,
             "description": "This method emulates basic jQuery `.on` event binding behavior.",
             "itemtype": "method",
             "name": "on",
@@ -851,7 +915,7 @@
         },
         {
             "file": "src/js/worker-wrapper.js",
-            "line": 139,
+            "line": 181,
             "description": "This method emulates basic jQuery `.one` event binding behavior.",
             "itemtype": "method",
             "name": "one",
@@ -873,7 +937,7 @@
         },
         {
             "file": "src/js/worker-wrapper.js",
-            "line": 159,
+            "line": 201,
             "description": "This method emulates basic jQuery `.off` event unbinding behavior.",
             "itemtype": "method",
             "name": "off",
@@ -897,7 +961,7 @@
         },
         {
             "file": "src/js/worker-wrapper.js",
-            "line": 190,
+            "line": 232,
             "description": "Removes an event listener for a particular event type. Optionally if\nthe listener is not passed or is `null` it removes all listeners for\nthe specified event type.",
             "itemtype": "method",
             "name": "_removeListenerFromEventType",
@@ -922,7 +986,7 @@
         },
         {
             "file": "src/js/worker-wrapper.js",
-            "line": 223,
+            "line": 265,
             "description": "Trigger events on the base worker instance.",
             "itemtype": "method",
             "name": "trigger",
@@ -945,7 +1009,7 @@
         },
         {
             "file": "src/js/worker-wrapper.js",
-            "line": 261,
+            "line": 303,
             "description": "Trigger events on the thread worker instance.",
             "itemtype": "method",
             "name": "triggerSelf",
@@ -968,7 +1032,7 @@
         },
         {
             "file": "src/js/worker-wrapper.js",
-            "line": 308,
+            "line": 350,
             "description": "This method is used to format messages being sent between the worker\nand the base worker instance. It's usage is similar to the\n{{#crossLink \"WebWorker/sendMessage:method\"}}{{/crossLink}} method\nin the base class.",
             "itemtype": "method",
             "name": "sendMessage",
@@ -990,7 +1054,7 @@
         },
         {
             "file": "src/js/worker-wrapper.js",
-            "line": 340,
+            "line": 382,
             "description": "Terminates the worker from within the worker script.\nNote that terminates from within the worker are asynchronous.\nThis method calls the\n{{#crossLink \"Wrapper/terminateHandler\"}}{{/crossLink}},\nif it is assigned and is a function, and then goes on to\ncommunicate with the base worker class to call the method\n{{#crossLink \"WebWorker/terminateNow:method\"}}{{/crossLink}}.\n\nThe {{#crossLink \"WebWorker\"}}{{/crossLink}}\nclass does provide a synchronous way to terminate the worker\nbut it is not supported from within the worker script itself.",
             "itemtype": "method",
             "name": "terminate",
@@ -1008,8 +1072,8 @@
         },
         {
             "file": "src/js/worker-wrapper.js",
-            "line": 391,
-            "description": "Terminates the worker _immediately from within the worker script.\nThis method internally calls the\n{{#crossLink \"Wrapper/terminate:method\"}}{{/crossLink}} method\nto terminate the worker.",
+            "line": 433,
+            "description": "Terminates the worker _immediately_ from within the worker script.\nThis method internally calls the\n{{#crossLink \"Wrapper/terminate:method\"}}{{/crossLink}} method\nto terminate the worker.",
             "itemtype": "method",
             "name": "terminateNow",
             "class": "Wrapper",
@@ -1017,10 +1081,12 @@
         },
         {
             "file": "src/js/worker-wrapper.js",
-            "line": 404,
+            "line": 446,
             "description": "Set the terminating status. Used internally by the wrapper script\nto keep track of the terminating status.",
             "itemtype": "method",
-            "name": "setTerminatingStatus",
+            "name": "_setTerminatingStatus",
+            "access": "private",
+            "tagname": "",
             "params": [
                 {
                     "name": "status",
@@ -1034,7 +1100,7 @@
         },
         {
             "file": "src/js/worker-wrapper.js",
-            "line": 416,
+            "line": 459,
             "description": "The native worker `close` method is overwritten in the wrapper to\ngive consistent behaviour with the WebWorker class.\nThis method serves as an alias for the native version of the\nmethod to be used internally.",
             "itemtype": "method",
             "name": "_nativeClose",
@@ -1045,7 +1111,7 @@
         },
         {
             "file": "src/js/worker-wrapper.js",
-            "line": 426,
+            "line": 469,
             "description": "The native `close` method is overwritten to serve as an alias for\n{{#crossLink \"Wrapper/terminate:method\"}}{{/crossLink}}. This\nhas been done to give a consistent behaviour for the script.\nYou are encouraged to use\n{{#crossLink \"Wrapper/terminateNow:method\"}}{{/crossLink}}\nto terminate the script immediately.",
             "itemtype": "method",
             "name": "close",

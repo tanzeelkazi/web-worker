@@ -343,7 +343,7 @@
         }
 
         self.sendMessage(Action.TERMINATE_NOW, [returnValue]);
-        return;
+        return self;
     };
 
     self.setTerminatingStatus = function (status) {
@@ -355,15 +355,16 @@
 
     self.close = self.terminate;
 
-    self.onmessage = function (event) {
+    // Add a handler for the message event
+    self.addEventListener('message', function (event) {
         var originalEvent = event.originalEvent || event,
             msg = originalEvent.data,
             action = null,
             args = null;
 
-        if ((typeof msg === 'object')
-            && ('__isWebWorkerMsg' in msg)
-            && (msg.__isWebWorkerMsg)) {
+        if (typeof msg === 'object'
+            && '__isWebWorkerMsg' in msg
+            && msg.__isWebWorkerMsg) {
             action = msg.action;
             args = msg.args;
 
@@ -372,7 +373,7 @@
         }
 
         return;
-    };
+    }, false);
 
     self.init();
 

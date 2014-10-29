@@ -7,9 +7,12 @@
         _listeners = null;
 
     Action = {
-        "INIT": 'init',
         "START": 'start',
-        "TRIGGER": 'trigger'
+        "SET_TERMINATING_STATUS": '_setTerminatingStatus',
+        "TERMINATE": 'terminate',
+        "TERMINATE_NOW": 'terminateNow',
+        "TRIGGER": 'trigger',
+        "TRIGGER_SELF": 'triggerSelf'
     };
 
     Event = {
@@ -119,17 +122,17 @@
      * @chainable
      */
     self._main = function () {
-        self.trigger('some-event');
         return self;
     };
 
     /**
      * This method is called when initializing the worker script.
      * It also triggers the WORKER_LOADED event on the base worker instance.
-     * @method init
+     * @method _init
+     * @private
      * @chainable
      */
-    self.init = function () {
+    self._init = function () {
         self._isInitialized = true;
 
         self.trigger(Event.WORKER_LOADED);
@@ -185,11 +188,11 @@
      * @param {Function} listener The function that will listen to the event.
      * @chainable
      */
-    self.one = function (eventType, listener) {
+    self.one = function (eventType, oneListener) {
         var wrapperListener = null;
 
         wrapperListener = function () {
-            listener.apply(this, arguments);
+            oneListener.apply(this, arguments);
             self.off(eventType, wrapperListener);
             return;
         };
@@ -222,9 +225,7 @@
             return self;
         }
 
-        for (key in _listeners) {
-            self._removeListenerFromEventType(key, listener);
-        }
+        self._removeListenerFromEventType(eventType, listener);
 
         return self;
     };
@@ -273,19 +274,19 @@
      */
     self.trigger = function (event, data) {
 
-        var eventType = null,
-            hasData = null;
+        var eventType = null;
 
-        hasData = typeof data !== 'undefined';
+        event = event || null;
+
+        if (event === null) {
+            return self;
+        }
 
         if (typeof event === 'string') {
             eventType = event || null;
-            if (hasData) {
-                event = {
-                    "type": eventType,
-                    "data": data
-                };
-            }
+            event = {
+                "type": event
+            };
         }
         else if (typeof event === 'object') {
             eventType = event.type || null;
@@ -295,6 +296,8 @@
         if (eventType === null) {
             return self;
         }
+
+        event.data = data;
 
         self.sendMessage(Action.TRIGGER, [event]);
         return self;
@@ -318,8 +321,17 @@
             listener = null,
             i = 0;
 
+        event = event || null;
+
+        if (event === null) {
+            return self;
+        }
+
         if (typeof event === 'string') {
             eventType = event || null;
+            event = {
+                "type": event
+            };
         }
         else if (typeof event === 'object') {
             eventType = event.type || null;
@@ -342,6 +354,10 @@
         for (; i < listenersCount; i++) {
             listener = listeners[i];
             listener.apply(self, [event]);
+            if (listenersCount !== listeners.length) {
+                i--;
+                listenersCount = listeners.length;
+            }
         }
 
         return self;
@@ -361,10 +377,10 @@
         var message = null;
 
         action = action || null;
-        args = args || null;
+        args = args || [];
 
         if (action === null) {
-            return false;
+            return self;
         }
 
         message = {
@@ -499,7 +515,7 @@
     }, false);
 
     // Initialize the worker
-    self.init();
+    self._init();
 
     return;
 })();

@@ -418,9 +418,11 @@
      */
     WebWorker.prototype._attachMessageParser = function () {
         var self = this,
-            nativeWorker = self.getNativeWorker();
+            $nativeWorker = null;
 
-        $(nativeWorker).on('message', function (event) {
+        $nativeWorker = $(self.getNativeWorker());
+
+        $nativeWorker.on('message', function (event) {
             var originalEvent = event.originalEvent || event,
                 msg = originalEvent.data,
                 action = null,
@@ -440,6 +442,8 @@
             //window.console.log(msg);
 
         });
+
+        $nativeWorker.on('error', $.proxy(self.throwError, self));
 
         return self;
     };
@@ -662,10 +666,17 @@
      * @chainable
      */
     WebWorker.prototype.throwError = function (error, data, throwException) {
-        var self = this;
+        var self = this,
+            errorData = null;
 
         error = error || Error.UNKNOWN;
-        data = typeof data === 'undefined' ? null : data;
+
+        if (typeof error === 'object') {
+            error = error.originalEvent || error;
+            errorData = error.data || null;
+        }
+
+        errorData = typeof data === 'undefined' ? errorData : data;
         throwException = throwException || false;
 
         self._lastError = error;

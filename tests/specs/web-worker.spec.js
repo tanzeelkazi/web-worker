@@ -1,4 +1,4 @@
-﻿/*global jasmine:false, WebWorker:false */
+﻿/*global Event:false, jasmine:false, WebWorker:false */
 (function () {
     'use strict';
 
@@ -458,7 +458,7 @@
                     var Listeners = null,
                         nativeWorker = null,
                         testMethodName = 'testMethod',
-                        testArgs = [1,2,3];
+                        testArgs = [1, 2, 3];
 
                     Listeners = {
                         "LOADED": function (event) {
@@ -774,6 +774,31 @@
                     return;
                 });
 
+                it("should be able to handle objects", function (done) {
+                    var error = null,
+                        Listeners = null;
+
+                    error = new Error("This is an error!");
+                    Listeners = {
+                        "ERROR": function (event) {
+                            expect(Listeners.ERROR).toHaveBeenCalled();
+                            expect(event.message.message).toEqual(error.message);
+                            done();
+                            return;
+                        }
+                    };
+
+                    spyOn(Listeners, 'ERROR').and.callThrough();
+
+                    worker = new WebWorker(exampleWorkerUrl);
+
+                    worker.on(WebWorkerEvent.ERROR, Listeners.ERROR);
+
+                    worker.throwError(error);
+
+                    return;
+                });
+
                 it("should be chainable", function () {
                     worker = new WebWorker(exampleWorkerUrl);
                     expect(worker.throwError()).toEqual(worker);
@@ -981,6 +1006,166 @@
 
         return;
     });
+
+
+    describe("message listener", function () {
+
+        it("should call the specified action method with the given args", function (done) {
+            var nativeWorker = null,
+                $nativeWorker = null,
+                fakeEvent = null,
+                fakeAction = null,
+                fakeEventArgs = null,
+                Listeners = null;
+
+            Listeners = {
+                "LOADED": function () {
+
+                    nativeWorker = worker.getNativeWorker();
+                    $nativeWorker = $(nativeWorker);
+                    $nativeWorker.on('message', Listeners.MESSAGE);
+
+                    nativeWorker.dispatchEvent(fakeEvent);
+                    return;
+                },
+
+                "MESSAGE": function (event) {
+                    expect(Listeners.MESSAGE).toHaveBeenCalled();
+
+                    expect(worker[fakeAction]).toHaveBeenCalled();
+                    expect(worker[fakeAction].calls.mostRecent().args).toEqual(fakeEventArgs);
+
+                    done();
+                    return;
+                }
+            };
+
+            fakeAction = 'start';
+            fakeEventArgs = [1, 2, 3];
+
+            fakeEvent = new Event("message");
+
+            fakeEvent.data = {
+                "__isWebWorkerMsg": true,
+                "action": fakeAction,
+                "args": fakeEventArgs
+            };
+
+            worker = new WebWorker(exampleWorkerUrl);
+
+            spyOn(worker, fakeAction);
+            spyOn(Listeners, 'MESSAGE').and.callThrough();
+
+            worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.LOADED);
+            worker.load();
+
+            return;
+        });
+
+        it("should NOT call the specified action method if it is NOT triggered by a WebWorker action", function (done) {
+            var nativeWorker = null,
+                $nativeWorker = null,
+                fakeEvent = null,
+                fakeAction = null,
+                fakeEventArgs = null,
+                Listeners = null;
+
+            Listeners = {
+                "LOADED": function () {
+
+                    nativeWorker = worker.getNativeWorker();
+                    $nativeWorker = $(nativeWorker);
+                    $nativeWorker.on('message', Listeners.MESSAGE);
+
+                    nativeWorker.dispatchEvent(fakeEvent);
+                    return;
+                },
+
+                "MESSAGE": function (event) {
+                    expect(Listeners.MESSAGE).toHaveBeenCalled();
+
+                    expect(worker[fakeAction]).not.toHaveBeenCalled();
+
+                    done();
+                    return;
+                }
+            };
+
+            fakeAction = 'start';
+            fakeEventArgs = [1, 2, 3];
+
+            fakeEvent = new Event("message");
+
+            fakeEvent.data = {
+                "action": fakeAction,
+                "args": fakeEventArgs
+            };
+
+            worker = new WebWorker(exampleWorkerUrl);
+
+            spyOn(worker, fakeAction);
+            spyOn(Listeners, 'MESSAGE').and.callThrough();
+
+            worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.LOADED);
+            worker.load();
+
+            return;
+        });
+
+        return;
+    });
+
+
+    describe("error listener", function () {
+
+        it("should trigger an error when an error is captured from within the worker", function (done) {
+            var nativeWorker = null,
+                $nativeWorker = null,
+                fakeEvent = null,
+                Listeners = null;
+
+            Listeners = {
+                "LOADED": function () {
+
+                    nativeWorker = worker.getNativeWorker();
+                    $nativeWorker = $(nativeWorker);
+                    $nativeWorker.on('error', Listeners.ERROR);
+
+                    $nativeWorker.trigger(fakeEvent);
+                    return;
+                },
+
+                "ERROR": function (event) {
+                    event = event.originalEvent || event;
+
+                    expect(Listeners.ERROR).toHaveBeenCalled();
+
+                    expect(event.data).toEqual(fakeEvent.originalEvent.data);
+
+                    done();
+                    return;
+                }
+            };
+
+            fakeEvent = new $.Event("error");
+            fakeEvent.originalEvent = {
+                "type": 'error',
+                "data": 'some-data'
+            };
+
+            worker = new WebWorker(exampleWorkerUrl);
+
+            spyOn(Listeners, 'ERROR').and.callThrough();
+
+            worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.LOADED);
+            worker.load();
+
+            return;
+        });
+
+        return;
+    });
+
 
     return;
 })();

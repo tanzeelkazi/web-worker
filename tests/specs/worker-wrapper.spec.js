@@ -95,6 +95,7 @@
 
                 WorkerWrapperSandbox.loadWorker();
 
+                expect(WorkerWrapperSandbox.isInitialized()).toBe(true);
                 runPostMessageExpectation(WorkerWrapperSandbox.postMessage, WebWorkerAction.TRIGGER, [WebWorkerEvent.WORKER_LOADED]);
 
                 return;
@@ -107,35 +108,6 @@
 
             it("should be an alias for the terminate method", function () {
                 expect(WorkerWrapperSandbox.close).toEqual(WorkerWrapperSandbox.terminate);
-                return;
-            });
-
-            return;
-        });
-
-        describe("init", function () {
-
-            it("should set isInitialized to true", function () {
-
-                WorkerWrapperSandbox._isInitialized = false;
-
-                expect(WorkerWrapperSandbox.isInitialized()).toBe(false);
-
-                WorkerWrapperSandbox.init();
-
-                expect(WorkerWrapperSandbox.isInitialized()).toBe(true);
-
-                return;
-            });
-
-            it("should send the trigger WORKER_LOADED to the base worker instance", function () {
-
-                spyOn(WorkerWrapperSandbox, 'postMessage');
-
-                WorkerWrapperSandbox.init();
-
-                runPostMessageExpectation(WorkerWrapperSandbox.postMessage, WebWorkerAction.TRIGGER, [WebWorkerEvent.WORKER_LOADED]);
-
                 return;
             });
 
@@ -425,6 +397,39 @@
         });
 
         describe("sendMessage", function () {
+
+            it("should send the specified action and arguments to the base worker instance", function () {
+                var myAction = null,
+                    myArgs = null;
+
+                spyOn(WorkerWrapperSandbox, 'postMessage');
+
+                myAction = 'someAction';
+                myArgs = ['some-arg'];
+                WorkerWrapperSandbox.sendMessage(myAction, myArgs);
+
+                runPostMessageExpectation(WorkerWrapperSandbox.postMessage, myAction, myArgs);
+
+                return;
+            });
+
+            it("should fail silently if no action is provided", function () {
+                var myAction = null,
+                    myArgs = null;
+
+                spyOn(WorkerWrapperSandbox, 'postMessage');
+
+                myAction = 'someAction';
+                myArgs = ['some-arg'];
+                WorkerWrapperSandbox.sendMessage(null, myArgs);
+                WorkerWrapperSandbox.sendMessage(myAction, myArgs);
+
+                expect(WorkerWrapperSandbox.postMessage.calls.count()).toEqual(1);
+                runPostMessageExpectation(WorkerWrapperSandbox.postMessage, myAction, myArgs);
+
+                return;
+            });
+
             return;
         });
 
@@ -562,6 +567,93 @@
         });
 
         describe("trigger", function () {
+
+            afterEach(function () {
+                WorkerWrapperSandbox.off();
+                return;
+            });
+
+            it("should be able to send trigger events to the base worker instance", function () {
+                var eventType = null,
+                    eventData = null,
+                    args = null,
+                    postMessageArg = null,
+                    actionArgs = null,
+                    eventArg = null;
+
+                spyOn(WorkerWrapperSandbox, 'postMessage');
+
+                eventType = 'some-event';
+                eventData = 'some-data';
+
+                WorkerWrapperSandbox.trigger(eventType, eventData);
+
+                expect(WorkerWrapperSandbox.postMessage).toHaveBeenCalled();
+
+                args = WorkerWrapperSandbox.postMessage.calls.mostRecent().args;
+
+                expect(args.length).toEqual(1);
+
+                postMessageArg = args[0];
+                expect(postMessageArg.action).toEqual(WebWorkerAction.TRIGGER);
+
+                actionArgs = postMessageArg.args;
+                eventArg = actionArgs[0];
+                expect(eventArg.type).toEqual(eventType);
+                expect(eventArg.data).toEqual(eventData);
+
+                return;
+            });
+
+            it("should be able to handle event objects", function () {
+                var eventObj = null,
+                    args = null,
+                    postMessageArg = null,
+                    actionArgs = null,
+                    eventArg = null;
+
+                spyOn(WorkerWrapperSandbox, 'postMessage');
+
+                eventObj = {
+                    "type": 'some-event',
+                    "data": 'some-data'
+                };
+
+                WorkerWrapperSandbox.trigger(eventObj);
+
+                expect(WorkerWrapperSandbox.postMessage).toHaveBeenCalled();
+
+                args = WorkerWrapperSandbox.postMessage.calls.mostRecent().args;
+
+                expect(args.length).toEqual(1);
+
+                postMessageArg = args[0];
+                expect(postMessageArg.action).toEqual(WebWorkerAction.TRIGGER);
+
+                actionArgs = postMessageArg.args;
+                eventArg = actionArgs[0];
+                expect(eventArg.type).toEqual(eventObj.type);
+                expect(eventArg.data).toEqual(eventObj.data);
+
+                return;
+            });
+
+            it("should fail silently if no event type is passed in or is garbage", function () {
+
+                spyOn(WorkerWrapperSandbox, 'postMessage');
+
+                WorkerWrapperSandbox.trigger();
+                expect(WorkerWrapperSandbox.postMessage).not.toHaveBeenCalled();
+
+                WorkerWrapperSandbox.trigger(null);
+                expect(WorkerWrapperSandbox.postMessage).not.toHaveBeenCalled();
+
+                WorkerWrapperSandbox.trigger({});
+                expect(WorkerWrapperSandbox.postMessage).not.toHaveBeenCalled();
+
+                return;
+            });
+
             return;
         });
 
@@ -658,6 +750,60 @@
                 WorkerWrapperSandbox.triggerSelf(null);
                 WorkerWrapperSandbox.triggerSelf(true);
                 WorkerWrapperSandbox.triggerSelf(eventType2);
+                return;
+            });
+
+            return;
+        });
+
+        describe("message listener", function () {
+
+            it("should call the specified action method with the given args", function () {
+                var fakeEvent = null,
+                    fakeEventArgs = null;
+
+                fakeEventArgs = [1, 2, 3];
+
+                fakeEvent = {
+                    "type": "message",
+                    "data": {
+                        "__isWebWorkerMsg": true,
+                        "action": "start",
+                        "args": fakeEventArgs
+                    }
+                };
+
+                spyOn(WorkerWrapperSandbox, 'start');
+
+                WorkerWrapperSandbox.onmessage(fakeEvent);
+
+                expect(WorkerWrapperSandbox.start).toHaveBeenCalled();
+
+                expect(WorkerWrapperSandbox.start.calls.mostRecent().args).toEqual(fakeEventArgs);
+
+                return;
+            });
+
+            it("should NOT call the specified action method if it is NOT triggered by a WebWorker action", function () {
+                var fakeEvent = null,
+                    fakeEventArgs = null;
+
+                fakeEventArgs = [1, 2, 3];
+
+                fakeEvent = {
+                    "type": "message",
+                    "data": {
+                        "action": "start",
+                        "args": fakeEventArgs
+                    }
+                };
+
+                spyOn(WorkerWrapperSandbox, 'start');
+
+                WorkerWrapperSandbox.onmessage(fakeEvent);
+
+                expect(WorkerWrapperSandbox.start).not.toHaveBeenCalled();
+
                 return;
             });
 

@@ -149,10 +149,11 @@ WorkerWrapperSandbox.loadWorker = function () {
         /**
          * This method is called when initializing the worker script.
          * It also triggers the WORKER_LOADED event on the base worker instance.
-         * @method init
+         * @method _init
+         * @private
          * @chainable
          */
-        self.init = function () {
+        self._init = function () {
             self._isInitialized = true;
 
             self.trigger(Event.WORKER_LOADED);
@@ -294,10 +295,7 @@ WorkerWrapperSandbox.loadWorker = function () {
          */
         self.trigger = function (event, data) {
 
-            var eventType = null,
-                hasData = null;
-
-            hasData = typeof data !== 'undefined';
+            var eventType = null;
 
             event = event || null;
 
@@ -307,12 +305,9 @@ WorkerWrapperSandbox.loadWorker = function () {
 
             if (typeof event === 'string') {
                 eventType = event || null;
-                if (hasData) {
-                    event = {
-                        "type": eventType,
-                        "data": data
-                    };
-                }
+                event = {
+                    "type": event
+                };
             }
             else if (typeof event === 'object') {
                 eventType = event.type || null;
@@ -322,6 +317,8 @@ WorkerWrapperSandbox.loadWorker = function () {
             if (eventType === null) {
                 return self;
             }
+
+            event.data = data;
 
             self.sendMessage(Action.TRIGGER, [event]);
             return self;
@@ -353,6 +350,9 @@ WorkerWrapperSandbox.loadWorker = function () {
 
             if (typeof event === 'string') {
                 eventType = event || null;
+                event = {
+                    "type": event
+                };
             }
             else if (typeof event === 'object') {
                 eventType = event.type || null;
@@ -398,7 +398,7 @@ WorkerWrapperSandbox.loadWorker = function () {
             var message = null;
 
             action = action || null;
-            args = args || null;
+            args = args || [];
 
             if (action === null) {
                 return self;
@@ -536,7 +536,7 @@ WorkerWrapperSandbox.loadWorker = function () {
         }, false);
 
         // Initialize the worker
-        self.init();
+        self._init();
 
         return;
     })();

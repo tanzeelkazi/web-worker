@@ -307,12 +307,6 @@
     WebWorker.prototype._assignEventHandlers = function () {
         var self = this;
 
-        self.on(Event.ERROR, function () {
-            console.log('error');
-            console.log(arguments);
-            return;
-        });
-
         self.on(Event.WORKER_LOADED, function () {
             self._hasLoaded = true;
             return;
@@ -435,12 +429,9 @@
                 args = msg.args;
 
                 self[action].apply(self, args);
-                return;
             }
 
-            //window.console.log('message');
-            //window.console.log(msg);
-
+            return;
         });
 
         $nativeWorker.on('error', $.proxy(self.throwError, self));

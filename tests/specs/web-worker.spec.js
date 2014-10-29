@@ -274,7 +274,7 @@
                     spyOn(Listeners, 'LOADED').and.callThrough();
                     spyOn(Listeners, 'ERROR').and.callThrough();
 
-                    worker = new WebWorker('xyz://some-garbage-url');
+                    worker = new WebWorker('/some-garbage-url');
 
                     worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.LOADED);
                     worker.on(WebWorkerEvent.ERROR, Listeners.ERROR);

@@ -34,7 +34,7 @@ up!
 ## Browser support
 The following list of browsers are known to be supported at this time.
 
-- Chrome
-- Firefox
-- Safari
+- Chrome 38+
+- Firefox 33+
+- Safari 7+
 - Internet Explorer 11+

@@ -289,13 +289,9 @@
      * @chainable
      */
     WebWorker.prototype._createWorker = function () {
-        var self = this;
-
-        self._nativeWorker = new NativeWorker(self.getBlobUrl());
-
-        self._attachMessageParser();
-
-        return self;
+        this._nativeWorker = new NativeWorker(this.getBlobUrl());
+        this._attachMessageParser();
+        return this;
     };
 
     /**
@@ -339,19 +335,18 @@
      * @chainable
      */
     WebWorker.prototype.start = function () {
-        var self = this,
-            args = null;
+        var args = null;
 
-        if (!self.hasLoaded()) {
-            return self;
+        if (!this.hasLoaded()) {
+            return this;
         }
 
-        self.trigger(Event.WORKER_STARTING);
+        this.trigger(Event.WORKER_STARTING);
 
         args = slice.call(arguments);
-        self.sendMessage(Action.START, args);
+        this.sendMessage(Action.START, args);
 
-        return self;
+        return this;
     };
 
     /**
@@ -375,15 +370,14 @@
      * @chainable
      */
     WebWorker.prototype.sendMessage = function (action, args) {
-        var self = this,
-            nativeWorker = null,
+        var nativeWorker = null,
             message = null;
 
         action = action || null;
         args = args || null;
 
         if (action === null) {
-            return self;
+            return this;
         }
 
         message = {
@@ -393,13 +387,13 @@
         message.action = action;
         message.args = args;
 
-        nativeWorker = self.getNativeWorker();
+        nativeWorker = this.getNativeWorker();
 
         if (nativeWorker !== null) {
             nativeWorker.postMessage(message);
         }
 
-        return self;
+        return this;
     };
 
     /**
@@ -448,17 +442,16 @@
      * @chainable
      */
     WebWorker.prototype.terminate = function () {
-        var self = this,
-            nativeWorker = self.getNativeWorker() || null;
+        var nativeWorker = this.getNativeWorker() || null;
 
         if (nativeWorker !== null) {
-            self._isTerminateInitialized = true;
-            self.trigger(Event.WORKER_TERMINATING);
-            self.sendMessage(Action.SET_TERMINATING_STATUS, [true]);
-            self.sendMessage(Action.TERMINATE, slice.call(arguments));
+            this._isTerminateInitialized = true;
+            this.trigger(Event.WORKER_TERMINATING);
+            this.sendMessage(Action.SET_TERMINATING_STATUS, [true]);
+            this.sendMessage(Action.TERMINATE, slice.call(arguments));
         }
 
-        return self;
+        return this;
     };
 
     /**
@@ -477,24 +470,23 @@
      * @chainable
      */
     WebWorker.prototype.terminateNow = function (returnValue) {
-        var self = this,
-            nativeWorker = null;
+        var nativeWorker = null;
 
-        if (!self.isTerminateInitialized()) {
-            self.trigger(Event.WORKER_TERMINATING);
+        if (!this.isTerminateInitialized()) {
+            this.trigger(Event.WORKER_TERMINATING);
         }
 
-        nativeWorker = self.getNativeWorker() || null;
+        nativeWorker = this.getNativeWorker() || null;
 
         if (nativeWorker !== null) {
             nativeWorker.terminate();
-            self._hasLoaded = false;
-            self._isTerminateInitialized = false;
-            self._nativeWorker = null;
-            self.trigger(Event.WORKER_TERMINATED, {"returnValue": returnValue});
+            this._hasLoaded = false;
+            this._isTerminateInitialized = false;
+            this._nativeWorker = null;
+            this.trigger(Event.WORKER_TERMINATED, {"returnValue": returnValue});
         }
 
-        return self;
+        return this;
     };
 
     /**
@@ -528,11 +520,10 @@
      * @chainable
      */
     WebWorker.prototype.off = function () {
-        var self = this,
-            $worker = self._$;
+        var $worker = this._$;
 
         $worker.off.apply($worker, arguments);
-        self._assignEventHandlers();
+        this._assignEventHandlers();
 
         return this;
     };
@@ -549,8 +540,7 @@
      * @chainable
      */
     WebWorker.prototype.trigger = function (event) {
-        var self = this,
-            passedEventString = false,
+        var passedEventString = false,
             eventType = null,
             eventArgs = null;
 
@@ -564,21 +554,21 @@
         }
 
         if (eventType === null) {
-            return self;
+            return this;
         }
 
         if (eventType in EventMap) {
             if (passedEventString) {
                 event = new $.Event(eventType);
             }
-            event.worker = self;
+            event.worker = this;
             eventArgs = [event];
             if (arguments.length > 1) {
                 eventArgs = eventArgs.concat(slice.call(arguments, 1));
             }
 
-            self._triggerSelf.apply(self, eventArgs);
-            return self;
+            this._triggerSelf.apply(this, eventArgs);
+            return this;
         }
 
         if (passedEventString) {
@@ -588,9 +578,9 @@
             };
         }
         eventArgs = [event];
-        self.sendMessage(Action.TRIGGER_SELF, eventArgs);
+        this.sendMessage(Action.TRIGGER_SELF, eventArgs);
 
-        return self;
+        return this;
     };
 
     /**
@@ -601,14 +591,13 @@
      * @chainable
      */
     WebWorker.prototype.triggerSelf = function (event) {
-        var self = this,
-            eventType = null,
+        var eventType = null,
             eventArgs = null;
 
         event = event || null;
 
         if (event === null) {
-            return self;
+            return this;
         }
 
         if (typeof event === 'string') {
@@ -616,15 +605,15 @@
             event = new $.Event(eventType);
         }
 
-        event.worker = self;
+        event.worker = this;
         eventArgs = [event];
         if (arguments.length > 1) {
             eventArgs = eventArgs.concat(slice.call(arguments, 1));
         }
 
-        self._triggerSelf.apply(self, eventArgs);
+        this._triggerSelf.apply(this, eventArgs);
 
-        return self;
+        return this;
     };
 
     /**
@@ -635,13 +624,12 @@
      * @chainable
      */
     WebWorker.prototype._triggerSelf = function () {
-        var self = this,
-            $worker = null;
+        var $worker = null;
 
-        $worker = self._$;
+        $worker = this._$;
         $worker.trigger.apply($worker, arguments);
 
-        return self;
+        return this;
     };
 
     /**
@@ -657,8 +645,7 @@
      * @chainable
      */
     WebWorker.prototype.throwError = function (error, data, throwException) {
-        var self = this,
-            errorData = null;
+        var errorData = null;
 
         error = error || Error.UNKNOWN;
 
@@ -670,18 +657,18 @@
         errorData = typeof data === 'undefined' ? errorData : data;
         throwException = throwException || false;
 
-        self._lastError = error;
+        this._lastError = error;
         WebWorker._lastError = error;
 
-        if ('_triggerError' in self) {
-            self._triggerError(error, data, throwException);
+        if ('_triggerError' in this) {
+            this._triggerError(error, data, throwException);
         }
 
         if (throwException) {
             throw new window.Error(error);
         }
 
-        return self;
+        return this;
     };
 
     /**
@@ -694,16 +681,15 @@
      * @chainable
      */
     WebWorker.prototype._triggerError = function (error, data, throwException) {
-        var self = this,
-            errorEvent = null;
+        var errorEvent = null;
 
         errorEvent = new $.Event(Event.ERROR);
-        errorEvent.message = self.getLastError();
+        errorEvent.message = this.getLastError();
         errorEvent.errorData = data;
         errorEvent.throwsException = !!throwException;
 
-        self.trigger(errorEvent);
-        return self;
+        this.trigger(errorEvent);
+        return this;
     };
 
     /**

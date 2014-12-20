@@ -97,7 +97,7 @@ up!
 ## Browser support
 The following list of browsers are known to be supported at this time.
 
-- Chrome 38+
-- Firefox 33+
-- Safari 7+
-- Internet Explorer 11+
+- ![Chrome](https://raw.githubusercontent.com/alrra/browser-logos/master/chrome/chrome_16x16.png) Chrome 38+
+- ![Firefox](https://raw.githubusercontent.com/alrra/browser-logos/master/firefox/firefox_16x16.png) Firefox 33+
+- ![Safari](https://raw.githubusercontent.com/alrra/browser-logos/master/safari/safari_16x16.png) Safari 7+
+- ![Internet Explorer](https://raw.githubusercontent.com/alrra/browser-logos/master/internet-explorer/internet-explorer_16x16.png) Internet Explorer 11+

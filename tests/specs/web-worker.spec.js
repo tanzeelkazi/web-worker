@@ -29,6 +29,102 @@
                 return;
             });
 
+
+            describe("callbacks", function () {
+                function runCallbackTest(stackId, callbackExecutor) {
+                    describe(stackId, function () {
+
+                        afterEach(function () {
+                            worker.terminate();
+                            worker = null;
+                        });
+
+                        it("should take a function as an argument and add it to the callback list", function () {
+                            var Listeners = {
+                                "callback": function () {}
+                            };
+
+                            worker = new WebWorker(exampleWorkerUrl);
+                            worker[stackId](Listeners.callback);
+
+                            expect(worker._callbackStack[stackId]).toContain(Listeners.callback);
+                        });
+
+                        it("should execute the callback at the appropriate time", function (done) {
+                            var Listeners = {
+                                "callback": function () {
+                                    expect(Listeners.callback).toHaveBeenCalled();
+                                    done();
+                                }
+                            };
+
+                            spyOn(Listeners, 'callback').and.callThrough();
+
+                            worker = new WebWorker(exampleWorkerUrl);
+                            worker[stackId](Listeners.callback);
+
+                            expect(Listeners.callback).not.toHaveBeenCalled();
+
+                            callbackExecutor(worker);
+                        });
+
+                        it("should be chainable", function () {
+                            var returnValue;
+
+                            worker = new WebWorker(exampleWorkerUrl);
+                            returnValue = worker[stackId](function() {});
+
+                            expect(returnValue).toBe(worker);
+                        });
+                    });
+                }
+
+                runCallbackTest('loading', function (worker) {
+                    worker.load();
+                });
+
+                runCallbackTest('loaded', function (worker) {
+                    worker.load();
+                });
+
+                runCallbackTest('starting', function (worker) {
+                    worker.loaded(function () {
+                        worker.start();
+                    });
+
+                    worker.load();
+                });
+
+                runCallbackTest('started', function (worker) {
+                    worker.loaded(function () {
+                        worker.start();
+                    });
+                    worker.load();
+                });
+
+                runCallbackTest('terminating', function (worker) {
+                    worker.loaded(function () {
+                        worker.start();
+                    })
+                    .started(function () {
+                        worker.terminate();
+                    });
+
+                    worker.load();
+                });
+
+                runCallbackTest('terminated', function (worker) {
+                    worker.loaded(function () {
+                        worker.start();
+                    })
+                    .started(function () {
+                        worker.terminate();
+                    });
+
+                    worker.load();
+                });
+            });
+
             describe("constructor", function () {
 
                 it("should accept string selector if first argument is string and if the element exists", function () {

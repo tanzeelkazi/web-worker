@@ -329,6 +329,20 @@
                             </li>
                         
                             <li class="index-item method">
+                                <a href="#method_loaded">loaded</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_loading">loading</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
                                 <a href="#method_noConflict">noConflict</a>
 
                                 
@@ -373,6 +387,20 @@
                             </li>
                         
                             <li class="index-item method">
+                                <a href="#method_started">started</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_starting">starting</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
                                 <a href="#method_terminate">terminate</a>
 
                                 
@@ -380,7 +408,21 @@
                             </li>
                         
                             <li class="index-item method">
+                                <a href="#method_terminated">terminated</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
                                 <a href="#method_terminateNow">terminateNow</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_terminating">terminating</a>
 
                                 
                                 
@@ -419,6 +461,13 @@
                         
                             <li class="index-item property private">
                                 <a href="#property__$">_$</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property private">
+                                <a href="#property__callbackStack">_callbackStack</a>
 
                                 
                                 
@@ -1561,6 +1610,112 @@ code clean.</p>
 </div>
 
                 
+                    <div id="method_loaded" class="method item">
+    <h3 class="name"><code>loaded</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <span class="flag chainable">chainable</span>
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Hook for the loaded event.</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="method_loading" class="method item">
+    <h3 class="name"><code>loading</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <span class="flag chainable">chainable</span>
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Hook for the loading event.</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
                     <div id="method_noConflict" class="method item">
     <h3 class="name"><code>noConflict</code></h3>
 
@@ -2177,6 +2332,112 @@ method before the worker has loaded it will fail silently.</p>
 </div>
 
                 
+                    <div id="method_started" class="method item">
+    <h3 class="name"><code>started</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <span class="flag chainable">chainable</span>
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Hook for the started event.</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="method_starting" class="method item">
+    <h3 class="name"><code>starting</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <span class="flag chainable">chainable</span>
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Hook for the starting event.</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
                     <div id="method_terminate" class="method item">
     <h3 class="name"><code>terminate</code></h3>
 
@@ -2222,6 +2483,59 @@ method before the worker has loaded it will fail silently.</p>
 sets the ball rolling. It sends the message to the worker which may have a
 <code>terminateHandler</code> that can do some cleanup operations before control is passed back
 to the instance and the final terminate (<code>terminateNow</code>) is executed.</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="method_terminated" class="method item">
+    <h3 class="name"><code>terminated</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <span class="flag chainable">chainable</span>
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Hook for the terminated event.</p>
 
     </div>
 
@@ -2322,6 +2636,59 @@ passes control back to the instance to execute the final terminate.</p>
             
             </ul>
         </div>
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="method_terminating" class="method item">
+    <h3 class="name"><code>terminating</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <span class="flag chainable">chainable</span>
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Hook for the terminating event.</p>
+
+    </div>
+
     
 
     
@@ -2700,6 +3067,59 @@ method to achieve the same.</p>
 </div>
 
                 
+                    <div id="property__callbackStack" class="property item private">
+    <h3 class="name"><code>_callbackStack</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
+
+    
+
+    
+        <span class="flag private">private</span>
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>The callback stack for the
+<a href="../classes/WebWorker.html#method_loading" class="crosslink">loading</a>,
+<a href="../classes/WebWorker.html#method_loaded" class="crosslink">loaded</a>,
+<a href="../classes/WebWorker.html#method_starting" class="crosslink">starting</a>,
+<a href="../classes/WebWorker.html#method_started" class="crosslink">started</a>,
+<a href="../classes/WebWorker.html#method_terminating" class="crosslink">terminating</a>,
+and
+<a href="../classes/WebWorker.html#method_terminated" class="crosslink">terminated</a>
+hooks.</p>
+
+    </div>
+
+    
+        <p><strong>Default:</strong> null</p>
+    
+
+    
+
+    
+</div>
+
+                
                     <div id="property__hasLoaded" class="property item private">
     <h3 class="name"><code>_hasLoaded</code></h3>
     <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
@@ -2870,7 +3290,7 @@ was initialized.</p>
     </div>
 
     <div class="description">
-        <p>Store the last error generated by the worker instance.</p>
+        <p>Stores the last error generated by the worker instance.</p>
 
     </div>
 

@@ -1,4 +1,4 @@
-#Web Worker
+# WebWorker
 
 Event driven web worker javascript framework.
 

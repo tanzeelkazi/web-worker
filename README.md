@@ -24,8 +24,8 @@ are ready to go.
 ## Usage
 Following are example usages of the script.
 
-#### Simple usage.
-```
+#### Simple usage:
+```javascript
 var worker = new WebWorker('./worker-script.js');
 
 worker.loaded(function () {
@@ -37,8 +37,8 @@ worker.loaded(function () {
 worker.load();
 ```
 
-#### Using the helpers to quickly define tasks.
-```
+#### Using the helpers to quickly define tasks:
+```javascript
 var worker = new WebWorker('./worker-script.js');
 worker  .loading(function () {
             console.log('worker is loading');
@@ -57,6 +57,9 @@ worker  .loading(function () {
         })
         .terminated(function () {
             console.log('worker has terminated');
+        })
+        .error(function () {
+            console.log('worker encountered an error');
         });
 ...
 worker.load();
@@ -66,8 +69,8 @@ worker.start();
 worker.terminate();
 ```
 
-#### Attaching events on the worker object
-```
+#### Attaching events on the worker object:
+```javascript
 var worker = new WebWorker('./worker-script.js');
 worker.on('my-custom-event', function () {
     console.log('custom event triggered!');
@@ -78,8 +81,8 @@ worker.load();
 worker.start();
 ```
 
-#### Triggering events from within the worker script
-```
+#### Triggering events from within the worker script:
+```javascript
 self.trigger('my-custom-event');
 ```
 Triggering events within the worker script triggers the event on the worker object on

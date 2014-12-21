@@ -50,6 +50,17 @@
                             expect(worker._callbackStack[stackId]).toContain(Listeners.callback);
                         });
 
+                        it("should not add non-functions to the callback list", function () {
+                            var Listeners = {
+                                "callback": {}
+                            };
+
+                            worker = new WebWorker(exampleWorkerUrl);
+                            worker[stackId](Listeners.callback);
+
+                            expect(worker._callbackStack[stackId]).not.toContain(Listeners.callback);
+                        });
+
                         it("should execute the callback at the appropriate time", function (done) {
                             var Listeners = {
                                 "callback": function () {
@@ -78,6 +89,11 @@
                         });
                     });
                 }
+
+                runCallbackTest('error', function (worker) {
+                    worker._workerUrl = '/some-garbage-url';
+                    worker.load();
+                });
 
                 runCallbackTest('loading', function (worker) {
                     worker.load();

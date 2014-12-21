@@ -335,8 +335,7 @@ WorkerWrapperSandbox.loadWorker = function () {
          */
         self.triggerSelf = function (event, data) {
 
-            var self = this,
-                eventType = null,
+            var eventType = null,
                 listeners = null,
                 listenersCount = null,
                 listener = null,
@@ -345,7 +344,7 @@ WorkerWrapperSandbox.loadWorker = function () {
             event = event || null;
 
             if (event === null) {
-                return self;
+                return this;
             }
 
             if (typeof event === 'string') {
@@ -360,28 +359,28 @@ WorkerWrapperSandbox.loadWorker = function () {
             }
 
             if (eventType === null) {
-                return self;
+                return this;
             }
 
             event.data = data;
 
             listeners = _listeners[eventType] || null;
             if (listeners === null) {
-                return self;
+                return this;
             }
 
             listenersCount = listeners.length;
 
             for (; i < listenersCount; i++) {
                 listener = listeners[i];
-                listener.apply(self, [event]);
+                listener.apply(this, [event]);
                 if (listenersCount !== listeners.length) {
                     i--;
                     listenersCount = listeners.length;
                 }
             }
 
-            return self;
+            return this;
         };
 
         /**

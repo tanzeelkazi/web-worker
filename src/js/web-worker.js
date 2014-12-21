@@ -201,6 +201,7 @@
         this._workerUrl = workerUrl;
 
         this._callbackStack = {
+            "error": [],
             "loading": [],
             "loaded": [],
             "starting": [],
@@ -344,6 +345,7 @@
             return;
         });
 
+        this.on(Event.ERROR, getCallbackStackExecutor('error'));
         this.on(Event.WORKER_LOADING, getCallbackStackExecutor('loading'));
         this.on(Event.WORKER_LOADED, getCallbackStackExecutor('loaded'));
         this.on(Event.WORKER_STARTING, getCallbackStackExecutor('starting'));
@@ -367,8 +369,17 @@
     }
 
     /**
+     * Hook for the error event.
+     * @method error
+     * @param {Function} callback The callback function that get's called when the event get's triggered.
+     * @chainable
+     */
+    WebWorker.prototype.error = getCallbackStackUpdater('error');
+
+    /**
      * Hook for the loading event.
      * @method loading
+     * @param {Function} callback The callback function that get's called when the event get's triggered.
      * @chainable
      */
     WebWorker.prototype.loading = getCallbackStackUpdater('loading');
@@ -376,6 +387,7 @@
     /**
      * Hook for the loaded event.
      * @method loaded
+     * @param {Function} callback The callback function that get's called when the event get's triggered.
      * @chainable
      */
     WebWorker.prototype.loaded = getCallbackStackUpdater('loaded');
@@ -383,6 +395,7 @@
     /**
      * Hook for the starting event.
      * @method starting
+     * @param {Function} callback The callback function that get's called when the event get's triggered.
      * @chainable
      */
     WebWorker.prototype.starting = getCallbackStackUpdater('starting');
@@ -390,6 +403,7 @@
     /**
      * Hook for the started event.
      * @method started
+     * @param {Function} callback The callback function that get's called when the event get's triggered.
      * @chainable
      */
     WebWorker.prototype.started = getCallbackStackUpdater('started');
@@ -397,6 +411,7 @@
     /**
      * Hook for the terminating event.
      * @method terminating
+     * @param {Function} callback The callback function that get's called when the event get's triggered.
      * @chainable
      */
     WebWorker.prototype.terminating = getCallbackStackUpdater('terminating');
@@ -404,6 +419,7 @@
     /**
      * Hook for the terminated event.
      * @method terminated
+     * @param {Function} callback The callback function that get's called when the event get's triggered.
      * @chainable
      */
     WebWorker.prototype.terminated = getCallbackStackUpdater('terminated');
@@ -502,12 +518,11 @@
      * @chainable
      */
     WebWorker.prototype._attachMessageParser = function () {
-        var self = this,
-            $nativeWorker = null;
+        var $nativeWorker = null;
 
-        $nativeWorker = $(self.getNativeWorker());
+        $nativeWorker = $(this.getNativeWorker());
 
-        $nativeWorker.on('message', function (event) {
+        $nativeWorker.on('message', $.proxy(function (event) {
             var originalEvent = event.originalEvent || event,
                 msg = originalEvent.data,
                 action = null,
@@ -519,15 +534,15 @@
                 action = msg.action;
                 args = msg.args;
 
-                self[action].apply(self, args);
+                this[action].apply(this, args);
             }
 
             return;
-        });
+        }, this));
 
-        $nativeWorker.on('error', $.proxy(self.throwError, self));
+        $nativeWorker.on('error', $.proxy(this.throwError, this));
 
-        return self;
+        return this;
     };
 
     /**
@@ -575,7 +590,7 @@
 
         nativeWorker = this.getNativeWorker() || null;
 
-        if (nativeWorker !== null) {
+        if (nativeWorker) {
             nativeWorker.terminate();
             this._hasLoaded = false;
             this._isTerminateInitialized = false;
@@ -902,7 +917,7 @@
      * @type {String}
      * @private
      */
-    WebWorker._workerScriptWrapper = 'var e=null,t=null,n=null;e={{action-data}};t={{event-data}};self._isInitialized=false;n={};self._listeners=n;self._isTerminating=false;self.Action=e;self.Event=t;self.terminateHandler=null;self.isInitialized=function(){return self._isInitialized};self.isTerminating=function(){return self._isTerminating};self._main=function(){var startArgs=arguments;{{main-function}};return self};self._init=function(){self._isInitialized=true;self.trigger(t.WORKER_LOADED);return self};self.start=function(){if(!self.isInitialized()){return self}self._main.apply(self,arguments);self.trigger(t.WORKER_STARTED);return self};self.on=function(e,t){e+="";t=t||null;if(typeof t!=="function"){return self}if(!(e in n)){n[e]=[]}n[e].push(t);return self};self.one=function(e,t){var n=null;n=function(){t.apply(this,arguments);self.off(e,n);return};self.on(e,n);return};self.off=function(e,t){var r=null;e=e||null;t=t||null;if(e===null&&t===null){for(r in n){delete n[r]}return self}self._removeListenerFromEventType(e,t);return self};self._removeListenerFromEventType=function(e,t){var r=n[e],i=0;t=t||null;if(t===null){n[e]=[];return self}for(;i<r.length;i++){if(r[i]===t){r.splice(i,1);i--}}return self};self.trigger=function(t,n){var r=null;t=t||null;if(t===null){return self}if(typeof t==="string"){r=t||null;t={type:t}}else if(typeof t==="object"){r=t.type||null;n=t.data}if(r===null){return self}t.data=n;self.sendMessage(e.TRIGGER,[t]);return self};self.triggerSelf=function(e,t){var r=this,i=null,s=null,o=null,u=null,a=0;e=e||null;if(e===null){return r}if(typeof e==="string"){i=e||null;e={type:e}}else if(typeof e==="object"){i=e.type||null;t=e.data}if(i===null){return r}e.data=t;s=n[i]||null;if(s===null){return r}o=s.length;for(;a<o;a++){u=s[a];u.apply(r,[e]);if(o!==s.length){a--;o=s.length}}return r};self.sendMessage=function(e,t){var n=null;e=e||null;t=t||[];if(e===null){return self}n={__isWebWorkerMsg:true};n.action=e;n.args=t;self.postMessage(n);return self};self.terminate=function(n){var r=null,i=null;n=!!n;r=self.terminateHandler||null;if(!self.isTerminating()){self._setTerminatingStatus(true);self.trigger(t.WORKER_TERMINATING)}if(typeof r==="function"){i=r.apply(self,arguments)}self.sendMessage(e.TERMINATE_NOW,[i]);if(n){self._nativeClose()}return self};self.terminateNow=function(){self.terminate(true);return};self._setTerminatingStatus=function(e){self._isTerminating=e;return self};self._nativeClose=self.close;self.close=self.terminate;self.addEventListener("message",function(e){var t=e.originalEvent||e,n=t.data,r=null,i=null;if(typeof n==="object"&&"__isWebWorkerMsg"in n&&n.__isWebWorkerMsg){r=n.action;i=n.args;self[r].apply(self,i);return}return},false);self._init();';
+    WebWorker._workerScriptWrapper = 'var e=null,t=null,n=null;e={{action-data}};t={{event-data}};self._isInitialized=false;n={};self._listeners=n;self._isTerminating=false;self.Action=e;self.Event=t;self.terminateHandler=null;self.isInitialized=function(){return self._isInitialized};self.isTerminating=function(){return self._isTerminating};self._main=function(){var startArgs=arguments;{{main-function}};return self};self._init=function(){self._isInitialized=true;self.trigger(t.WORKER_LOADED);return self};self.start=function(){if(!self.isInitialized()){return self}self._main.apply(self,arguments);self.trigger(t.WORKER_STARTED);return self};self.on=function(e,t){e+="";t=t||null;if(typeof t!=="function"){return self}if(!(e in n)){n[e]=[]}n[e].push(t);return self};self.one=function(e,t){var n=null;n=function(){t.apply(this,arguments);self.off(e,n);return};self.on(e,n);return};self.off=function(e,t){var r=null;e=e||null;t=t||null;if(e===null&&t===null){for(r in n){delete n[r]}return self}self._removeListenerFromEventType(e,t);return self};self._removeListenerFromEventType=function(e,t){var r=n[e],i=0;t=t||null;if(t===null){n[e]=[];return self}for(;i<r.length;i++){if(r[i]===t){r.splice(i,1);i--}}return self};self.trigger=function(t,n){var r=null;t=t||null;if(t===null){return self}if(typeof t==="string"){r=t||null;t={type:t}}else if(typeof t==="object"){r=t.type||null;n=t.data}if(r===null){return self}t.data=n;self.sendMessage(e.TRIGGER,[t]);return self};self.triggerSelf=function(e,t){var r=null,i=null,s=null,o=null,u=0;e=e||null;if(e===null){return this}if(typeof e==="string"){r=e||null;e={type:e}}else if(typeof e==="object"){r=e.type||null;t=e.data}if(r===null){return this}e.data=t;i=n[r]||null;if(i===null){return this}s=i.length;for(;u<s;u++){o=i[u];o.apply(this,[e]);if(s!==i.length){u--;s=i.length}}return this};self.sendMessage=function(e,t){var n=null;e=e||null;t=t||[];if(e===null){return self}n={__isWebWorkerMsg:true};n.action=e;n.args=t;self.postMessage(n);return self};self.terminate=function(n){var r=null,i=null;n=!!n;r=self.terminateHandler||null;if(!self.isTerminating()){self._setTerminatingStatus(true);self.trigger(t.WORKER_TERMINATING)}if(typeof r==="function"){i=r.apply(self,arguments)}self.sendMessage(e.TERMINATE_NOW,[i]);if(n){self._nativeClose()}return self};self.terminateNow=function(){self.terminate(true);return};self._setTerminatingStatus=function(e){self._isTerminating=e;return self};self._nativeClose=self.close;self.close=self.terminate;self.addEventListener("message",function(e){var t=e.originalEvent||e,n=t.data,r=null,i=null;if(typeof n==="object"&&"__isWebWorkerMsg"in n&&n.__isWebWorkerMsg){r=n.action;i=n.args;self[r].apply(self,i);return}return},false);self._init();';
 
     WebWorker._workerScriptWrapper = WebWorker._workerScriptWrapper.replace(/\{\{action-data\}\}/g, JSON.stringify(Action))
                                                                    .replace(/\{\{event-data\}\}/g, JSON.stringify(Event));

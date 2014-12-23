@@ -1,20 +1,23 @@
 ﻿(function () {
     'use strict';
-    var counter = 0,
-        timer = null;
 
+    self.on('start-calculation', function () {
+        self.postMessage('help help help');
+        var firstTerm = 1,
+            commonRatio = -0.3,
+            termsCount = 100000000,
+            sum = 0,
+            i;
 
-    timer = setInterval(function () {
-        counter++;
-        self.postMessage(counter);
-
-        if (counter === 50) {
-            clearInterval(timer);
-            self.close();
+        for (i = 1; i <= termsCount; i++) {
+            sum += firstTerm * Math.pow(commonRatio, i);
+            if (!(i % 10000)) {
+                self.trigger('sum-update', sum);
+            }
         }
 
-        return;
-    }, 10);
+        self.trigger('final-sum', sum);
+    });
 
     return;
 })();

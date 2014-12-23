@@ -3,12 +3,34 @@
 <head>
     <title>WebWorker</title>
 
+    <link rel="stylesheet" href="/css/reset.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+
     <script type="text/javascript" src="libs/jquery/jquery.js"></script>
     <script type="text/javascript" src="src/js/web-worker.js"></script>
 </head>
 <body>
-    <h1>WebWorker</h1>
-    <div id="worker-output"></div>
-    <script type="text/javascript" src="js/script.js"></script>
+    <div class="console">
+        <p>console:</p>
+    </div>
+
+    <div>
+        <h1>WebWorker example</h1>
+
+        <section class="main">
+            <div>
+                <label>
+                    <input type="checkbox" class="use-webworker" value="off" />
+                    Use webworker
+                </label>
+            </div>
+            <div>
+                <button class="process">Process</button>
+
+                <div class="robot-gamer"></div>
+            </div>
+        </section>
+        <script type="text/javascript" src="js/script.js"></script>
+    </div>
 </body>
 </html>

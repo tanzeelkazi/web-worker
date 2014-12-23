@@ -534,6 +534,8 @@
                 action = msg.action;
                 args = msg.args;
 
+                action = action === 'trigger' ? 'triggerSelf' : action;
+
                 this[action].apply(this, args);
             }
 
@@ -717,6 +719,7 @@
             event = new $.Event(eventType);
         }
 
+        event.originalEvent = event.originalEvent || event;
         event.worker = this;
         eventArgs = [event];
         if (arguments.length > 1) {

@@ -7,6 +7,7 @@
         log,
         logTimer,
         logTimeExceeded = false,
+        $input,
         $console,
         msgCount = 0,
         lastMsg,
@@ -59,6 +60,10 @@
 
     $console = $('.console');
 
+    $('.clear-console').on('click', function () {
+        $console.find('pre').remove();
+    });
+
     function doIntensiveCalculations() {
         log('start calculations');
 
@@ -81,11 +86,14 @@
         log('Final sum = ' + sum);
     }
 
+    $input = $('input, button');
     $useWebWorker = $('.use-webworker');
 
     $btnProcess = $('.process');
     $btnProcess.on('click', function () {
         var useWebWorker = $useWebWorker.prop('checked');
+
+        $input.prop('disabled', true);
 
         if (useWebWorker) {
             log('Using web worker');
@@ -108,13 +116,14 @@
                 log('time taken: ' + (timeTaken > 1000 ? timeTaken / 1000 + 'sec' : timeTaken + 'ms'));
                 log('final-sum event\nsum = ' + event.originalEvent.data);
                 worker.terminate();
-
+                $input.prop('disabled', false);
             });
 
             worker.load();
         } else {
             log('NOT using web worker');
             doIntensiveCalculations();
+            $input.prop('disabled', false);
         }
     });
 

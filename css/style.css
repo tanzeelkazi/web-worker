@@ -53,6 +53,11 @@ strong {
     font-weight: bold;
 }
 
+*[disabled] {
+    color: #aaa;
+    cursor: default !important;
+}
+
 .console {
     background-color: #efefef;
     border: 1px solid #888;
@@ -63,6 +68,18 @@ strong {
     right: 10px;
     top: 10px;
     width: 300px;
+}
+
+.console a {
+    color: #444;
+    font-size: 12px;
+    text-decoration: none;
+}
+
+.console a:hover,
+.console a:focus,
+.console a:active {
+    text-decoration: underline;
 }
 
 .console > pre:nth-child(even) {

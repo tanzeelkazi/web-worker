@@ -18,17 +18,22 @@
     </div>
 
     <div>
+        <div class="logo"></div>
         <h1>WebWorker example</h1>
 
         <section class="main">
+            <p>
+                This example performs summation of geometric progression (GP) of n terms with 1 as the first-term,
+                -0.3 common-ratio <br />
+                and n = 100000000. The idea is to perform this calculation without interrupting
+                the robot gamer on the screen.
+            </p>
+            <p>
+                Have fun! :)
+            </p>
             <div>
-                <label>
-                    <input type="checkbox" class="use-webworker" value="off" />
-                    Use webworker
-                </label>
-            </div>
-            <div>
-                <button class="process">Process</button>
+                <button class="process">Standard process</button>
+                <button class="process use-webworker">WebWorker process</button>
 
                 <div class="robot-gamer"></div>
             </div>

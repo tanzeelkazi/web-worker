@@ -40,7 +40,8 @@ label {
 }
 
 p {
-    margin-bottom: 2px;
+    margin-bottom: 10px;
+    padding: 0 5px;
 }
 
 pre {
@@ -56,6 +57,14 @@ strong {
 *[disabled] {
     color: #aaa;
     cursor: default !important;
+}
+
+.logo {
+    background-image: url('../img/webworker-logo-128.png');
+    background-position: center center;
+    background-repeat: no-repeat;
+    height: 128px;
+    width: 128px;
 }
 
 .console {
@@ -91,14 +100,24 @@ section.main {
 }
 
 .process {
+    background-color: #f0f0f0;
     cursor: pointer;
     font-size: 28px;
     font-weight: bold;
-    width: 200px;
+    margin-bottom: 5px;
+    padding: 4px 6px;
+    width: 270px;
+}
+
+.process.use-webworker {
+    background-image: url("../img/webworker-logo-64.png");
+    background-position: 10px center;
+    background-repeat: no-repeat;
+    padding-left: 80px;
 }
 
 .robot-gamer {
-    background-color: #aaa;
+    background-color: #dfdfdf;
     background-image: url('../img/robot-gamer.gif');
     background-position: center center;
     background-repeat: no-repeat;

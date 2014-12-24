@@ -12,7 +12,6 @@
         msgCount = 0,
         lastMsg,
         msgRepeatIndex,
-        $useWebWorker,
         $btnProcess,
         startTime = new Date(),
         timeTaken;
@@ -26,7 +25,15 @@
         msgCount++;
 
         function updateRepeatMsg(msgCount) {
-            var $previousEl = $console.find('pre:last-child');
+            var msgRepeatCount,
+                $previousEl;
+
+            msgRepeatCount = msgCount - msgRepeatIndex + 1;
+            if (msgRepeatCount < 2) {
+                return;
+            }
+
+            $previousEl = $console.find('pre:last-child');
             $previousEl.find('strong').text('Messages #' + msgRepeatIndex + '-' + msgCount + ' (' + (msgCount - msgRepeatIndex + 1) + ')');
         }
 
@@ -73,6 +80,8 @@
             sum = 0,
             i;
 
+        startTime = new Date();
+
         for (i = 1; i <= termsCount; i++) {
             sum += firstTerm * Math.pow(commonRatio, i);
             if (!(i % 10000)) {
@@ -87,11 +96,10 @@
     }
 
     $input = $('input, button');
-    $useWebWorker = $('.use-webworker');
 
     $btnProcess = $('.process');
     $btnProcess.on('click', function () {
-        var useWebWorker = $useWebWorker.prop('checked');
+        var useWebWorker = $(this).hasClass('use-webworker');
 
         $input.prop('disabled', true);
 

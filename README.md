@@ -1,3 +1,4 @@
+![WebWorker logo](https://raw.githubusercontent.com/tanzeelkazi/webworker/master/img/webworker-logo-128.png)
 # WebWorker
 
 Event driven web worker javascript framework.

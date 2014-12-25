@@ -30,7 +30,7 @@
             });
 
 
-            describe("callbacks", function () {
+            describe("callback", function () {
                 function runCallbackTest(stackId, callbackExecutor) {
                     describe(stackId, function () {
 
@@ -425,6 +425,32 @@
                 });
 
                 return;
+            });
+
+            describe("message event bus", function () {
+                it("should trigger custom events", function (done) {
+                    var Listeners = {
+                        "ping": function () {
+                            expect(Listeners.ping).toHaveBeenCalled();
+                            done();
+                        }
+                    };
+
+                    spyOn(Listeners, 'ping').and.callThrough();
+
+                    worker = new WebWorker(exampleWorkerUrl);
+
+                    worker.loaded(function () {
+                        worker.start();
+                    })
+                    .started(function () {
+                        expect(Listeners.ping).not.toHaveBeenCalled();
+                        worker.trigger('ping');
+                    })
+                    .on('ping', Listeners.ping);
+
+                    worker.load();
+                });
             });
 
             describe("off", function () {

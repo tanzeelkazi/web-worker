@@ -19,5 +19,11 @@
         self.trigger('final-sum', sum);
     });
 
+    // Received a ping on the webworker from the base page
+    self.on('ping', function () {
+        // Trigger a ping on the base page from the webworker
+        self.trigger('ping');
+    });
+
     return;
 })();

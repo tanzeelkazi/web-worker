@@ -534,7 +534,7 @@
                 action = msg.action;
                 args = msg.args;
 
-                action = action === 'trigger' ? 'triggerSelf' : action;
+                action = action === Action.TRIGGER ? Action.TRIGGER_SELF : action;
 
                 this[action].apply(this, args);
             }

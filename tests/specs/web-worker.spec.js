@@ -12,11 +12,11 @@
     exampleWorkerElemSelector = "#test-worker-script-elem";
     exampleWorkerUrl = "/js/example-worker.js";
 
+
     describe("WebWorker", function () {
 
         it("should be defined", function () {
             expect(WebWorker).toBeDefined();
-            return;
         });
 
         describe("instance", function () {
@@ -26,11 +26,11 @@
                     worker.terminateNow();
                 }
                 worker = null;
-                return;
             });
 
 
             describe("callback", function () {
+
                 function runCallbackTest(stackId, callbackExecutor) {
                     describe(stackId, function () {
 
@@ -87,6 +87,7 @@
 
                             expect(returnValue).toBe(worker);
                         });
+
                     });
                 }
 
@@ -139,20 +140,20 @@
 
                     worker.load();
                 });
+
             });
+
 
             describe("constructor", function () {
 
                 it("should accept string selector if first argument is string and if the element exists", function () {
                     worker = new WebWorker(exampleWorkerElemSelector);
                     expect(worker).not.toBe(null);
-                    return;
                 });
 
                 it("should accept string URL if first argument is string and an element of same selector does not exist", function () {
                     worker = new WebWorker(exampleWorkerUrl);
                     expect(worker).not.toBe(null);
-                    return;
                 });
 
                 it("should throw an exception for invalid arguments", function () {
@@ -166,11 +167,10 @@
                     }
 
                     expect(isError).toBe(true);
-                    return;
                 });
 
-                return;
             });
+
 
             describe("getBlobUrl", function () {
 
@@ -182,16 +182,13 @@
                     worker.on(WebWorkerEvent.WORKER_LOADED, function () {
                         expect(worker.getBlobUrl()).not.toBeNull();
                         done();
-                        return;
                     });
 
                     worker.load();
-
-                    return;
                 });
 
-                return;
             });
+
 
             describe("getLastError", function () {
 
@@ -209,13 +206,11 @@
 
                             worker.off().on(WebWorkerEvent.ERROR, Listeners.ERROR2);
                             worker.throwError(errorMsg2);
-                            return;
                         },
 
                         "ERROR2": function (event) {
                             expect(event.message).toEqual(errorMsg2);
                             done();
-                            return;
                         }
                     };
 
@@ -225,12 +220,10 @@
 
                     worker.on(WebWorkerEvent.ERROR, Listeners.ERROR1);
                     worker.throwError(errorMsg1);
-
-                    return;
                 });
 
-                return;
             });
+
 
             describe("getNativeWorker", function () {
 
@@ -246,27 +239,24 @@
                         expect(nativeWorker).not.toBeNull();
                         expect(nativeWorker).toEqual(jasmine.any(window.Worker));
                         done();
-                        return;
                     });
 
                     worker.load();
 
-                    return;
                 });
 
-                return;
             });
+
 
             describe("getUrl", function () {
 
                 it("should return the worker Url", function () {
                     worker = new WebWorker(exampleWorkerUrl);
                     expect(worker.getUrl()).toEqual(exampleWorkerUrl);
-                    return;
                 });
 
-                return;
             });
+
 
             describe("hasLoaded", function () {
 
@@ -278,16 +268,13 @@
                     worker.on(WebWorkerEvent.WORKER_LOADED, function () {
                         expect(worker.hasLoaded()).toBe(true);
                         done();
-                        return;
                     });
 
                     worker.load();
-
-                    return;
                 });
 
-                return;
             });
+
 
             describe("isTerminateInitialized", function () {
 
@@ -297,13 +284,11 @@
                     Listeners = {
                         "LOADED": function (event) {
                             worker.terminate();
-                            return;
                         },
 
                         "TERMINATING": function (event) {
                             expect(worker.isTerminateInitialized()).toBe(true);
                             done();
-                            return;
                         }
                     };
 
@@ -315,22 +300,18 @@
                     expect(worker.isTerminateInitialized()).toBe(false);
 
                     worker.load();
-
-                    return;
                 });
 
-                return;
             });
+
 
             describe("load", function () {
 
                 it("should trigger the WORKER_LOADING event when called", function (done) {
-
                     var Listeners = {
                         "WORKER_LOADING": function () {
                             expect(Listeners.WORKER_LOADING).toHaveBeenCalled();
                             done();
-                            return;
                         }
                     };
 
@@ -341,17 +322,13 @@
                     worker.on(WebWorkerEvent.WORKER_LOADING, Listeners.WORKER_LOADING);
 
                     worker.load();
-
-                    return;
                 });
 
                 it("should trigger the WORKER_LOADED event once the worker has loaded", function (done) {
-
                     var Listeners = {
                         "WORKER_LOADED": function () {
                             expect(Listeners.WORKER_LOADED).toHaveBeenCalled();
                             done();
-                            return;
                         }
                     };
 
@@ -362,24 +339,19 @@
                     worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.WORKER_LOADED);
 
                     worker.load();
-
-                    return;
                 });
 
                 it("should trigger the error WORKER_DID_NOT_LOAD if the worker URL could not be loaded", function (done) {
                     var Listeners = null;
 
                     Listeners = {
-                        "LOADED": function (event) {
-                            return;
-                        },
+                        "LOADED": function (event) {},
 
                         "ERROR": function (event) {
                             expect(Listeners.LOADED).not.toHaveBeenCalled();
                             expect(Listeners.ERROR).toHaveBeenCalled();
                             expect(event.message).toEqual(WebWorker.Error.WORKER_DID_NOT_LOAD);
                             done();
-                            return;
                         }
                     };
 
@@ -392,8 +364,6 @@
                     worker.on(WebWorkerEvent.ERROR, Listeners.ERROR);
 
                     worker.load();
-
-                    return;
                 });
 
                 it("should be able to pre-defined load script elements", function (done) {
@@ -403,7 +373,6 @@
                         "LOADED": function (event) {
                             expect(Listeners.LOADED).toHaveBeenCalled();
                             done();
-                            return;
                         }
                     };
 
@@ -414,20 +383,18 @@
                     worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.LOADED);
 
                     worker.load();
-
-                    return;
                 });
 
                 it("should be chainable", function () {
                     worker = new WebWorker(exampleWorkerUrl);
                     expect(worker.load()).toEqual(worker);
-                    return;
                 });
 
-                return;
             });
 
+
             describe("message event bus", function () {
+
                 it("should trigger custom events", function (done) {
                     var Listeners = {
                         "ping": function () {
@@ -451,7 +418,9 @@
 
                     worker.load();
                 });
+
             });
+
 
             describe("off", function () {
 
@@ -460,13 +429,9 @@
                         isCalledOnce = false;
 
                     Listeners = {
-                        "ERROR1": function (event) {
-                            return;
-                        },
+                        "ERROR1": function (event) {},
 
                         "ERROR2": function (event) {
-
-
                             if (isCalledOnce) {
                                 expect(Listeners.ERROR1.calls.count()).toEqual(1);
                                 expect(Listeners.ERROR2.calls.count()).toEqual(2);
@@ -480,8 +445,6 @@
 
                                 worker.throwError();
                             }
-
-                            return;
                         }
                     };
 
@@ -494,18 +457,15 @@
                     worker.on(WebWorkerEvent.ERROR, Listeners.ERROR2);
 
                     worker.throwError();
-
-                    return;
                 });
 
                 it("should be chainable", function () {
                     worker = new WebWorker(exampleWorkerUrl);
                     expect(worker.off()).toEqual(worker);
-                    return;
                 });
 
-                return;
             });
+
 
             describe("on", function () {
 
@@ -516,7 +476,6 @@
                         "ERROR": function (event) {
                             expect(Listeners.ERROR).toHaveBeenCalled();
                             done();
-                            return;
                         }
                     };
 
@@ -533,11 +492,10 @@
                 it("should be chainable", function () {
                     worker = new WebWorker(exampleWorkerUrl);
                     expect(worker.on()).toEqual(worker);
-                    return;
                 });
 
-                return;
             });
+
 
             describe("one", function () {
 
@@ -546,13 +504,9 @@
                         isCalledOnce = false;
 
                     Listeners = {
-                        "ERROR1": function (event) {
-                            return;
-                        },
+                        "ERROR1": function (event) {},
 
                         "ERROR2": function (event) {
-
-
                             if (isCalledOnce) {
                                 expect(Listeners.ERROR1.calls.count()).toEqual(1);
                                 expect(Listeners.ERROR2.calls.count()).toEqual(2);
@@ -563,8 +517,6 @@
                                 expect(Listeners.ERROR2.calls.count()).toEqual(1);
                                 worker.throwError();
                             }
-
-                            return;
                         }
                     };
 
@@ -577,18 +529,15 @@
                     worker.on(WebWorkerEvent.ERROR, Listeners.ERROR2);
 
                     worker.throwError();
-
-                    return;
                 });
 
                 it("should be chainable", function () {
                     worker = new WebWorker(exampleWorkerUrl);
                     expect(worker.one()).toEqual(worker);
-                    return;
                 });
 
-                return;
             });
+
 
             describe("sendMessage", function () {
 
@@ -605,7 +554,6 @@
                             spyOn(nativeWorker, 'postMessage').and.callFake(Listeners.POST_MESSAGE);
 
                             worker.sendMessage(testMethodName, testArgs);
-                            return;
                         },
 
                         "POST_MESSAGE": function (data) {
@@ -623,8 +571,6 @@
                             expect(data.args).toEqual(testArgs);
 
                             done();
-
-                            return;
                         }
                     };
 
@@ -633,32 +579,26 @@
                     worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.LOADED);
 
                     worker.load();
-
-                    return;
                 });
 
                 it("should be chainable", function () {
                     worker = new WebWorker(exampleWorkerUrl);
                     expect(worker.sendMessage()).toEqual(worker);
-                    return;
                 });
 
-                return;
             });
+
 
             describe("start", function () {
 
                 it("should trigger the WORKER_STARTING event when called", function (done) {
-
                     var Listeners = {
                         "WORKER_LOADED": function () {
                             worker.start();
-                            return;
                         },
                         "WORKER_STARTING": function () {
                             expect(Listeners.WORKER_STARTING).toHaveBeenCalled();
                             done();
-                            return;
                         }
                     };
 
@@ -667,25 +607,19 @@
                     worker = new WebWorker(exampleWorkerUrl);
 
                     worker.on(WebWorkerEvent.WORKER_STARTING, Listeners.WORKER_STARTING);
-
                     worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.WORKER_LOADED);
 
                     worker.load();
-
-                    return;
                 });
 
                 it("should trigger the WORKER_STARTED event once the worker has started", function (done) {
-
                     var Listeners = {
                         "WORKER_LOADED": function () {
                             worker.start();
-                            return;
                         },
                         "WORKER_STARTED": function () {
                             expect(Listeners.WORKER_STARTED).toHaveBeenCalled();
                             done();
-                            return;
                         }
                     };
 
@@ -694,22 +628,18 @@
                     worker = new WebWorker(exampleWorkerUrl);
 
                     worker.on(WebWorker.Event.WORKER_STARTED, Listeners.WORKER_STARTED);
-
                     worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.WORKER_LOADED);
 
                     worker.load();
-
-                    return;
                 });
 
                 it("should be chainable", function () {
                     worker = new WebWorker(exampleWorkerUrl);
                     expect(worker.start()).toEqual(worker);
-                    return;
                 });
 
-                return;
             });
+
 
             describe("terminate", function () {
 
@@ -724,7 +654,6 @@
                             expect(Listeners.TERMINATING).toHaveBeenCalled();
                             done();
                         }
-                        return;
                     }
 
                     Listeners = {
@@ -734,13 +663,11 @@
                                 isTerminateCalled = true;
                                 checkAndComplete();
                             }, 100);
-                            return;
                         },
 
                         "TERMINATING": function (event) {
                             isEventCalled = true;
                             checkAndComplete();
-                            return;
                         }
                     };
 
@@ -753,18 +680,15 @@
                     worker.on(WebWorkerEvent.WORKER_TERMINATING, Listeners.TERMINATING);
 
                     worker.load();
-
-                    return;
                 });
 
                 it("should be chainable", function () {
                     worker = new WebWorker(exampleWorkerUrl);
                     expect(worker.terminate()).toEqual(worker);
-                    return;
                 });
 
-                return;
             });
+
 
             describe("terminateNow", function () {
 
@@ -774,12 +698,9 @@
                     Listeners = {
                         "LOADED": function (event) {
                             worker.terminateNow();
-                            return;
                         },
 
-                        "TERMINATING": function (event) {
-                            return;
-                        },
+                        "TERMINATING": function (event) {},
 
                         "TERMINATED": function (event) {
                             expect(Listeners.TERMINATING).toHaveBeenCalled();
@@ -788,8 +709,6 @@
                             expect(worker.getNativeWorker()).toBeNull();
 
                             done();
-
-                            return;
                         }
                     };
 
@@ -804,18 +723,15 @@
                     worker.on(WebWorkerEvent.WORKER_TERMINATED, Listeners.TERMINATED);
 
                     worker.load();
-
-                    return;
                 });
 
                 it("should be chainable", function () {
                     worker = new WebWorker(exampleWorkerUrl);
                     expect(worker.terminateNow()).toEqual(worker);
-                    return;
                 });
 
-                return;
             });
+
 
             describe("throwError", function () {
 
@@ -829,7 +745,6 @@
                             expect(Listeners.ERROR).toHaveBeenCalled();
                             expect(event.message).toEqual(errorMsg);
                             done();
-                            return;
                         }
                     };
 
@@ -840,8 +755,6 @@
                     worker.on(WebWorkerEvent.ERROR, Listeners.ERROR);
 
                     worker.throwError(errorMsg);
-
-                    return;
                 });
 
                 it("should be able to trigger the ERROR event with the specified error message and data", function (done) {
@@ -860,7 +773,6 @@
                             expect(event.message).toEqual(errorMsg);
                             expect(event.errorData).toEqual(data);
                             done();
-                            return;
                         }
                     };
 
@@ -871,8 +783,6 @@
                     worker.on(WebWorkerEvent.ERROR, Listeners.ERROR);
 
                     worker.throwError(errorMsg, data);
-
-                    return;
                 });
 
                 it("should be able to trigger the ERROR event with the specified error message and data and throw an exception", function (done) {
@@ -891,7 +801,6 @@
                             expect(event.message).toEqual(errorMsg);
                             expect(event.errorData).toEqual(data);
                             done();
-                            return;
                         }
                     };
 
@@ -908,8 +817,6 @@
                     } catch (err) {
                         expect(err.message).toEqual(errorMsg);
                     }
-
-                    return;
                 });
 
                 it("should be able to handle objects", function (done) {
@@ -922,7 +829,6 @@
                             expect(Listeners.ERROR).toHaveBeenCalled();
                             expect(event.message.message).toEqual(error.message);
                             done();
-                            return;
                         }
                     };
 
@@ -933,18 +839,15 @@
                     worker.on(WebWorkerEvent.ERROR, Listeners.ERROR);
 
                     worker.throwError(error);
-
-                    return;
                 });
 
                 it("should be chainable", function () {
                     worker = new WebWorker(exampleWorkerUrl);
                     expect(worker.throwError()).toEqual(worker);
-                    return;
                 });
 
-                return;
             });
+
 
             describe("trigger", function () {
 
@@ -961,28 +864,20 @@
 
                             worker.trigger(eventType1);
                             worker.trigger(eventType2);
-
-                            return;
                         },
 
                         "INITIALIZED": function (event) {
                             expect(Listeners.INITIALIZED).toHaveBeenCalled();
                             expect(Listeners.POST_MESSAGE).not.toHaveBeenCalled();
-                            return;
                         },
 
-                        "SOME_EVENT": function (event) {
-                            return;
-                        },
+                        "SOME_EVENT": function (event) {},
 
                         "POST_MESSAGE": function (data) {
-
                             expect(Listeners.SOME_EVENT).not.toHaveBeenCalled();
                             expect(Listeners.POST_MESSAGE).toHaveBeenCalled();
 
                             done();
-
-                            return;
                         }
                     };
 
@@ -1000,18 +895,15 @@
                     worker.on(eventType2, Listeners.SOME_EVENT);
 
                     worker.load();
-
-                    return;
                 });
 
                 it("should be chainable", function () {
                     worker = new WebWorker(exampleWorkerUrl);
                     expect(worker.trigger()).toEqual(worker);
-                    return;
                 });
 
-                return;
             });
+
 
             describe("triggerSelf", function () {
 
@@ -1022,13 +914,11 @@
                     Listeners = {
                         "INITIALIZED": function (event) {
                             expect(Listeners.INITIALIZED).toHaveBeenCalled();
-                            return;
                         },
 
                         "SOME_EVENT": function (event) {
                             expect(Listeners.SOME_EVENT).toHaveBeenCalled();
                             done();
-                            return;
                         }
                     };
 
@@ -1044,23 +934,20 @@
 
                     worker.triggerSelf(WebWorkerEvent.INITIALIZED);
                     worker.triggerSelf(someEventType, null);
-
-                    return;
                 });
 
                 it("should be chainable", function () {
                     worker = new WebWorker(exampleWorkerUrl);
                     expect(worker.triggerSelf()).toEqual(worker);
-                    return;
                 });
 
-                return;
             });
 
-            return;
         });
 
+
         describe("static", function () {
+
 
             describe("getLastError", function () {
 
@@ -1094,19 +981,17 @@
                     expect(WebWorker.getLastError()).toEqual(errorMsg2);
 
                     worker2.terminateNow();
-
-                    return;
                 });
 
-                return;
             });
 
+
             describe("noConflict", function () {
+
                 var cachedWebWorker = window.WebWorker;
 
                 afterEach(function () {
                     window.WebWorker = cachedWebWorker;
-                    return;
                 });
 
                 it("should be able to remove WebWorker from the window object and re-insert into the context and classname provided", function () {
@@ -1120,8 +1005,6 @@
 
                     expect(someContext[someClassName]).toBeDefined();
                     expect(returnValue).not.toBeNull();
-
-                    return;
                 });
 
                 it("should be able to remove WebWorker from the window object even if context and classname are not provided", function () {
@@ -1132,17 +1015,12 @@
                     returnValue = WebWorker.noConflict();
 
                     expect(returnValue).not.toBeNull();
-
-                    return;
                 });
 
-                return;
             });
 
-            return;
         });
 
-        return;
     });
 
 
@@ -1158,13 +1036,11 @@
 
             Listeners = {
                 "LOADED": function () {
-
                     nativeWorker = worker.getNativeWorker();
                     $nativeWorker = $(nativeWorker);
                     $nativeWorker.on('message', Listeners.MESSAGE);
 
                     nativeWorker.dispatchEvent(fakeEvent);
-                    return;
                 },
 
                 "MESSAGE": function (event) {
@@ -1174,7 +1050,6 @@
                     expect(worker[fakeAction].calls.mostRecent().args).toEqual(fakeEventArgs);
 
                     done();
-                    return;
                 }
             };
 
@@ -1196,8 +1071,6 @@
 
             worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.LOADED);
             worker.load();
-
-            return;
         });
 
         it("should NOT call the specified action method if it is NOT triggered by a WebWorker action", function (done) {
@@ -1210,22 +1083,18 @@
 
             Listeners = {
                 "LOADED": function () {
-
                     nativeWorker = worker.getNativeWorker();
                     $nativeWorker = $(nativeWorker);
                     $nativeWorker.on('message', Listeners.MESSAGE);
 
                     nativeWorker.dispatchEvent(fakeEvent);
-                    return;
                 },
 
                 "MESSAGE": function (event) {
                     expect(Listeners.MESSAGE).toHaveBeenCalled();
-
                     expect(worker[fakeAction]).not.toHaveBeenCalled();
 
                     done();
-                    return;
                 }
             };
 
@@ -1246,11 +1115,8 @@
 
             worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.LOADED);
             worker.load();
-
-            return;
         });
 
-        return;
     });
 
 
@@ -1264,13 +1130,11 @@
 
             Listeners = {
                 "LOADED": function () {
-
                     nativeWorker = worker.getNativeWorker();
                     $nativeWorker = $(nativeWorker);
                     $nativeWorker.on('error', Listeners.ERROR);
 
                     $nativeWorker.trigger(fakeEvent);
-                    return;
                 },
 
                 "ERROR": function (event) {
@@ -1281,7 +1145,6 @@
                     expect(event.data).toEqual(fakeEvent.originalEvent.data);
 
                     done();
-                    return;
                 }
             };
 
@@ -1297,13 +1160,9 @@
 
             worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.LOADED);
             worker.load();
-
-            return;
         });
 
-        return;
     });
 
 
-    return;
 })();

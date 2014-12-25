@@ -16,6 +16,8 @@
         defaultContext = window,
         defaultClassName = 'WebWorker',
 
+        State = null,
+
         Action = null,
 
         Event = null,
@@ -126,6 +128,16 @@
     WebWorker.prototype._nativeWorker = null;
 
     /**
+     * The current state of the worker. This value is updated internally by the worker.
+     * Valid values for this property are defined in {{#crossLink "WebWorker/State:property"}}{{/crossLink}}.
+     * @property _state
+     * @type {Number}
+     * @private
+     * @default null
+     */
+    WebWorker.prototype._state = null;
+
+    /**
      * The `Blob` URL generated for the worker.
      * @property _workerBlobUrl
      * @type {String}
@@ -212,6 +224,8 @@
 
         this._assignEventHandlers();
 
+        this._state = State.INITIALIZED;
+
         this.trigger(Event.INITIALIZED);
 
         return;
@@ -242,6 +256,16 @@
      */
     WebWorker.prototype.getNativeWorker = function () {
         return this._nativeWorker;
+    };
+
+    /**
+     * Returns the current state of the worker as an integer.
+     * Refer to {{#crossLink "WebWorker/State:property"}}{{/crossLink}} for state values.
+     * @method getState
+     * @return {Number} An integer representing the current state of the worker.
+     */
+    WebWorker.prototype.getState = function () {
+        return this._state;
     };
 
     /**
@@ -331,7 +355,16 @@
         function getCallbackStackExecutor(stackId) {
             return function () {
                 var callbackStack = this._callbackStack[stackId],
+                    stateId,
                     curCallback;
+
+                stateId = stackId.toUpperCase();
+
+                if (stateId in State) {
+                    // Set the current state of the worker
+                    // as long as it's a valid state.
+                    this._state = State[stateId];
+                }
 
                 /* eslint no-cond-assign:0 */
                 while (curCallback = callbackStack.pop()) {
@@ -827,6 +860,31 @@
      * @type {String}
      */
     WebWorker._lastError = null;
+
+    /**
+     * List of possible states the worker instance can be in. The worker instance
+     * can only be in one of these states at any given time.
+     * @property {Object} State
+     *     @property {Number} State.INITIALIZED 0
+     *     @property {Number} State.LOADING 1
+     *     @property {Number} State.LOADED 2
+     *     @property {Number} State.STARTING 3
+     *     @property {Number} State.STARTED 4
+     *     @property {Number} State.TERMINATING 5
+     *     @property {Number} State.TERMINATED 6
+     *
+     * @static
+     */
+    State = {
+        "INITIALIZED": 0,
+        "LOADING": 1,
+        "LOADED": 2,
+        "STARTING": 3,
+        "STARTED": 4,
+        "TERMINATING": 5,
+        "TERMINATED": 6
+    };
+    WebWorker.State = State;
 
     /**
      * List of pre-defined actions for the WebWorker instance.

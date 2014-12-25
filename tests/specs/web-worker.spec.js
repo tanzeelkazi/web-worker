@@ -4,10 +4,12 @@
 
     var worker = null,
         WebWorkerEvent = null,
+        WebWorkerState = null,
         exampleWorkerElemSelector = null,
         exampleWorkerUrl = null;
 
     WebWorkerEvent = WebWorker.Event;
+    WebWorkerState = WebWorker.State;
 
     exampleWorkerElemSelector = "#test-worker-script-elem";
     exampleWorkerUrl = "/js/example-worker.js";
@@ -242,7 +244,41 @@
                     });
 
                     worker.load();
+                });
 
+            });
+
+
+            describe("getState", function () {
+
+                it("should get the correct current state of the worker", function (done) {
+                    worker = new WebWorker(exampleWorkerUrl);
+
+                    expect(worker.getState()).toBe(WebWorkerState.INITIALIZED);
+
+                    worker.loading(function () {
+                        expect(worker.getState()).toBe(WebWorkerState.LOADING);
+                    })
+                    .loaded(function () {
+                        expect(worker.getState()).toBe(WebWorkerState.LOADED);
+                        worker.start();
+                    })
+                    .starting(function () {
+                        expect(worker.getState()).toBe(WebWorkerState.STARTING);
+                    })
+                    .started(function () {
+                        expect(worker.getState()).toBe(WebWorkerState.STARTED);
+                        worker.terminate();
+                    })
+                    .terminating(function () {
+                        expect(worker.getState()).toBe(WebWorkerState.TERMINATING);
+                    })
+                    .terminated(function () {
+                        expect(worker.getState()).toBe(WebWorkerState.TERMINATED);
+                        done();
+                    });
+
+                    worker.load();
                 });
 
             });

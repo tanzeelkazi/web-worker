@@ -1,7 +1,7 @@
 {
     "name": "WebWorker",
     "description": "WebWorker: A wrapper for the HTML 5 web worker API.",
-    "version": "0.0.1",
+    "version": "1.0.0a",
     "options": {
         "outdir": "./docs",
         "paths": [ "./src" ],

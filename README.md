@@ -1,6 +1,8 @@
 ![WebWorker logo](https://raw.githubusercontent.com/tanzeelkazi/webworker/master/img/webworker-logo-128.png)
 # WebWorker
 
+Version: 1.0.0a
+
 Event driven web worker javascript framework.
 
 Don't you just hate having only the `postMessage` API to communicate with your workers?

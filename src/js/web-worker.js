@@ -88,17 +88,6 @@
     WebWorker.prototype._callbackStack = null;
 
     /**
-     * Indicates if the worker script has loaded.
-     * This is set to `true` once the worker script has
-     * successfully loaded after the `.load()` method call.
-     * @property _hasLoaded
-     * @type {Boolean}
-     * @private
-     * @default false
-     */
-    WebWorker.prototype._hasLoaded = false;
-
-    /**
      * Since `WebWorker` terminate calls are asynchronous,
      * this is used to keep track of whether a terminate call
      * was initialized.
@@ -269,12 +258,13 @@
     };
 
     /**
-     * Returns whether the worker script has been loaded.
-     * @method hasLoaded
-     * @return {Boolean} Returns `true` if the worker script has loaded, `false` otherwise.
+     * Returns whether the worker script is loaded.
+     * @method isLoaded
+     * @return {Boolean} Returns `true` if the worker script is loaded, `false` otherwise.
      */
-    WebWorker.prototype.hasLoaded = function () {
-        return this._hasLoaded;
+    WebWorker.prototype.isLoaded = function () {
+        var state = this.getState();
+        return state >= State.LOADED && state < State.TERMINATED;
     };
 
     /**
@@ -372,11 +362,6 @@
                 }
             };
         }
-
-        this.on(Event.WORKER_LOADED, function () {
-            this._hasLoaded = true;
-            return;
-        });
 
         this.on(Event.ERROR, getCallbackStackExecutor('error'));
         this.on(Event.WORKER_LOADING, getCallbackStackExecutor('loading'));
@@ -483,7 +468,7 @@
     WebWorker.prototype.start = function () {
         var args = null;
 
-        if (!this.hasLoaded()) {
+        if (!this.isLoaded()) {
             return this;
         }
 
@@ -627,7 +612,6 @@
 
         if (nativeWorker) {
             nativeWorker.terminate();
-            this._hasLoaded = false;
             this._isTerminateInitialized = false;
             this._nativeWorker = null;
             this.trigger(Event.WORKER_TERMINATED, {"returnValue": returnValue});

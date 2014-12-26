@@ -294,15 +294,15 @@
             });
 
 
-            describe("hasLoaded", function () {
+            describe("isLoaded", function () {
 
-                it("should return true once the worker has loaded, false otherwise", function (done) {
+                it("should return true once the worker is loaded, false otherwise", function (done) {
                     worker = new WebWorker(exampleWorkerUrl);
 
-                    expect(worker.hasLoaded()).toBe(false);
+                    expect(worker.isLoaded()).toBe(false);
 
-                    worker.on(WebWorkerEvent.WORKER_LOADED, function () {
-                        expect(worker.hasLoaded()).toBe(true);
+                    worker.loaded(function () {
+                        expect(worker.isLoaded()).toBe(true);
                         done();
                     });
 

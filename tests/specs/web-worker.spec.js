@@ -181,7 +181,7 @@
 
                     expect(worker.getBlobUrl()).toBeNull();
 
-                    worker.on(WebWorkerEvent.WORKER_LOADED, function () {
+                    worker.loaded(function () {
                         expect(worker.getBlobUrl()).not.toBeNull();
                         done();
                     });
@@ -234,7 +234,7 @@
 
                     expect(worker.getNativeWorker()).toBeNull();
 
-                    worker.on(WebWorkerEvent.WORKER_LOADED, function () {
+                    worker.loaded(function () {
                         var nativeWorker = null;
 
                         nativeWorker = worker.getNativeWorker();
@@ -330,8 +330,8 @@
 
                     worker = new WebWorker(exampleWorkerUrl);
 
-                    worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.LOADED);
-                    worker.on(WebWorkerEvent.WORKER_TERMINATING, Listeners.TERMINATING);
+                    worker.loaded(Listeners.LOADED)
+                          .terminating(Listeners.TERMINATING);
 
                     expect(worker.isTerminateInitialized()).toBe(false);
 
@@ -402,7 +402,7 @@
                     worker.load();
                 });
 
-                it("should be able to pre-defined load script elements", function (done) {
+                it("should be able to load pre-defined script elements", function (done) {
                     var Listeners = null;
 
                     Listeners = {
@@ -416,7 +416,7 @@
 
                     worker = new WebWorker(exampleWorkerElemSelector);
 
-                    worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.LOADED);
+                    worker.loaded(Listeners.LOADED);
 
                     worker.load();
                 });
@@ -612,7 +612,7 @@
 
                     worker = new WebWorker(exampleWorkerUrl);
 
-                    worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.LOADED);
+                    worker.loaded(Listeners.LOADED);
 
                     worker.load();
                 });
@@ -642,8 +642,9 @@
 
                     worker = new WebWorker(exampleWorkerUrl);
 
+                    worker.loaded(Listeners.WORKER_LOADED);
+
                     worker.on(WebWorkerEvent.WORKER_STARTING, Listeners.WORKER_STARTING);
-                    worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.WORKER_LOADED);
 
                     worker.load();
                 });
@@ -663,8 +664,9 @@
 
                     worker = new WebWorker(exampleWorkerUrl);
 
+                    worker.loaded(Listeners.WORKER_LOADED);
+
                     worker.on(WebWorker.Event.WORKER_STARTED, Listeners.WORKER_STARTED);
-                    worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.WORKER_LOADED);
 
                     worker.load();
                 });
@@ -712,7 +714,8 @@
                     spyOn(worker, 'sendMessage').and.callThrough();
                     spyOn(Listeners, 'TERMINATING').and.callThrough();
 
-                    worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.LOADED);
+                    worker.loaded(Listeners.LOADED);
+
                     worker.on(WebWorkerEvent.WORKER_TERMINATING, Listeners.TERMINATING);
 
                     worker.load();
@@ -754,9 +757,10 @@
                     worker = new WebWorker(exampleWorkerUrl);
 
                     spyOn(worker, 'sendMessage').and.callThrough();
-                    worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.LOADED);
-                    worker.on(WebWorkerEvent.WORKER_TERMINATING, Listeners.TERMINATING);
-                    worker.on(WebWorkerEvent.WORKER_TERMINATED, Listeners.TERMINATED);
+                    worker.loaded(Listeners.LOADED);
+
+                    worker.on(WebWorkerEvent.WORKER_TERMINATING, Listeners.TERMINATING)
+                          .on(WebWorkerEvent.WORKER_TERMINATED, Listeners.TERMINATED);
 
                     worker.load();
                 });
@@ -926,9 +930,10 @@
 
                     worker = new WebWorker(exampleWorkerUrl);
 
-                    worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.LOADED);
-                    worker.on(eventType1, Listeners.INITIALIZED);
-                    worker.on(eventType2, Listeners.SOME_EVENT);
+                    worker.loaded(Listeners.LOADED);
+
+                    worker.on(eventType1, Listeners.INITIALIZED)
+                          .on(eventType2, Listeners.SOME_EVENT);
 
                     worker.load();
                 });
@@ -965,11 +970,11 @@
 
                     someEventType = 'some-event';
 
-                    worker.on(WebWorkerEvent.INITIALIZED, Listeners.INITIALIZED);
-                    worker.on(someEventType, Listeners.SOME_EVENT);
+                    worker.on(WebWorkerEvent.INITIALIZED, Listeners.INITIALIZED)
+                          .on(someEventType, Listeners.SOME_EVENT);
 
-                    worker.triggerSelf(WebWorkerEvent.INITIALIZED);
-                    worker.triggerSelf(someEventType, null);
+                    worker.triggerSelf(WebWorkerEvent.INITIALIZED)
+                          .triggerSelf(someEventType, null);
                 });
 
                 it("should be chainable", function () {
@@ -1105,7 +1110,7 @@
             spyOn(worker, fakeAction);
             spyOn(Listeners, 'MESSAGE').and.callThrough();
 
-            worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.LOADED);
+            worker.loaded(Listeners.LOADED);
             worker.load();
         });
 
@@ -1149,7 +1154,7 @@
             spyOn(worker, fakeAction);
             spyOn(Listeners, 'MESSAGE').and.callThrough();
 
-            worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.LOADED);
+            worker.loaded(Listeners.LOADED);
             worker.load();
         });
 
@@ -1194,7 +1199,7 @@
 
             spyOn(Listeners, 'ERROR').and.callThrough();
 
-            worker.on(WebWorkerEvent.WORKER_LOADED, Listeners.LOADED);
+            worker.loaded(Listeners.LOADED);
             worker.load();
         });
 

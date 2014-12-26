@@ -2,6 +2,7 @@
     "project": {
         "name": "WebWorker",
         "description": "WebWorker: A wrapper for the HTML 5 web worker API.",
+        "logo": "../img/webworker-logo-64.png",
         "version": "1.0.0a"
     },
     "files": {

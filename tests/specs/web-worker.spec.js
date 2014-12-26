@@ -296,13 +296,30 @@
 
             describe("isLoaded", function () {
 
-                it("should return true once the worker is loaded, false otherwise", function (done) {
+                it("should return true for all states except before loading and after the worker is terminated", function (done) {
                     worker = new WebWorker(exampleWorkerUrl);
 
                     expect(worker.isLoaded()).toBe(false);
 
-                    worker.loaded(function () {
+                    worker.loading(function () {
+                        expect(worker.isLoaded()).toBe(false);
+                    })
+                    .loaded(function () {
                         expect(worker.isLoaded()).toBe(true);
+                        worker.start();
+                    })
+                    .starting(function () {
+                        expect(worker.isLoaded()).toBe(true);
+                    })
+                    .started(function () {
+                        expect(worker.isLoaded()).toBe(true);
+                        worker.terminate();
+                    })
+                    .terminating(function () {
+                        expect(worker.isLoaded()).toBe(true);
+                    })
+                    .terminated(function () {
+                        expect(worker.isLoaded()).toBe(false);
                         done();
                     });
 
@@ -312,9 +329,149 @@
             });
 
 
-            describe("isTerminateInitialized", function () {
+            describe("isLoading", function () {
 
-                it("should return true when terminate has initialized, false otherwise", function (done) {
+                it("should return true only for the loading state", function (done) {
+                    worker = new WebWorker(exampleWorkerUrl);
+
+                    expect(worker.isLoading()).toBe(false);
+
+                    worker.loading(function () {
+                        expect(worker.isLoading()).toBe(true);
+                    })
+                    .loaded(function () {
+                        expect(worker.isLoading()).toBe(false);
+                        worker.start();
+                    })
+                    .starting(function () {
+                        expect(worker.isLoading()).toBe(false);
+                    })
+                    .started(function () {
+                        expect(worker.isLoading()).toBe(false);
+                        worker.terminate();
+                    })
+                    .terminating(function () {
+                        expect(worker.isLoading()).toBe(false);
+                    })
+                    .terminated(function () {
+                        expect(worker.isLoading()).toBe(false);
+                        done();
+                    });
+
+                    worker.load();
+                });
+
+            });
+
+
+            describe("isStarted", function () {
+
+                it("should return true for all states except before starting and after the worker is terminated", function (done) {
+                    worker = new WebWorker(exampleWorkerUrl);
+
+                    expect(worker.isStarted()).toBe(false);
+
+                    worker.loading(function () {
+                        expect(worker.isStarted()).toBe(false);
+                    })
+                    .loaded(function () {
+                        expect(worker.isStarted()).toBe(false);
+                        worker.start();
+                    })
+                    .starting(function () {
+                        expect(worker.isStarted()).toBe(false);
+                    })
+                    .started(function () {
+                        expect(worker.isStarted()).toBe(true);
+                        worker.terminate();
+                    })
+                    .terminating(function () {
+                        expect(worker.isStarted()).toBe(true);
+                    })
+                    .terminated(function () {
+                        expect(worker.isStarted()).toBe(false);
+                        done();
+                    });
+
+                    worker.load();
+                });
+
+            });
+
+
+            describe("isStarting", function () {
+
+                it("should return true only for the starting state", function (done) {
+                    worker = new WebWorker(exampleWorkerUrl);
+
+                    expect(worker.isStarting()).toBe(false);
+
+                    worker.loading(function () {
+                        expect(worker.isStarting()).toBe(false);
+                    })
+                    .loaded(function () {
+                        expect(worker.isStarting()).toBe(false);
+                        worker.start();
+                    })
+                    .starting(function () {
+                        expect(worker.isStarting()).toBe(true);
+                    })
+                    .started(function () {
+                        expect(worker.isStarting()).toBe(false);
+                        worker.terminate();
+                    })
+                    .terminating(function () {
+                        expect(worker.isStarting()).toBe(false);
+                    })
+                    .terminated(function () {
+                        expect(worker.isStarting()).toBe(false);
+                        done();
+                    });
+
+                    worker.load();
+                });
+
+            });
+
+
+            describe("isTerminated", function () {
+
+                it("should return true only if the worker is terminated", function (done) {
+                    worker = new WebWorker(exampleWorkerUrl);
+
+                    expect(worker.isTerminated()).toBe(false);
+
+                    worker.loading(function () {
+                        expect(worker.isTerminated()).toBe(false);
+                    })
+                    .loaded(function () {
+                        expect(worker.isTerminated()).toBe(false);
+                        worker.start();
+                    })
+                    .starting(function () {
+                        expect(worker.isTerminated()).toBe(false);
+                    })
+                    .started(function () {
+                        expect(worker.isTerminated()).toBe(false);
+                        worker.terminate();
+                    })
+                    .terminating(function () {
+                        expect(worker.isTerminated()).toBe(false);
+                    })
+                    .terminated(function () {
+                        expect(worker.isTerminated()).toBe(true);
+                        done();
+                    });
+
+                    worker.load();
+                });
+
+            });
+
+
+            describe("isTerminating", function () {
+
+                it("should return true when the worker is terminating, false otherwise", function (done) {
                     var Listeners = null;
 
                     Listeners = {
@@ -323,7 +480,11 @@
                         },
 
                         "TERMINATING": function (event) {
-                            expect(worker.isTerminateInitialized()).toBe(true);
+                            expect(worker.isTerminating()).toBe(true);
+                        },
+
+                        "TERMINATED": function (event) {
+                            expect(worker.isTerminating()).toBe(false);
                             done();
                         }
                     };
@@ -331,9 +492,10 @@
                     worker = new WebWorker(exampleWorkerUrl);
 
                     worker.loaded(Listeners.LOADED)
-                          .terminating(Listeners.TERMINATING);
+                          .terminating(Listeners.TERMINATING)
+                          .terminated(Listeners.TERMINATED);
 
-                    expect(worker.isTerminateInitialized()).toBe(false);
+                    expect(worker.isTerminating()).toBe(false);
 
                     worker.load();
                 });

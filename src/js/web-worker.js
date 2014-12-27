@@ -312,6 +312,10 @@
             workerUrl = null,
             onScriptLoaded = null;
 
+        if (self.isLoading() || self.isLoaded()) {
+            return self;
+        }
+
         // Trigger event
         self.trigger(Event.WORKER_LOADING);
 
@@ -329,8 +333,6 @@
             self._workerBlobUrl = window.URL.createObjectURL(blob);
 
             self._createWorker();
-
-            return;
         };
 
         if (workerUrl === null) {
@@ -346,11 +348,9 @@
                 "success": function (responseText) {
                     self._workerScript = responseText;
                     onScriptLoaded();
-                    return;
                 },
                 "error": function () {
                     self.throwError(Error.WORKER_DID_NOT_LOAD, arguments);
-                    return;
                 }
             });
         }
@@ -493,6 +493,10 @@
      */
     WebWorker.prototype.start = function () {
         var args = null;
+
+        if (this.isStarting() || this.isStarted()) {
+            return this;
+        }
 
         if (!this.isLoaded()) {
             return this;

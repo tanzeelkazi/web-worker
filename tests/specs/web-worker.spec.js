@@ -583,6 +583,36 @@
                     worker.load();
                 });
 
+                it("should return silently if the worker is loading or already loaded", function (done) {
+                    var Listeners = null;
+
+                    Listeners = {
+                        "LOADING": function (event) {},
+                        "LOADED": function (event) {}
+                    };
+
+                    spyOn(Listeners, "LOADING");
+                    spyOn(Listeners, "LOADED");
+
+                    worker = new WebWorker(exampleWorkerUrl);
+
+                    worker.loaded(function () {
+
+                              worker.on(WebWorkerEvent.WORKER_LOADING, Listeners.LOADING)
+                                    .on(WebWorkerEvent.WORKER_LOADED, Listeners.LOADED);
+
+                              worker.load();
+                              worker.start();
+                          })
+                          .started(function () {
+                              expect(Listeners.LOADING).not.toHaveBeenCalled();
+                              expect(Listeners.LOADED).not.toHaveBeenCalled();
+                              done();
+                          });
+
+                    worker.load();
+                });
+
                 it("should be chainable", function () {
                     worker = new WebWorker(exampleWorkerUrl);
                     expect(worker.load()).toEqual(worker);
@@ -831,6 +861,57 @@
                     worker.on(WebWorker.Event.WORKER_STARTED, Listeners.WORKER_STARTED);
 
                     worker.load();
+                });
+
+                it("should load the worker if it isn't loaded yet and then start the worker automatically", function (done) {
+                    var Listeners = {
+                        "WORKER_LOADED": function () {},
+                        "WORKER_STARTED": function () {
+                            expect(Listeners.WORKER_LOADED).toHaveBeenCalled();
+                            expect(Listeners.WORKER_STARTED).toHaveBeenCalled();
+                            done();
+                        }
+                    };
+
+                    spyOn(Listeners, 'WORKER_LOADED');
+                    spyOn(Listeners, 'WORKER_STARTED').and.callThrough();
+
+                    worker = new WebWorker(exampleWorkerUrl);
+
+                    worker.loaded(Listeners.WORKER_LOADED)
+                          .started(Listeners.WORKER_STARTED);
+
+                    worker.start();
+                });
+
+                it("should return silently if the worker is starting or already started", function (done) {
+                    var Listeners = {
+                        "WORKER_STARTING": function () {},
+                        "WORKER_STARTED": function () {},
+                        "WORKER_TERMINATED": function () {
+                            expect(Listeners.WORKER_STARTING).not.toHaveBeenCalled();
+                            expect(Listeners.WORKER_STARTED).not.toHaveBeenCalled();
+                            done();
+                        }
+                    };
+
+                    spyOn(Listeners, 'WORKER_STARTING');
+                    spyOn(Listeners, 'WORKER_STARTED');
+
+                    worker = new WebWorker(exampleWorkerUrl);
+
+                    worker.starting(function () {
+                        worker.on(WebWorkerEvent.WORKER_STARTING, Listeners.WORKER_STARTING);
+                        worker.start();
+                    })
+                    .started(function () {
+                        worker.on(WebWorkerEvent.WORKER_STARTED, Listeners.WORKER_STARTING);
+                        worker.start();
+                        worker.terminate();
+                    })
+                    .terminated(Listeners.WORKER_TERMINATED);
+
+                    worker.start();
                 });
 
                 it("should be chainable", function () {

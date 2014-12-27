@@ -498,13 +498,19 @@
             return this;
         }
 
+        args = slice.call(arguments);
+
         if (!this.isLoaded()) {
+            this.on(Event.WORKER_LOADED, function () {
+                this.start.apply(this, args);
+            });
+
+            this.load();
             return this;
         }
 
         this.trigger(Event.WORKER_STARTING);
 
-        args = slice.call(arguments);
         this.sendMessage(Action.START, args);
 
         return this;

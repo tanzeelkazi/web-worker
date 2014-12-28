@@ -130,15 +130,6 @@ WorkerWrapperSandbox.loadWorker = function () {
     self.Event = Event;
 
     /**
-     * This method is called by the script whenever the worker is made to terminate.
-     * By default this method does nothing but it exists so that you can override it
-     * with a custom function to possibly perform cleanup operations if the worker is
-     * being made to terminate.
-     * @method terminateHandler
-     */
-    self.terminateHandler = null;
-
-    /**
      * Returns the current state of the worker as an integer.
      * Refer to {{#crossLink "WebWorker/State:property"}}{{/crossLink}} for state values.
      * @method getState
@@ -462,10 +453,7 @@ WorkerWrapperSandbox.loadWorker = function () {
     /**
      * Terminates the worker from within the worker script.
      * Note that terminates from within the worker are asynchronous.
-     * This method calls the
-     * {{#crossLink "Wrapper/terminateHandler"}}{{/crossLink}},
-     * if it is assigned and is a function, and then goes on to
-     * communicate with the base worker class to call the method
+     * It then communicates with the base worker class to call the method
      * {{#crossLink "WebWorker/terminateNow:method"}}{{/crossLink}}.
      *
      * The {{#crossLink "WebWorker"}}{{/crossLink}}
@@ -486,11 +474,7 @@ WorkerWrapperSandbox.loadWorker = function () {
      * @chainable
      */
     self.terminate = function (terminateNow) {
-        var terminateHandler = null,
-            returnValue = null;
-
         terminateNow = !!terminateNow;
-        terminateHandler = self.terminateHandler || null;
 
         if (!self.isTerminating()) {
             self._setTerminatingStatus();
@@ -498,11 +482,7 @@ WorkerWrapperSandbox.loadWorker = function () {
             self.trigger(Event.WORKER_TERMINATING);
         }
 
-        if (typeof terminateHandler === 'function' && !terminateNow) {
-            returnValue = terminateHandler.apply(self, arguments);
-        }
-
-        self.sendMessage(Action.TERMINATE_NOW, [returnValue]);
+        self.sendMessage(Action.TERMINATE_NOW, []);
 
         if (terminateNow) {
             self._nativeClose();
@@ -516,8 +496,6 @@ WorkerWrapperSandbox.loadWorker = function () {
      * This method internally calls the
      * {{#crossLink "Wrapper/terminate:method"}}{{/crossLink}} method
      * to terminate the worker.
-     *
-     * Note: Calling this method will NOT invoke the terminate handler.
      * @method terminateNow
      */
     self.terminateNow = function () {

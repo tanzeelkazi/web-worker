@@ -677,13 +677,9 @@
      * It is also called internally once the asynchronous `terminate` cycle
      * passes control back to the instance to execute the final terminate.
      * @method terminateNow
-     * @param {Mixed} [returnValue] This value is passed to with the data on the
-     *                              WORKER_TERMINATED event. It is also used internally to
-     *                              pass the return value of the `terminateHandler` from
-     *                              the worker in the asynchronous terminate cycle.
      * @chainable
      */
-    WebWorker.prototype.terminateNow = function (returnValue) {
+    WebWorker.prototype.terminateNow = function () {
         var nativeWorker = null;
 
         if (!this.isTerminating()) {
@@ -695,7 +691,7 @@
         if (nativeWorker) {
             nativeWorker.terminate();
             this._nativeWorker = null;
-            this.trigger(Event.WORKER_TERMINATED, {"returnValue": returnValue});
+            this.trigger(Event.WORKER_TERMINATED);
         }
 
         return this;

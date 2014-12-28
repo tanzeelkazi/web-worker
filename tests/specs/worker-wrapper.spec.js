@@ -479,24 +479,7 @@
                 WorkerWrapperSandbox.terminate();
 
                 runPostMessageExpectation(WorkerWrapperSandbox.postMessage, WebWorkerAction.TRIGGER_SELF, [WebWorkerEvent.WORKER_TERMINATING], 0);
-                runPostMessageExpectation(WorkerWrapperSandbox.postMessage, WebWorkerAction.TERMINATE_NOW, [void 0]);
-            });
-
-            it("should call the terminateHandler and send the return value with the TERMINATE_NOW action to the base worker instance", function () {
-                var stubbedValue = 123;
-
-                WorkerWrapperSandbox.terminateHandler = function () {
-                    return stubbedValue;
-                };
-
-                spyOn(WorkerWrapperSandbox, 'terminateHandler').and.callThrough();
-                spyOn(WorkerWrapperSandbox, 'postMessage');
-
-                WorkerWrapperSandbox.terminate();
-
-                expect(WorkerWrapperSandbox.terminateHandler).toHaveBeenCalled();
-
-                runPostMessageExpectation(WorkerWrapperSandbox.postMessage, WebWorkerAction.TERMINATE_NOW, [stubbedValue]);
+                runPostMessageExpectation(WorkerWrapperSandbox.postMessage, WebWorkerAction.TERMINATE_NOW, []);
             });
 
             it("should call the native close API if parameter true is passed in", function () {
@@ -508,25 +491,6 @@
 
                 WorkerWrapperSandbox.terminate(true);
                 expect(WorkerWrapperSandbox._nativeClose).toHaveBeenCalled();
-            });
-
-        });
-
-
-        describe("terminateHandler", function () {
-
-            it("should get called when the worker is terminated", function () {
-                var stubbedValue = 123;
-
-                WorkerWrapperSandbox.terminateHandler = function () {
-                    return stubbedValue;
-                };
-
-                spyOn(WorkerWrapperSandbox, 'terminateHandler').and.callThrough();
-
-                WorkerWrapperSandbox.terminate();
-
-                expect(WorkerWrapperSandbox.terminateHandler).toHaveBeenCalled();
             });
 
         });

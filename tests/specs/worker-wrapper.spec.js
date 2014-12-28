@@ -126,6 +126,27 @@
         });
 
 
+        describe("log", function () {
+
+            it("should send the log messages to the base instance", function () {
+                var testMsg = 'test msg';
+
+                spyOn(WorkerWrapperSandbox, 'sendMessage');
+
+                expect(WorkerWrapperSandbox.sendMessage).not.toHaveBeenCalled();
+                WorkerWrapperSandbox.log(testMsg);
+
+                expect(WorkerWrapperSandbox.sendMessage).toHaveBeenCalledWith('log', [testMsg]);
+            });
+
+            it("should be chainable", function () {
+                spyOn(WorkerWrapperSandbox, 'sendMessage');
+                expect(WorkerWrapperSandbox.log()).toBe(WorkerWrapperSandbox);
+            });
+
+        });
+
+
         describe("off", function () {
 
             afterEach(function () {

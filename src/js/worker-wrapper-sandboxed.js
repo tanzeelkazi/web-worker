@@ -40,6 +40,7 @@ WorkerWrapperSandbox.loadWorker = function () {
     };
 
     Action = {
+        "LOG": 'log',
         "START": 'start',
         "TERMINATE": 'terminate',
         "TERMINATE_NOW": 'terminateNow',
@@ -209,6 +210,17 @@ WorkerWrapperSandbox.loadWorker = function () {
         self.triggerSelf(Event.WORKER_STARTED);
         self.trigger(Event.WORKER_STARTED);
 
+        return self;
+    };
+
+    /**
+     * This method emulates basic jQuery `.on` event binding behavior.
+     * @method on
+     * @param {Mixed} data The data to log
+     * @chainable
+     */
+    self.log = function (data) {
+        self.sendMessage(Action.LOG, [data]);
         return self;
     };
 
@@ -560,14 +572,10 @@ WorkerWrapperSandbox.loadWorker = function () {
 
             self[action].apply(self, args);
         }
-
-        return;
     }, false);
 
     // Initialize the worker
     self._init();
-
-    return;
 };
 
 WebWorker._workerScriptWrapper = WebWorker._workerScriptWrapper || WorkerWrapperSandbox.loadWorker.toString().replace(/^function \(\) \{([\s\S]+)return;[^}]+?\}$/ig, '$1').replace(/window\._\$blanket[^;]+;/ig, '').replace(/self\._main[^}]+?\};/i, 'self._main = function () {var startArgs=arguments;{{main-function}};return self;};');

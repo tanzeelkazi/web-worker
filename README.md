@@ -23,6 +23,8 @@ channel between the worker and the base page every time I wanted to set up a new
 ## Features
 - Delayed loading
   - Your web-worker scripts are not loaded until you explicitly call `.start()` or `.load()` on the `WebWorker` instance.
+- Delayed starting
+  - Your worker script will not execute unless an explicit call to `.start()` is made.
 - Event-driven API
   - No mystery callback hooks for communication between the page and the web worker.
 - Ability to use custom events (freedom from being stuck to the `postMessage` API).
@@ -30,7 +32,7 @@ channel between the worker and the base page every time I wanted to set up a new
 - Concentrate more on doing than communicating
   - No more architecting communication protocols between the thread and the base page. This API lays down that foundation for you.
 - Logging support on the instance on the base page as well as from within the worker thread
-  - Can't figure out what's breaking inside your worker script? No problem. Although I can't promise you a debugger, you can log from within the worker as simply as doing `self.log(data);` and view the data on the base page on the worker instance using `worker.getLog();`. Easier than struggling with `postMessage` and figuring out the hundreds of calls.
+  - Can't figure out what's breaking inside your worker script? No problem! Although I can't promise you a `debugger`, you can log data from within the worker as simply as `self.log(data);` and view the data on the base page on the worker instance using `worker.getLog();`. Easier than struggling with `postMessage` and figuring out the hundreds of calls that may have gone through.
 
 
 ## Getting started
@@ -102,7 +104,25 @@ self.trigger('my-custom-event');
 Triggering events within the worker script triggers the event on the worker object on
 the base page.
 
-#### Logging:
+#### Pre-loading without starting:
+By default the worker script will start loading once you call `.start()` and start the worker for you. If for some reason you wish to do a _pre-load_ of the worker without starting it immediately you can use the `.load()` method. Thereafter you may start the worker by explicitly calling `.start()`.
+```javascript
+var worker = new WebWorker('./worker-script.js');
+worker.on('my-custom-event', function () {
+    console.log('custom event triggered!');
+});
+...
+worker.load();
+...
+worker.start();
+```
+**Important Note:**
+
+The major difference between this library and the native web-worker implementation is that the native implementation loads and executes the worker script immediately on instantiation. You may have read about the native worker _starting_ after calling _postMessage_ but that is a bit misleading since _postMessage_ is intercepted within the worker which can then be used to perform specific tasks depending on what message was passed.
+
+The `WebWorker` API however has _delayed loading_ and _delayed starting_ in execution. What this means is that calling `.load()` will load the worker script from the server but will NOT execute it unless you explicitly call `.start()`. Calling `.start()` without calling `.load()` does both tasks of loading the script from the server and executing it immediately.
+
+#### Logging inside and outside the worker:
 Within the worker script you can log with:
 ```javascript
 self.log('worker data');

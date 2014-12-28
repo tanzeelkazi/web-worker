@@ -20,6 +20,19 @@ Instead of working on the worker logic itself I found myself creating a whole co
 channel between the worker and the base page every time I wanted to set up a new worker.
 
 
+## Features
+- Delayed loading
+  - Your web-worker scripts are not loaded until you explicitly call `.start()` or `.load()` on the `WebWorker` instance.
+- Event-driven API
+  - No mystery callback hooks for communication between the page and the web worker.
+- Ability to use custom events (freedom from being stuck to the `postMessage` API).
+  - Define your own custom events for use from within and/or outside the web worker.
+- Concentrate more on doing than communicating
+  - No more architecting communication protocols between the thread and the base page. This API lays down that foundation for you.
+- Logging support on the instance on the base page as well as from within the worker thread
+  - Can't figure out what's breaking inside your worker script? No problem. Although I can't promise you a debugger, you can log from within the worker as simply as doing `self.log(data);` and view the data on the base page on the worker instance using `worker.getLog();`. Easier than struggling with `postMessage` and figuring out the hundreds of calls.
+
+
 ## Getting started
 Getting started is very simple. Just drag-drop the `src/js/web-worker.js` file into your project and you
 are ready to go.
@@ -31,13 +44,15 @@ Following are example usages of the script.
 ```javascript
 var worker = new WebWorker('./worker-script.js');
 
-worker.loaded(function () {
-    worker.start();
-    ...
-    worker.terminate();
-});
+worker.on('my-custom-event', function () {
+          ...
+      })
+      .on('my-custom-complete-event', function () {
+          ...
+          worker.terminate();
+      });
 ...
-worker.load();
+worker.start();
 ```
 
 #### Using the helpers to quickly define tasks:
@@ -54,6 +69,8 @@ worker  .loading(function () {
         })
         .started(function () {
             console.log('worker has started');
+            ...
+            worker.terminate();
         })
         .terminating(function () {
             console.log('worker is terminating');
@@ -64,12 +81,8 @@ worker  .loading(function () {
         .error(function () {
             console.log('worker encountered an error');
         });
-...
-worker.load();
-...
+
 worker.start();
-...
-worker.terminate();
 ```
 
 #### Attaching events on the worker object:
@@ -78,8 +91,6 @@ var worker = new WebWorker('./worker-script.js');
 worker.on('my-custom-event', function () {
     console.log('custom event triggered!');
 });
-...
-worker.load();
 ...
 worker.start();
 ```
@@ -90,6 +101,23 @@ self.trigger('my-custom-event');
 ```
 Triggering events within the worker script triggers the event on the worker object on
 the base page.
+
+#### Logging:
+Within the worker script you can log with:
+```javascript
+self.log('worker data');
+```
+The data will be logged within the worker instance on the base page for easy viewing/debugging.
+
+On the worker instance on the base page, you can still log data.
+```javascript
+worker.log('data on base page');
+```
+All logged data can be retrieved with the `getLog()` method that returns an array of logged items.
+```javascript
+var logData = worker.getLog(); // logData = ['worker data', 'data on base page']
+```
+
 
 ## Requirements
 Production use requirements are `jQuery 1.9+`.

@@ -2,22 +2,13 @@
 (function () {
     'use strict';
 
-    var worker = null,
-        WebWorkerState = null,
+    var WebWorkerState = null,
         WebWorkerAction = null,
-        WebWorkerEvent = null,
-        exampleWorkerElemSelector = null,
-        exampleWorkerUrl = null,
-        $WorkerWrapperSandbox = null;
+        WebWorkerEvent = null;
 
     WebWorkerState = WebWorker.State;
     WebWorkerAction = WebWorker.Action;
     WebWorkerEvent = WebWorker.Event;
-
-    exampleWorkerElemSelector = "#test-worker-script-elem";
-    exampleWorkerUrl = "/js/example-worker.js";
-
-    $WorkerWrapperSandbox = $(WorkerWrapperSandbox);
 
     function runPostMessageExpectation(spy, action, args, callIndex) {
         var call = null,
@@ -48,73 +39,63 @@
         for (; i < data.length; i++) {
             expect(dataArgs[i]).toEqual(args[i]);
         }
-
-        return;
     }
 
+
     describe("WorkerWrapper", function () {
+
 
         describe("sandbox", function () {
 
             it("should be defined", function () {
                 expect(WorkerWrapperSandbox).toBeDefined();
-                return;
             });
 
             it("should have the postMessage method", function () {
                 expect(typeof WorkerWrapperSandbox.postMessage).toEqual('function');
-                return;
             });
 
             it("should have the addEventListener method", function () {
                 expect(typeof WorkerWrapperSandbox.addEventListener).toEqual('function');
-                return;
             });
 
             it("should have the onmessage property", function () {
                 expect(WorkerWrapperSandbox.onmessage).toBeNull();
-                return;
             });
 
             it("should have the loadWorker method", function () {
                 expect(typeof WorkerWrapperSandbox.loadWorker).toEqual('function');
-                return;
             });
 
             it("should have the close method", function () {
                 expect(typeof WorkerWrapperSandbox.close).toEqual('function');
-                return;
             });
 
-            return;
         });
+
 
         describe("loading the worker", function () {
 
             it("should send the trigger WORKER_LOADED to the base worker instance", function () {
-
                 spyOn(WorkerWrapperSandbox, 'postMessage');
 
                 WorkerWrapperSandbox.loadWorker();
 
                 expect(WorkerWrapperSandbox.isInitialized()).toBe(true);
                 runPostMessageExpectation(WorkerWrapperSandbox.postMessage, WebWorkerAction.TRIGGER_SELF, [WebWorkerEvent.WORKER_LOADED]);
-
-                return;
             });
 
-            return;
         });
+
 
         describe("close", function () {
 
             it("should be an alias for the terminate method", function () {
                 expect(WorkerWrapperSandbox.close).toEqual(WorkerWrapperSandbox.terminate);
-                return;
             });
 
-            return;
         });
+
 
         describe("isInitialized", function () {
 
@@ -131,6 +112,7 @@
 
         });
 
+
         describe("isTerminating", function () {
 
             it("should return true if the worker is terminating, false otherwise", function () {
@@ -143,11 +125,11 @@
 
         });
 
+
         describe("off", function () {
 
             afterEach(function () {
                 WorkerWrapperSandbox.off();
-                return;
             });
 
             it("should be able to selectively remove event listeners", function (done) {
@@ -156,9 +138,7 @@
                     checkExpectation = false;
 
                 Listeners = {
-                    "SOME_FN": function () {
-                        return;
-                    },
+                    "SOME_FN": function () {},
 
                     "ANOTHER_FN": function () {
                         if (checkExpectation) {
@@ -175,7 +155,6 @@
                         WorkerWrapperSandbox.off(eventType, Listeners.SOME_FN);
                         checkExpectation = true;
                         WorkerWrapperSandbox.triggerSelf(eventType);
-                        return;
                     }
                 };
 
@@ -188,8 +167,6 @@
                 WorkerWrapperSandbox.on(eventType, Listeners.ANOTHER_FN);
 
                 WorkerWrapperSandbox.triggerSelf(eventType);
-
-                return;
             });
 
             it("should be able to remove all listeners for a particular event type", function (done) {
@@ -199,9 +176,7 @@
                     checkExpectation = false;
 
                 Listeners = {
-                    "SOME_FN": function () {
-                        return;
-                    },
+                    "SOME_FN": function () {},
 
                     "ANOTHER_FN": function () {
                         if (checkExpectation) {
@@ -219,7 +194,6 @@
                         checkExpectation = true;
                         WorkerWrapperSandbox.triggerSelf(eventType1);
                         WorkerWrapperSandbox.triggerSelf(eventType2);
-                        return;
                     }
                 };
 
@@ -234,7 +208,6 @@
 
                 WorkerWrapperSandbox.triggerSelf(eventType1);
                 WorkerWrapperSandbox.triggerSelf(eventType2);
-                return;
             });
 
             it("should be able to remove all listeners on the object", function (done) {
@@ -244,9 +217,7 @@
                     eventType3 = null;
 
                 Listeners = {
-                    "FN1": function () {
-                        return;
-                    },
+                    "FN1": function () {},
 
                     "FN2": function () {
                         expect(Listeners.FN1).toHaveBeenCalled();
@@ -255,17 +226,14 @@
                         WorkerWrapperSandbox.off();
                         WorkerWrapperSandbox.on(eventType3, Listeners.FN3);
                         WorkerWrapperSandbox.triggerSelf(eventType3);
-                        return;
                     },
 
                     "FN3": function () {
-
                         expect(Listeners.FN1.calls.count()).toEqual(1);
                         expect(Listeners.FN2.calls.count()).toEqual(1);
                         expect(Listeners.FN3.calls.count()).toEqual(1);
 
                         done();
-                        return;
                     }
                 };
 
@@ -283,18 +251,15 @@
                 WorkerWrapperSandbox.triggerSelf(eventType1);
                 WorkerWrapperSandbox.triggerSelf(eventType2);
                 WorkerWrapperSandbox.triggerSelf(eventType3);
-
-                return;
             });
 
-            return;
         });
+
 
         describe("on", function () {
 
             afterEach(function () {
                 WorkerWrapperSandbox.off();
-                return;
             });
 
             it("should be able to bind events to the worker", function (done) {
@@ -305,7 +270,6 @@
                     "SOME_EVENT": function () {
                         expect(Listeners.SOME_EVENT).toHaveBeenCalled();
                         done();
-                        return;
                     }
                 };
 
@@ -315,7 +279,6 @@
 
                 WorkerWrapperSandbox.on(eventType, Listeners.SOME_EVENT);
                 WorkerWrapperSandbox.triggerSelf(eventType);
-                return;
             });
 
             it("should silently fail if the listener passed in is not a function", function (done) {
@@ -326,7 +289,6 @@
                     "SOME_EVENT": function () {
                         expect(Listeners.SOME_EVENT).toHaveBeenCalled();
                         done();
-                        return;
                     }
                 };
 
@@ -337,17 +299,15 @@
                 WorkerWrapperSandbox.on(eventType, 'random-data');
                 WorkerWrapperSandbox.on(eventType, Listeners.SOME_EVENT);
                 WorkerWrapperSandbox.triggerSelf(eventType);
-                return;
             });
 
-            return;
         });
+
 
         describe("one", function () {
 
             afterEach(function () {
                 WorkerWrapperSandbox.off();
-                return;
             });
 
             it("should be able to bind events to the worker for execution only once", function (done) {
@@ -356,9 +316,7 @@
                     checkExpectation = false;
 
                 Listeners = {
-                    "SOME_FN": function () {
-                        return;
-                    },
+                    "SOME_FN": function () {},
 
                     "ANOTHER_FN": function () {
                         if (checkExpectation) {
@@ -374,7 +332,6 @@
 
                         checkExpectation = true;
                         WorkerWrapperSandbox.triggerSelf(eventType);
-                        return;
                     }
                 };
 
@@ -387,11 +344,10 @@
                 WorkerWrapperSandbox.on(eventType, Listeners.ANOTHER_FN);
 
                 WorkerWrapperSandbox.triggerSelf(eventType);
-                return;
             });
 
-            return;
         });
+
 
         describe("sendMessage", function () {
 
@@ -406,8 +362,6 @@
                 WorkerWrapperSandbox.sendMessage(myAction, myArgs);
 
                 runPostMessageExpectation(WorkerWrapperSandbox.postMessage, myAction, myArgs);
-
-                return;
             });
 
             it("should fail silently if no action is provided", function () {
@@ -423,12 +377,10 @@
 
                 expect(WorkerWrapperSandbox.postMessage.calls.count()).toEqual(1);
                 runPostMessageExpectation(WorkerWrapperSandbox.postMessage, myAction, myArgs);
-
-                return;
             });
 
-            return;
         });
+
 
         describe("start", function () {
 
@@ -484,6 +436,7 @@
 
         });
 
+
         describe("terminate", function () {
 
             afterEach(function () {
@@ -523,7 +476,6 @@
                 expect(WorkerWrapperSandbox.terminateHandler).toHaveBeenCalled();
 
                 runPostMessageExpectation(WorkerWrapperSandbox.postMessage, WebWorkerAction.TERMINATE_NOW, [stubbedValue]);
-                return;
             });
 
             it("should call the native close API if parameter true is passed in", function () {
@@ -535,11 +487,10 @@
 
                 WorkerWrapperSandbox.terminate(true);
                 expect(WorkerWrapperSandbox._nativeClose).toHaveBeenCalled();
-                return;
             });
 
-            return;
         });
+
 
         describe("terminateHandler", function () {
 
@@ -555,11 +506,10 @@
                 WorkerWrapperSandbox.terminate();
 
                 expect(WorkerWrapperSandbox.terminateHandler).toHaveBeenCalled();
-                return;
             });
 
-            return;
         });
+
 
         describe("terminateNow", function () {
 
@@ -569,17 +519,15 @@
                 WorkerWrapperSandbox.terminateNow();
 
                 expect(WorkerWrapperSandbox.terminate).toHaveBeenCalledWith(true);
-                return;
             });
 
-            return;
         });
+
 
         describe("trigger", function () {
 
             afterEach(function () {
                 WorkerWrapperSandbox.off();
-                return;
             });
 
             it("should be able to send trigger events to the base worker instance", function () {
@@ -610,8 +558,6 @@
                 eventArg = actionArgs[0];
                 expect(eventArg.type).toEqual(eventType);
                 expect(eventArg.data).toEqual(eventData);
-
-                return;
             });
 
             it("should be able to handle event objects", function () {
@@ -643,12 +589,9 @@
                 eventArg = actionArgs[0];
                 expect(eventArg.type).toEqual(eventObj.type);
                 expect(eventArg.data).toEqual(eventObj.data);
-
-                return;
             });
 
             it("should fail silently if no event type is passed in or is garbage", function () {
-
                 spyOn(WorkerWrapperSandbox, 'postMessage');
 
                 WorkerWrapperSandbox.trigger();
@@ -659,18 +602,15 @@
 
                 WorkerWrapperSandbox.trigger({});
                 expect(WorkerWrapperSandbox.postMessage).not.toHaveBeenCalled();
-
-                return;
             });
 
-            return;
         });
+
 
         describe("triggerSelf", function () {
 
             afterEach(function () {
                 WorkerWrapperSandbox.off();
-                return;
             });
 
             it("should be able to trigger bound events on the worker", function (done) {
@@ -681,7 +621,6 @@
                     "SOME_EVENT": function () {
                         expect(Listeners.SOME_EVENT).toHaveBeenCalled();
                         done();
-                        return;
                     }
                 };
 
@@ -691,7 +630,6 @@
 
                 WorkerWrapperSandbox.on(eventType, Listeners.SOME_EVENT);
                 WorkerWrapperSandbox.triggerSelf(eventType);
-                return;
             });
 
             it("should be able to handle event objects", function (done) {
@@ -702,7 +640,6 @@
                     "SOME_EVENT": function () {
                         expect(Listeners.SOME_EVENT).toHaveBeenCalled();
                         done();
-                        return;
                     }
                 };
 
@@ -715,8 +652,6 @@
                     "type": eventType,
                     "data": 'some-data'
                 });
-
-                return;
             });
 
             it("should fail silently if no event type is passed in or is garbage", function (done) {
@@ -726,9 +661,7 @@
                     checkExpectation = false;
 
                 Listeners = {
-                    "SOME_FN": function () {
-                        return;
-                    },
+                    "SOME_FN": function () {},
 
                     "ANOTHER_FN": function () {
                         if (checkExpectation) {
@@ -743,7 +676,6 @@
                         checkExpectation = true;
                         WorkerWrapperSandbox.triggerSelf(eventType1);
                         WorkerWrapperSandbox.triggerSelf(eventType2);
-                        return;
                     }
                 };
 
@@ -759,11 +691,10 @@
                 WorkerWrapperSandbox.triggerSelf(null);
                 WorkerWrapperSandbox.triggerSelf(true);
                 WorkerWrapperSandbox.triggerSelf(eventType2);
-                return;
             });
 
-            return;
         });
+
 
         describe("message listener", function () {
 
@@ -789,8 +720,6 @@
                 expect(WorkerWrapperSandbox.start).toHaveBeenCalled();
 
                 expect(WorkerWrapperSandbox.start.calls.mostRecent().args).toEqual(fakeEventArgs);
-
-                return;
             });
 
             it("should NOT call the specified action method if it is NOT triggered by a WebWorker action", function () {
@@ -812,15 +741,10 @@
                 WorkerWrapperSandbox.onmessage(fakeEvent);
 
                 expect(WorkerWrapperSandbox.start).not.toHaveBeenCalled();
-
-                return;
             });
 
-            return;
         });
 
-        return;
     });
 
-    return;
 })();

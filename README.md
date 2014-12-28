@@ -21,17 +21,17 @@ channel between the worker and the base page every time I wanted to set up a new
 
 
 ## Features
-- Delayed loading
+- **Delayed loading**
   - Your web-worker scripts are not loaded until you explicitly call `.start()` or `.load()` on the `WebWorker` instance.
-- Delayed starting
+- **Delayed starting**
   - Your worker script will not execute unless an explicit call to `.start()` is made.
-- Event-driven API
+- **Event-driven API**
   - No mystery callback hooks for communication between the page and the web worker.
-- Ability to use custom events (freedom from being stuck to the `postMessage` API).
+- **Custom event support (freedom from being stuck to the `postMessage` API)**
   - Define your own custom events for use from within and/or outside the web worker.
-- Concentrate more on doing than communicating
+- **Concentrate more on doing than communicating**
   - No more architecting communication protocols between the thread and the base page. This API lays down that foundation for you.
-- Logging support on the instance on the base page as well as from within the worker thread
+- **Logging support (both on the instance on the base page as well as from within the worker thread)**
   - Can't figure out what's breaking inside your worker script? No problem! Although I can't promise you a `debugger`, you can log data from within the worker as simply as `self.log(data);` and view the data on the base page on the worker instance using `worker.getLog();`. Easier than struggling with `postMessage` and figuring out the hundreds of calls that may have gone through.
 
 

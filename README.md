@@ -22,17 +22,27 @@ channel between the worker and the base page every time I wanted to set up a new
 
 ## Features
 - **Delayed loading**
-  - Your web-worker scripts are not loaded until you explicitly call `.start()` or `.load()` on the `WebWorker` instance.
+  - Your web-worker scripts are not loaded until you explicitly call `.start()` or `.load()`
+  on the `WebWorker` instance.
 - **Delayed starting**
   - Your worker script will not execute unless an explicit call to `.start()` is made.
-- **Event-driven API**
+- **Robust event-driven API**
+  - No pulling hair out for using just the `postMessage` API.
   - No mystery callback hooks for communication between the page and the web worker.
 - **Custom event support (freedom from being stuck to the `postMessage` API)**
   - Define your own custom events for use from within and/or outside the web worker.
 - **Concentrate more on doing than communicating**
-  - No more architecting communication protocols between the thread and the base page. This API lays down that foundation for you.
+  - No more architecting communication protocols between the thread and the base page. This API
+  lays down that communication foundation for you in a way that let's you focus on the problem.
 - **Logging support (both on the instance on the base page as well as from within the worker thread)**
-  - Can't figure out what's breaking inside your worker script? No problem! Although I can't promise you a `debugger`, you can log data from within the worker as simply as `self.log(data);` and view the data on the base page on the worker instance using `worker.getLog();`. Easier than struggling with `postMessage` and figuring out the hundreds of calls that may have gone through.
+  - Can't figure out what's breaking inside your worker script? No problem! Although I can't promise you
+  a `debugger`, you can log data from within the worker as simply as `self.log(data);` and view the data
+  on the base page on the worker instance using `worker.getLog();`. Much easier than struggling with
+  `postMessage` and figuring out the hundreds of calls that may have gone through.
+- **`postMessage` fallthrough**
+  - The `WebWorker` API uses `postMessage` to communicate between the thread and the base page in a
+  completely transparent manner. It ignores all `postMessage` calls that are not flagged as intrinsic
+  `WebWorker` messages and thus allows you to use the `postMessage` API as you deem fit.
 
 
 ## Getting started
@@ -116,15 +126,25 @@ worker.on('my-custom-event', function () {
     console.log('custom event triggered!');
 });
 ...
+// Load the web worker script
 worker.load();
 ...
+// Start the worker script
 worker.start();
 ```
+
 **Important Note:**
 
-The major difference between this library and the native web-worker implementation is that the native implementation loads and executes the worker script immediately on instantiation. You may have read about the native worker _starting_ after calling _postMessage_ but that is a bit misleading since _postMessage_ is intercepted within the worker which can then be used to perform specific tasks depending on what message was passed.
+The major difference between this library and the native web-worker implementation is that the native
+implementation loads and executes the worker script immediately on instantiation. You may have read about
+the native worker _starting_ after calling _postMessage_ but that is a bit misleading since _postMessage_ is
+intercepted within the _already executed_ worker which can then be used to perform specific tasks depending
+on what message was passed.
 
-The `WebWorker` API however has _delayed loading_ and _delayed starting_ in execution. What this means is that calling `.load()` will load the worker script from the server but will NOT execute it unless you explicitly call `.start()`. Calling `.start()` without calling `.load()` does both tasks of loading the script from the server and executing it immediately.
+The `WebWorker` API however, has a _delayed loading_ and _delayed starting_ implementation. What this means is
+that calling `.load()` will load the worker script from the server but will NOT execute your portion of the
+script unless you explicitly call `.start()`. Calling `.start()` without calling `.load()` does the dual-task
+of loading the script from the server and executing it when ready.
 
 #### Logging inside and outside the worker:
 Within the worker script you can log with:

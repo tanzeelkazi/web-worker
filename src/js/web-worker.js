@@ -614,7 +614,6 @@
 
         if (nativeWorker) {
             this.trigger(Event.WORKER_TERMINATING);
-            this.sendMessage(Action.SET_TERMINATING_STATUS, [true]);
             this.sendMessage(Action.TERMINATE, slice.call(arguments));
         }
 
@@ -909,7 +908,6 @@
      *
      * @property {Object} Action
      *     @property {String} Action.START 'start'
-     *     @property {String} Action.SET_TERMINATING_STATUS 'setTerminatingStatus'
      *     @property {String} Action.TERMINATE 'terminate'
      *     @property {String} Action.TERMINATE_NOW 'terminateNow'
      *     @property {String} Action.TRIGGER 'trigger'
@@ -919,7 +917,6 @@
      */
     Action = {
         "START": 'start',
-        "SET_TERMINATING_STATUS": '_setTerminatingStatus',
         "TERMINATE": 'terminate',
         "TERMINATE_NOW": 'terminateNow',
         "TRIGGER": 'trigger',

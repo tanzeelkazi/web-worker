@@ -76,6 +76,17 @@ WorkerWrapperSandbox.loadWorker = function () {
      */
 
     /**
+     * The callback stack for the
+     * {{#crossLink "WebWorker/terminating:method"}}{{/crossLink}}
+     * hook.
+     * @property _callbackStack
+     * @type {Object}
+     * @private
+     * @default null
+     */
+    self._callbackStack = null;
+
+    /**
      * Object in which all internal worker listeners are tracked.
      * @property _listeners
      * @type {Object}
@@ -130,6 +141,39 @@ WorkerWrapperSandbox.loadWorker = function () {
     self.Event = Event;
 
     /**
+     * Assigns the basic internal event handlers to the worker instance.
+     * @method _assignEventHandlers
+     * @private
+     * @chainable
+     */
+    self._assignEventHandlers = function () {
+        function getCallbackStackExecutor(stackId) {
+            return function () {
+                var callbackStack = self._callbackStack[stackId],
+                    stateId,
+                    curCallback;
+
+                stateId = stackId.toUpperCase();
+
+                if (stateId in State) {
+                    // Set the current state of the worker
+                    // as long as it's a valid state.
+                    self._state = State[stateId];
+                }
+
+                /* eslint no-cond-assign:0 */
+                while (curCallback = callbackStack.pop()) {
+                    curCallback.apply(self, arguments);
+                }
+            };
+        }
+
+        self.on(Event.WORKER_TERMINATING, getCallbackStackExecutor('terminating'));
+
+        return self;
+    };
+
+    /**
      * Returns the current state of the worker as an integer.
      * Refer to {{#crossLink "WebWorker/State:property"}}{{/crossLink}} for state values.
      * @method getState
@@ -175,6 +219,12 @@ WorkerWrapperSandbox.loadWorker = function () {
      * @chainable
      */
     self._init = function () {
+        self._callbackStack = {
+            "terminating": []
+        };
+
+        self._assignEventHandlers();
+
         self._state = State.INITIALIZED;
 
         self.trigger(Event.WORKER_LOADED);
@@ -279,6 +329,7 @@ WorkerWrapperSandbox.loadWorker = function () {
             for (key in _listeners) {
                 delete _listeners[key];
             }
+            self._assignEventHandlers();
             return self;
         }
 
@@ -317,6 +368,22 @@ WorkerWrapperSandbox.loadWorker = function () {
                 i--;
             }
         }
+        return self;
+    };
+
+    /**
+     * Hook for the terminating event.
+     * @method terminating
+     * @param {Function} callback The callback function that get's called when the event get's triggered.
+     * @chainable
+     */
+    self.terminating = function (callback) {
+        var callbackStack = self._callbackStack.terminating;
+
+        if (typeof callback === 'function') {
+            callbackStack.push(callback);
+        }
+
         return self;
     };
 

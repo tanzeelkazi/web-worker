@@ -74,6 +74,74 @@
         });
 
 
+        describe("callback", function () {
+
+            function runCallbackTest(stackId, callbackExecutor) {
+                describe(stackId, function () {
+
+                    beforeEach(function () {
+                        WorkerWrapperSandbox.loadWorker();
+                    });
+
+                    afterEach(function () {
+                        WorkerWrapperSandbox._callbackStack[stackId] = [];
+                    });
+
+                    it("should take a function as an argument and add it to the callback list", function () {
+                        var Listeners = {
+                            "callback": function () {}
+                        };
+
+                        WorkerWrapperSandbox[stackId](Listeners.callback);
+
+                        expect(WorkerWrapperSandbox._callbackStack[stackId]).toContain(Listeners.callback);
+                    });
+
+                    it("should not add non-functions to the callback list", function () {
+                        var Listeners = {
+                            "callback": {}
+                        };
+
+                        WorkerWrapperSandbox[stackId](Listeners.callback);
+
+                        expect(WorkerWrapperSandbox._callbackStack[stackId]).not.toContain(Listeners.callback);
+                    });
+
+                    it("should execute the callback at the appropriate time", function (done) {
+                        var Listeners = {
+                            "callback": function () {
+                                expect(Listeners.callback).toHaveBeenCalled();
+                                done();
+                            }
+                        };
+
+                        spyOn(Listeners, 'callback').and.callThrough();
+
+                        WorkerWrapperSandbox[stackId](Listeners.callback);
+
+                        expect(Listeners.callback).not.toHaveBeenCalled();
+
+                        callbackExecutor();
+                    });
+
+                    it("should be chainable", function () {
+                        var returnValue;
+
+                        returnValue = WorkerWrapperSandbox[stackId](function() {});
+
+                        expect(returnValue).toBe(WorkerWrapperSandbox);
+                    });
+
+                });
+            }
+
+            runCallbackTest('terminating', function () {
+                WorkerWrapperSandbox.terminate();
+            });
+
+        });
+
+
         describe("loading the worker", function () {
 
             it("should send the trigger WORKER_LOADED to the base worker instance", function () {

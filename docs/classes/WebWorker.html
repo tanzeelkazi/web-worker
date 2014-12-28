@@ -257,6 +257,13 @@
                             </li>
                         
                             <li class="index-item method private">
+                                <a href="#method__initLog">_initLog</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method private">
                                 <a href="#method__triggerError">_triggerError</a>
 
                                 
@@ -272,6 +279,13 @@
                         
                             <li class="index-item method">
                                 <a href="#method_error">error</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_getBlobUrl">getBlobUrl</a>
 
                                 
                                 
@@ -379,6 +393,13 @@
                         
                             <li class="index-item method">
                                 <a href="#method_loading">loading</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_log">log</a>
 
                                 
                                 
@@ -527,6 +548,13 @@
 
                                 
                                     <span class="flag static">static</span>
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item property private">
+                                <a href="#property__log">_log</a>
+
                                 
                                 
                             </li>
@@ -890,6 +918,59 @@ code clean.</p>
 </div>
 
                 
+                    <div id="method__initLog" class="method item private">
+    <h3 class="name"><code>_initLog</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+
+    
+
+    
+        <span class="flag private">private</span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Initializes the log array when invoked.</p>
+
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
                     <div id="method__triggerError" class="method item private">
     <h3 class="name"><code>_triggerError</code></h3>
 
@@ -1197,6 +1278,75 @@ code clean.</p>
         </div>
     
 
+    
+
+    
+</div>
+
+                
+                    <div id="method_getBlobUrl" class="method item">
+    <h3 class="name"><code>getBlobUrl</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Returns the worker blob URL if one has been generated.</p>
+
+    </div>
+
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>:
+                    
+                    <p>The log array of the worker.</p>
+
+                
+            </div>
+        </div>
     
 
     
@@ -2245,6 +2395,93 @@ Refer to <a href="../classes/WebWorker.html#property_State" class="crosslink">St
 
                     <div class="param-description">
                         <p>The callback function that get&#39;s called when the event get&#39;s triggered.</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="method_log" class="method item">
+    <h3 class="name"><code>log</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>The</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <span class="flag chainable">chainable</span>
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Concatenates log messages to internal log array.</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">The</code>
+                        <span class="type">Mixed</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>data that you wish to be logged.</p>
 
                     </div>
 
@@ -3891,6 +4128,56 @@ hooks.</p>
 </div>
 
                 
+                    <div id="property__log" class="property item private">
+    <h3 class="name"><code>_log</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
+
+    
+
+    
+        <span class="flag private">private</span>
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+            
+        
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Stores the log information for this worker instance. The log is not
+initialized unless explicity invoked by the
+<a href="../classes/WebWorker.html#method_log" class="crosslink">log</a> or
+WebWorker/getLog:method methods
+which internally call <a href="../classes/WebWorker.html#method__initLog" class="crosslink">_initLog</a>
+to initialize this property.</p>
+
+    </div>
+
+    
+        <p><strong>Default:</strong> null</p>
+    
+
+    
+
+    
+</div>
+
+                
                     <div id="property__nativeWorker" class="property item private">
     <h3 class="name"><code>_nativeWorker</code></h3>
     <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
@@ -4213,20 +4500,6 @@ to establish communication from within the worker.</p>
 
                 <div class="param-description">
                     <p>&#39;start&#39;</p>
-
-                </div>
-
-                
-            </li>
-            
-            <li class="param">
-                
-                    <code class="param-name">SET_TERMINATING_STATUS</code>
-                    <span class="type"><a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
-                
-
-                <div class="param-description">
-                    <p>&#39;setTerminatingStatus&#39;</p>
 
                 </div>
 

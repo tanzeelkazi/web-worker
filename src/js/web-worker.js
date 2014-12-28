@@ -97,6 +97,20 @@
     WebWorker.prototype._lastError = null;
 
     /**
+     * Stores the log information for this worker instance. The log is not
+     * initialized unless explicity invoked by the
+     * {{#crossLink "WebWorker/log:method"}}{{/crossLink}} or
+     * {{#crossLink "WebWorker/getLog:method"}}{{/crossLink}} methods
+     * which internally call {{#crossLink "WebWorker/_initLog:method"}}{{/crossLink}}
+     * to initialize this property.
+     * @property _log
+     * @type {Array}
+     * @private
+     * @default null
+     */
+    WebWorker.prototype._log = null;
+
+    /**
      * The native browser worker object. This is generated once the worker is loaded.
      * @property _nativeWorker
      * @type {Object}
@@ -210,6 +224,16 @@
     };
 
     /**
+     * Initializes the log array when invoked.
+     * @method _initLog
+     * @private
+     */
+    WebWorker.prototype._initLog = function () {
+        this._log = [];
+        return this._log;
+    };
+
+    /**
      * Returns the worker URL if one was provided during object instantiation.
      * @method getUrl
      * @return {String} The worker URL, `null` otherwise.
@@ -225,6 +249,17 @@
      */
     WebWorker.prototype.getBlobUrl = function () {
         return this._workerBlobUrl;
+    };
+
+    /**
+     * Returns the worker blob URL if one has been generated.
+     * @method getBlobUrl
+     * @return {Array} The log array of the worker.
+     */
+    WebWorker.prototype.getLog = function () {
+        var log;
+        log = this._log || this._initLog();
+        return log;
     };
 
     /**
@@ -356,6 +391,21 @@
         }
 
         return self;
+    };
+
+    /**
+     * Concatenates log messages to internal log array.
+     * @method log
+     * @param {Mixed} The data that you wish to be logged.
+     * @chainable
+     */
+    WebWorker.prototype.log = function (data) {
+        var log;
+
+        log = this._log || this._initLog();
+        log.push(data);
+
+        return this;
     };
 
     /**
@@ -915,6 +965,7 @@
      * @static
      */
     Action = {
+        "LOG": 'log',
         "START": 'start',
         "TERMINATE": 'terminate',
         "TERMINATE_NOW": 'terminateNow',

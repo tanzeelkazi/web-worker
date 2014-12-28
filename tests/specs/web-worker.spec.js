@@ -227,6 +227,22 @@
             });
 
 
+            describe("getLog", function () {
+
+                it("should retrieve the log for the worker", function () {
+                    worker = new WebWorker(exampleWorkerUrl);
+
+                    expect(worker.getLog()).toBe(worker._log);
+
+                    worker._log = ['test msg'];
+
+                    expect(worker.getLog()).toBe(worker._log);
+                    expect(worker.getLog().length).toBe(1);
+                });
+
+            });
+
+
             describe("getNativeWorker", function () {
 
                 it("should return the native browser worker once it has loaded, null otherwise", function (done) {
@@ -615,6 +631,30 @@
                 it("should be chainable", function () {
                     worker = new WebWorker(exampleWorkerUrl);
                     expect(worker.load()).toEqual(worker);
+                });
+
+            });
+
+
+            describe("log", function () {
+
+                it("should be able to log the data", function () {
+                    var testMsg = 'test msg';
+
+                    worker = new WebWorker(exampleWorkerUrl);
+
+                    expect(worker.getLog().length).toBe(0);
+
+                    worker.log(testMsg);
+
+                    expect(worker.getLog().length).toBe(1);
+                    expect(worker.getLog()[0]).toBe(testMsg);
+                });
+
+                it("should be chainable", function () {
+                    worker = new WebWorker(exampleWorkerUrl);
+                    expect(worker.log()).toBe(worker);
+                    expect(worker.log('test msg')).toBe(worker);
                 });
 
             });

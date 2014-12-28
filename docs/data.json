@@ -1201,13 +1201,13 @@
         {
             "file": "src/js/worker-wrapper-sandboxed.js",
             "line": 216,
-            "description": "This method emulates basic jQuery `.on` event binding behavior.",
+            "description": "This method sends data to the base worker instance to be logged.",
             "itemtype": "method",
-            "name": "on",
+            "name": "log",
             "params": [
                 {
                     "name": "data",
-                    "description": "The data to log",
+                    "description": "The data to log.",
                     "type": "Mixed"
                 }
             ],

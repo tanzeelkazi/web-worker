@@ -214,9 +214,9 @@ WorkerWrapperSandbox.loadWorker = function () {
     };
 
     /**
-     * This method emulates basic jQuery `.on` event binding behavior.
-     * @method on
-     * @param {Mixed} data The data to log
+     * This method sends data to the base worker instance to be logged.
+     * @method log
+     * @param {Mixed} data The data to log.
      * @chainable
      */
     self.log = function (data) {

@@ -143,8 +143,8 @@ on what message was passed.
 
 The `WebWorker` API however, has a _delayed loading_ and _delayed starting_ implementation. What this means is
 that calling `.load()` will load the worker script from the server but will NOT execute your portion of the
-script unless you explicitly call `.start()`. Calling `.start()` without calling `.load()` does the dual-task
-of loading the script from the server and executing it when ready.
+script unless you explicitly call `.start()`. If you call `.start()` without calling `.load()`, it implicitly
+calls `.load()` first and then starts execution when ready.
 
 #### Logging inside and outside the worker:
 Within the worker script you can log with:
@@ -170,7 +170,7 @@ worker.getNativeWorker();
 ```
 Note that the native worker object is available only _after_ the worker has loaded i.e. once
 the `.load()` call for the worker is complete. The same holds true if you have called `.start()` to
-start the worker as it intrinsically calls `.load()`.
+start the worker as it implicitly calls `.load()`.
 ```javascript
 worker.loaded(function () {
     var nativeWorker = this.getNativeWorker();

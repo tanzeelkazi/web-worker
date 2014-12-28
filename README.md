@@ -70,29 +70,29 @@ worker.start();
 #### Using the helpers to quickly define tasks:
 ```javascript
 var worker = new WebWorker('./worker-script.js');
-worker  .loading(function () {
-            console.log('worker is loading');
-        })
-        .loaded(function () {
-            console.log('worker has loaded');
-        })
-        .starting(function () {
-            console.log('worker is starting');
-        })
-        .started(function () {
-            console.log('worker has started');
-            ...
-            worker.terminate();
-        })
-        .terminating(function () {
-            console.log('worker is terminating');
-        })
-        .terminated(function () {
-            console.log('worker has terminated');
-        })
-        .error(function () {
-            console.log('worker encountered an error');
-        });
+worker.loading(function () {
+          console.log('worker is loading');
+      })
+      .loaded(function () {
+          console.log('worker has loaded');
+      })
+      .starting(function () {
+          console.log('worker is starting');
+      })
+      .started(function () {
+          console.log('worker has started');
+          ...
+          worker.terminate();
+      })
+      .terminating(function () {
+          console.log('worker is terminating');
+      })
+      .terminated(function () {
+          console.log('worker has terminated');
+      })
+      .error(function () {
+          console.log('worker encountered an error');
+      });
 
 worker.start();
 ```
@@ -160,6 +160,23 @@ worker.log('data on base page');
 All logged data can be retrieved with the `getLog()` method that returns an array of logged items.
 ```javascript
 var logData = worker.getLog(); // logData = ['worker data', 'data on base page']
+```
+
+#### The native worker object:
+If you wish to use the native worker object being used by the `WebWorker` you can do so by using the
+`.getNativeWorker()` method.
+```javascript
+worker.getNativeWorker();
+```
+Note that the native worker object is available only _after_ the worker has loaded i.e. once
+the `.load()` call for the worker is complete. The same holds true if you have called `.start()` to
+start the worker as it intrinsically calls `.load()`.
+```javascript
+worker.loaded(function () {
+    var nativeWorker = this.getNativeWorker();
+});
+...
+worker.load();
 ```
 
 

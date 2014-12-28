@@ -597,12 +597,11 @@
                     worker = new WebWorker(exampleWorkerUrl);
 
                     worker.loaded(function () {
-
                               worker.on(WebWorkerEvent.WORKER_LOADING, Listeners.LOADING)
                                     .on(WebWorkerEvent.WORKER_LOADED, Listeners.LOADED);
 
-                              worker.load();
-                              worker.start();
+                              worker.load()
+                                    .start();
                           })
                           .started(function () {
                               expect(Listeners.LOADING).not.toHaveBeenCalled();
@@ -616,35 +615,6 @@
                 it("should be chainable", function () {
                     worker = new WebWorker(exampleWorkerUrl);
                     expect(worker.load()).toEqual(worker);
-                });
-
-            });
-
-
-            describe("message event bus", function () {
-
-                it("should trigger custom events", function (done) {
-                    var Listeners = {
-                        "ping": function () {
-                            expect(Listeners.ping).toHaveBeenCalled();
-                            done();
-                        }
-                    };
-
-                    spyOn(Listeners, 'ping').and.callThrough();
-
-                    worker = new WebWorker(exampleWorkerUrl);
-
-                    worker.loaded(function () {
-                        worker.start();
-                    })
-                    .started(function () {
-                        expect(Listeners.ping).not.toHaveBeenCalled();
-                        worker.trigger('ping');
-                    })
-                    .on('ping', Listeners.ping);
-
-                    worker.load();
                 });
 
             });
@@ -1398,6 +1368,30 @@
             spyOn(Listeners, 'MESSAGE').and.callThrough();
 
             worker.loaded(Listeners.LOADED);
+            worker.load();
+        });
+
+        it("should trigger custom events", function (done) {
+            var Listeners = {
+                "ping": function () {
+                    expect(Listeners.ping).toHaveBeenCalled();
+                    done();
+                }
+            };
+
+            spyOn(Listeners, 'ping').and.callThrough();
+
+            worker = new WebWorker(exampleWorkerUrl);
+
+            worker.loaded(function () {
+                worker.start();
+            })
+            .started(function () {
+                expect(Listeners.ping).not.toHaveBeenCalled();
+                worker.trigger('ping');
+            })
+            .on('ping', Listeners.ping);
+
             worker.load();
         });
 

@@ -3,12 +3,14 @@
     'use strict';
 
     var worker = null,
+        WebWorkerState = null,
         WebWorkerAction = null,
         WebWorkerEvent = null,
         exampleWorkerElemSelector = null,
         exampleWorkerUrl = null,
         $WorkerWrapperSandbox = null;
 
+    WebWorkerState = WebWorker.State;
     WebWorkerAction = WebWorker.Action;
     WebWorkerEvent = WebWorker.Event;
 
@@ -96,7 +98,7 @@
                 WorkerWrapperSandbox.loadWorker();
 
                 expect(WorkerWrapperSandbox.isInitialized()).toBe(true);
-                runPostMessageExpectation(WorkerWrapperSandbox.postMessage, WebWorkerAction.TRIGGER, [WebWorkerEvent.WORKER_LOADED]);
+                runPostMessageExpectation(WorkerWrapperSandbox.postMessage, WebWorkerAction.TRIGGER_SELF, [WebWorkerEvent.WORKER_LOADED]);
 
                 return;
             });
@@ -116,34 +118,29 @@
 
         describe("isInitialized", function () {
 
-            it("should return the value for isInitialized", function () {
-
-                WorkerWrapperSandbox._isInitialized = false;
+            it("should return true if initialized, false otherwise", function () {
+                WorkerWrapperSandbox._state = null;
                 expect(WorkerWrapperSandbox.isInitialized()).toBe(false);
 
-                WorkerWrapperSandbox._isInitialized = true;
+                WorkerWrapperSandbox._state = WebWorkerState.INITIALIZED;
                 expect(WorkerWrapperSandbox.isInitialized()).toBe(true);
 
-                return;
+                WorkerWrapperSandbox._state = WebWorkerState.STARTED;
+                expect(WorkerWrapperSandbox.isInitialized()).toBe(true);
             });
 
-            return;
         });
 
         describe("isTerminating", function () {
 
-            it("should return the value for isTerminating", function () {
-
-                WorkerWrapperSandbox._isTerminating = false;
+            it("should return true if the worker is terminating, false otherwise", function () {
+                WorkerWrapperSandbox._state = WebWorkerState.STARTED;
                 expect(WorkerWrapperSandbox.isTerminating()).toBe(false);
 
-                WorkerWrapperSandbox._isTerminating = true;
+                WorkerWrapperSandbox._state = WebWorkerState.TERMINATING;
                 expect(WorkerWrapperSandbox.isTerminating()).toBe(true);
-
-                return;
             });
 
-            return;
         });
 
         describe("off", function () {
@@ -435,28 +432,28 @@
 
         describe("start", function () {
 
+            afterEach(function () {
+                WorkerWrapperSandbox._state = WebWorkerState.INITIALIZED;
+            });
+
             it("should NOT start the worker if it is NOT initialized", function () {
                 spyOn(WorkerWrapperSandbox, '_main');
 
-                WorkerWrapperSandbox._isInitialized = false;
+                WorkerWrapperSandbox._state = null;
                 WorkerWrapperSandbox.start();
 
                 expect(WorkerWrapperSandbox.isInitialized()).toBe(false);
                 expect(WorkerWrapperSandbox._main).not.toHaveBeenCalled();
-
-                return;
             });
 
             it("should start the worker if it is initialized", function () {
                 spyOn(WorkerWrapperSandbox, '_main');
 
-                WorkerWrapperSandbox._isInitialized = true;
+                WorkerWrapperSandbox._state = WebWorkerState.INITIALIZED;
                 WorkerWrapperSandbox.start();
 
                 expect(WorkerWrapperSandbox.isInitialized()).toBe(true);
                 expect(WorkerWrapperSandbox._main).toHaveBeenCalled();
-
-                return;
             });
 
             it("should send the WORKER_STARTED event to the base instance once started", function () {
@@ -464,39 +461,51 @@
 
                 WorkerWrapperSandbox.start();
 
-                runPostMessageExpectation(WorkerWrapperSandbox.postMessage, WebWorkerAction.TRIGGER, [WebWorkerEvent.WORKER_STARTED]);
-                return;
+                runPostMessageExpectation(WorkerWrapperSandbox.postMessage, WebWorkerAction.TRIGGER_SELF, [WebWorkerEvent.WORKER_STARTED]);
             });
 
-            return;
+            it("should trigger the WORKER_STARTED event on itself once started", function (done) {
+                var Listeners = null;
+
+                Listeners = {
+                    "WORKER_STARTED": function () {
+                        expect(Listeners.WORKER_STARTED).toHaveBeenCalled();
+                        done();
+                    }
+                };
+
+                spyOn(WorkerWrapperSandbox, 'postMessage');
+                spyOn(Listeners, 'WORKER_STARTED').and.callThrough();
+
+                WorkerWrapperSandbox.on(WebWorkerEvent.WORKER_STARTED, Listeners.WORKER_STARTED);
+
+                WorkerWrapperSandbox.start();
+            });
+
         });
 
         describe("terminate", function () {
 
             afterEach(function () {
-                WorkerWrapperSandbox._isTerminating = false;
-                return;
+                WorkerWrapperSandbox._state = WebWorkerState.INITIALIZED;
             });
 
-            it("should set the isTerminating status to true", function () {
-                WorkerWrapperSandbox._isTerminating = false;
+            it("should set the worker into terminating state", function () {
+                WorkerWrapperSandbox._state = WebWorkerState.STARTED;
                 expect(WorkerWrapperSandbox.isTerminating()).toBe(false);
 
                 WorkerWrapperSandbox.terminate();
 
                 expect(WorkerWrapperSandbox.isTerminating()).toBe(true);
-                return;
             });
 
             it("should send the WORKER_TERMINATING event and TERMINATE_NOW action to the base worker instance", function () {
-                var x;
                 spyOn(WorkerWrapperSandbox, 'postMessage');
 
                 WorkerWrapperSandbox.terminate();
 
-                runPostMessageExpectation(WorkerWrapperSandbox.postMessage, WebWorkerAction.TRIGGER, [WebWorkerEvent.WORKER_TERMINATING], 0);
-                runPostMessageExpectation(WorkerWrapperSandbox.postMessage, WebWorkerAction.TERMINATE_NOW, [x]);
-                return;
+                runPostMessageExpectation(WorkerWrapperSandbox.postMessage, WebWorkerAction.TRIGGER_SELF, [WebWorkerEvent.WORKER_TERMINATING], 0);
+                runPostMessageExpectation(WorkerWrapperSandbox.postMessage, WebWorkerAction.TERMINATE_NOW, [void 0]);
             });
 
             it("should call the terminateHandler and send the return value with the TERMINATE_NOW action to the base worker instance", function () {
@@ -595,7 +604,7 @@
                 expect(args.length).toEqual(1);
 
                 postMessageArg = args[0];
-                expect(postMessageArg.action).toEqual(WebWorkerAction.TRIGGER);
+                expect(postMessageArg.action).toEqual(WebWorkerAction.TRIGGER_SELF);
 
                 actionArgs = postMessageArg.args;
                 eventArg = actionArgs[0];
@@ -628,7 +637,7 @@
                 expect(args.length).toEqual(1);
 
                 postMessageArg = args[0];
-                expect(postMessageArg.action).toEqual(WebWorkerAction.TRIGGER);
+                expect(postMessageArg.action).toEqual(WebWorkerAction.TRIGGER_SELF);
 
                 actionArgs = postMessageArg.args;
                 eventArg = actionArgs[0];

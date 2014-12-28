@@ -251,13 +251,6 @@ here are attached to the <code>&#39;self&#39;</code> object within the worker sc
                             </li>
                         
                             <li class="index-item method">
-                                <a href="#method_terminateHandler">terminateHandler</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method">
                                 <a href="#method_terminateNow">terminateNow</a>
 
                                 
@@ -1591,10 +1584,7 @@ Internally it calls the Wrapper/main:method method with arguments.</p>
     <div class="description">
         <p>Terminates the worker from within the worker script.
 Note that terminates from within the worker are asynchronous.
-This method calls the
-<a href="../classes/Wrapper.html#method_terminateHandler" class="crosslink">terminateHandler</a>,
-if it is assigned and is a function, and then goes on to
-communicate with the base worker class to call the method
+It then communicates with the base worker class to call the method
 <a href="../classes/WebWorker.html#method_terminateNow" class="crosslink">terminateNow</a>.</p>
 <p>The <a href="../classes/WebWorker.html" class="crosslink">WebWorker</a>
 class does provide a synchronous way to terminate the worker
@@ -1636,60 +1626,6 @@ but it is not supported from within the worker script itself.</p>
             
             </ul>
         </div>
-    
-
-    
-
-    
-</div>
-
-                
-                    <div id="method_terminateHandler" class="method item">
-    <h3 class="name"><code>terminateHandler</code></h3>
-
-    
-        <span class="paren">()</span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-            
-        
-        
-        </p>
-
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>This method is called by the script whenever the worker is made to terminate.
-By default this method does nothing but it exists so that you can override it
-with a custom function to possibly perform cleanup operations if the worker is
-being made to terminate.</p>
-
-    </div>
-
     
 
     
@@ -1741,7 +1677,6 @@ being made to terminate.</p>
 This method internally calls the
 <a href="../classes/Wrapper.html#method_terminate" class="crosslink">terminate</a> method
 to terminate the worker.</p>
-<p>Note: Calling this method will NOT invoke the terminate handler.</p>
 
     </div>
 

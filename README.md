@@ -105,7 +105,11 @@ Triggering events within the worker script triggers the event on the worker obje
 the base page.
 
 #### Pre-loading without starting:
-By default the worker script will start loading once you call `.start()` and start the worker for you. If for some reason you wish to do a _pre-load_ of the worker without starting it immediately you can use the `.load()` method. Thereafter you may start the worker by explicitly calling `.start()`.
+When you call `.start()`, by default the worker script will load the web worker script and start the worker
+for you when ready. If for some reason you wish to do a _pre-load_ of the worker without starting it
+immediately, you can use the `.load()` method. Thereafter you may start the worker by explicitly
+calling `.start()`.
+
 ```javascript
 var worker = new WebWorker('./worker-script.js');
 worker.on('my-custom-event', function () {

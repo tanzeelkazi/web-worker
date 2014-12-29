@@ -43,7 +43,11 @@ channel between the worker and the base page every time I wanted to set up a new
   - The `WebWorker` API uses `postMessage` to communicate between the thread and the base page in a
   completely transparent manner. It ignores all `postMessage` calls that are not flagged as intrinsic
   `WebWorker` messages and thus allows you to use the `postMessage` API as you deem fit.
-
+- **Ability to work with native worker object**
+  - It is possible to hook into the native worker object to perform any custom actions that you may need.
+- **Robust state tracking mechanism**
+  - The `WebWorker` API has a robust state tracking mechanism which helps to define a stable workflow for
+  your thread from creation to termination.
 
 ## Getting started
 Getting started is very simple. Just drag-drop the `src/js/web-worker.js` file into your project and you
@@ -169,14 +173,88 @@ If you wish to use the native worker object being used by the `WebWorker` you ca
 worker.getNativeWorker();
 ```
 Note that the native worker object is available only _after_ the worker has loaded i.e. once
-the `.load()` call for the worker is complete. The same holds true if you have called `.start()` to
-start the worker as it implicitly calls `.load()`.
+the `.load()` call for the worker is complete.
 ```javascript
 worker.loaded(function () {
     var nativeWorker = this.getNativeWorker();
 });
 ...
 worker.load();
+```
+The same holds true if you have called `.start()` to
+start the worker as it implicitly calls `.load()`.
+```javascript
+worker.loaded(function () {
+    var nativeWorker = this.getNativeWorker();
+});
+...
+worker.start();
+```
+
+#### Tracking worker states:
+The `WebWorker` API has a robust state tracking mechanism. The worker can be in any _one_ of the
+following states at any given time.
+
+- INITIALIZED
+- LOADING
+- LOADED
+- STARTING
+- STARTED
+- TERMINATING
+- TERMINATED
+
+The current state of the worker can be retrieved with the `.getState()` method.
+```javascript
+worker.getState(); // returns an integer corresponding to one
+                   // of the valid states of the worker.
+```
+The following example will help you understand the various states the worker
+goes through.
+```javascript
+var worker = new WebWorker('./worker-script.js');
+
+console.log( worker.getState() ); // WebWorker.State.INITIALIZED (0)
+
+worker.loading(function () {
+          console.log( this.getState() ); // WebWorker.State.LOADING (1)
+      })
+      .loaded(function () {
+          console.log( this.getState() ); // WebWorker.State.LOADED (2)
+      })
+      .starting(function () {
+          console.log( this.getState() ); // WebWorker.State.STARTING (3)
+      })
+      .started(function () {
+          console.log( this.getState() ); // WebWorker.State.STARTED (4)
+
+          // Terminate the worker when done
+          worker.terminate();
+      })
+      .terminating(function () {
+          console.log( this.getState() ); // WebWorker.State.TERMINATING (5)
+      })
+      .terminated(function () {
+          console.log( this.getState() ); // WebWorker.State.TERMINATED (6)
+      });
+
+worker.start();
+```
+There are easy helpers available if the need arises to use the current state of the worker
+in your logic. It is recommended to use these instead of checking the `.getState()` values.
+```javascript
+worker.isLoading();     // TRUE when worker state is WebWorker.State.LOADING
+
+worker.isLoaded();      // TRUE when worker state crosses WebWorker.State.LOADED
+                        // but is not WebWorker.State.TERMINATED
+
+worker.isStarting();    // TRUE when worker state is WebWorker.State.STARTING
+
+worker.isStarted();     // TRUE when worker state crosses WebWorker.State.STARTED
+                        // but is not WebWorker.State.TERMINATED
+
+worker.isTerminating(); // TRUE when worker state is WebWorker.State.TERMINATING
+
+worker.isTerminated();  // TRUE when worker state is WebWorker.State.TERMINATED
 ```
 
 

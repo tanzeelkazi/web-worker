@@ -161,14 +161,14 @@ On the worker instance on the base page, you can still log data.
 ```javascript
 worker.log('data on base page');
 ```
-All logged data can be retrieved with the `getLog()` method that returns an array of logged items.
+All logged data can be retrieved with the `.getLog()` method that returns an array of logged items.
 ```javascript
 var logData = worker.getLog(); // logData = ['worker data', 'data on base page']
 ```
 
 #### The native worker object:
-If you wish to use the native worker object being used by the `WebWorker` you can do so by using the
-`.getNativeWorker()` method.
+If you wish to retrieve and use the native worker object being used by the `WebWorker` you can do so by
+using the `.getNativeWorker()` method.
 ```javascript
 worker.getNativeWorker();
 ```
